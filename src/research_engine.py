@@ -26,11 +26,11 @@ class ResearchEngine:
             "You are a master researcher. I need to search YouTube for a highly technical, specific video.\n"
             "Pick ONE of the following core themes at random:\n"
             f"{', '.join(CORE_THEMES)}\n\n"
-            "Now, generate exactly ONE specific, technical search query (4 to 5 words maximum) related to that theme. "
-            "It should be an advanced sub-topic that is likely to have educational lectures or technical explainers on YouTube.\n"
-            "Example: 'scope 3 supply chain analysis'\n"
-            "Example: 'direct air capture solvent efficiency'\n"
-            "Example: 'grid scale battery energy storage'\n"
+            "Now, generate exactly ONE technical search query (2 to 4 words maximum) related to that theme. "
+            "It must be broad enough to have many educational lectures on YouTube, but still highly technical.\n"
+            "Example: 'scope 3 supply chain'\n"
+            "Example: 'direct air capture efficiency'\n"
+            "Example: 'grid scale battery storage'\n"
             "Output ONLY the query string. No quotes, no markdown, nothing else."
         )
         try:
@@ -108,5 +108,10 @@ class ResearchEngine:
             log.warning(f"Attempt {attempt + 1}: No valid transcripts found for '{query}'. Retrying in 5s...")
             time.sleep(5)
             
-        log.error("CRITICAL: Failed to find a valid transcript after 10 attempts.")
-        return {}
+        log.error("CRITICAL: Failed to find a valid transcript after 10 attempts. Using hardcoded emergency fallback.")
+        return {
+            "source": "Emergency Fallback Document",
+            "title": "The Hidden Water Footprint of AI Data Centers",
+            "id": "emergency_fallback_ai_water_1",
+            "raw_text": "Evaporative cooling towers in hyper-scale data centers consume massive volumes of potable water. Transitioning to closed-loop direct-to-chip liquid cooling eliminates water evaporation completely while unlocking 100kW+ rack thermal density. Traditional evaporative cooling consumes 1.8 Liters of fresh water per kWh, whereas closed-loop systems yield zero water loss and a 40% PUE efficiency reduction."
+        }
