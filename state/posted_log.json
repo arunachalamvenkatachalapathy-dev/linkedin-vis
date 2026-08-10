@@ -33,5 +33,23 @@
     "date": "2026-08-04T14:57:25.013572+00:00",
     "post_id": "urn:li:share:7490420635257479168",
     "post_url": "https://www.linkedin.com/feed/update/urn:li:share:7490420635257479168/"
+  },
+  {
+    "video_id": null,
+    "url": null,
+    "headline": "AI Data Centers: The Hidden Water Footprint",
+    "topic": "data center liquid cooling",
+    "post_id": null,
+    "post_url": null,
+    "date": "2026-08-10T03:42:57.806742+00:00"
+  },
+  {
+    "id": "http://arxiv.org/abs/2608.07273v1",
+    "source": "ArXiv Paper",
+    "headline": "Cyclic-Terminal EMPC Optimizes Multi-Energy Grids Efficiently",
+    "topic": "Multi-Energy System MPC",
+    "post_id": null,
+    "post_url": null,
+    "date": "2026-08-10T04:35:53.273324+00:00"
   }
 ]
