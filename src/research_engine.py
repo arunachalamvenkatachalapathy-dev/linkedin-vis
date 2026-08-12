@@ -109,9 +109,12 @@ class ResearchEngine:
             time.sleep(5)
             
         log.error("CRITICAL: Failed to find a valid transcript after 10 attempts. Using hardcoded emergency fallback.")
-        return {
+        fallback = {
             "source": "Emergency Fallback Document",
             "title": "The Hidden Water Footprint of AI Data Centers",
             "id": "emergency_fallback_ai_water_1",
             "raw_text": "Evaporative cooling towers in hyper-scale data centers consume massive volumes of potable water. Transitioning to closed-loop direct-to-chip liquid cooling eliminates water evaporation completely while unlocking 100kW+ rack thermal density. Traditional evaporative cooling consumes 1.8 Liters of fresh water per kWh, whereas closed-loop systems yield zero water loss and a 40% PUE efficiency reduction."
         }
+        if not self.memory.is_duplicate(fallback['id']):
+            return fallback
+        return {}

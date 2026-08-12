@@ -14,6 +14,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: ecopulse-bot
+  cancel-in-progress: false
+
 jobs:
   run-ecopulse:
     runs-on: ubuntu-latest
@@ -47,4 +51,5 @@ jobs:
           git config user.email "actions@github.com"
           git add state/posted_log.json
           git diff --cached --quiet || git commit -m "chore: update posted_log [skip ci]"
+          git pull --rebase origin master
           git push
