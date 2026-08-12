@@ -41,6 +41,11 @@ def main():
 
     # 3. Editorial Thesis Generation
     log.info("═══ Phase 2: Editorial Thesis Generation ═══")
+    raw_text = raw_data.get('raw_text', '')
+    if not raw_text:
+        log.warning("No raw text provided to Editorial Engine.")
+        log.warning("Gracefully skipping today's post because no novel content was found.")
+        sys.exit(0)
     thesis = editorial_engine.generate_thesis(raw_data)
     if not thesis:
         log.error("Failed to generate thesis. Aborting.")

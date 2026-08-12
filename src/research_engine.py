@@ -40,19 +40,18 @@ class ResearchEngine:
         except Exception as e:
             log.warning(f"Failed to brainstorm niche query: {e}")
         
-        # Safe fallback if LLM fails (e.g., 429 Rate Limit)
+        # Safe fallback if LLM fails (e.g., 429 Rate Limit or Timeout)
         FALLBACK_QUERIES = [
-            "scope 3 supply chain lifecycle analysis",
-            "direct air capture solvent efficiency",
-            "grid scale battery energy storage",
-            "supercritical water oxidation pfas destruction",
-            "csrd double materiality assessment matrix",
-            "fugitive methane satellite inversion modeling",
-            "cmip6 regional climate downscaling",
-            "biogenic carbon accounting methodology",
-            "green hydrogen electrolyzer efficiency",
-            "climate risk portfolio stress testing",
-            "industrial decarbonization thermal batteries"
+            "renewable energy transition",
+            "solar power technology",
+            "wind turbine engineering",
+            "battery energy storage",
+            "carbon capture technology",
+            "climate change science",
+            "electric vehicle manufacturing",
+            "green hydrogen production",
+            "sustainable agriculture",
+            "circular economy recycling"
         ]
         import random
         return random.choice(FALLBACK_QUERIES)
