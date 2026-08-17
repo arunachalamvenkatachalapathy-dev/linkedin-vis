@@ -1,14 +1,27 @@
 # Environment & secrets
 .env
 *.env
+*.pem
+*.key
+
+# Python artifacts
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
 .venv/
 env/
+venv/
 
-# State temporary images
+# State & runtime logs / generated artifacts
 state/*.png
 state/*.jpg
+state/*.jpeg
+state/*.webp
+state/*.txt
+!state/posted_log.json
+*.log
+scratch/
+latest_run.log
 
 # OS files
 .DS_Store

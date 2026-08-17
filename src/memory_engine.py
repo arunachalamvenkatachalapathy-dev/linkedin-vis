@@ -17,7 +17,7 @@ class MemoryEngine:
                 with open(self.log_path, "r", encoding="utf-8") as f:
                     return json.load(f)
             except Exception as e:
-                log.error(f"Error loading history: {e}")
+                log.error(f"Error loading posted history: {e}")
         return []
 
     def save_history(self, record: dict):
@@ -27,12 +27,15 @@ class MemoryEngine:
         with open(self.log_path, "w", encoding="utf-8") as f:
             json.dump(self.history, f, indent=2)
 
-    def is_duplicate(self, topic_or_id: str) -> bool:
-        """Checks if a similar topic or id was published recently to enforce non-repetition."""
-        query = (topic_or_id or "").lower()
+    def is_duplicate(self, identifier: str) -> bool:
+        if not identifier:
+            return False
+        clean_id = identifier.strip().lower()
         for entry in self.history:
-            if (entry.get("id") or "").lower() == query or (entry.get("video_id") or "").lower() == query:
+            if (entry.get("id") or "").strip().lower() == clean_id:
                 return True
-            if (entry.get("topic") or "").lower() == query or (entry.get("headline") or "").lower() == query:
+            if (entry.get("topic") or "").strip().lower() == clean_id:
+                return True
+            if (entry.get("headline") or "").strip().lower() == clean_id:
                 return True
         return False

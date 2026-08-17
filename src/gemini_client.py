@@ -1,42 +1,85 @@
 import os
-import requests
+import time
 import json
 import logging
+import base64
+import requests
 
 log = logging.getLogger("ecopulse")
 
+TEXT_MODELS = [
+    "gemini-2.5-flash",
+    "gemini-1.5-flash",
+    "gemini-1.5-pro",
+    "gemini-2.0-flash"
+]
+
 class GeminiClient:
     def __init__(self):
-        self.api_key = os.environ.get("GEMINI_API_KEY", "").strip() or os.environ.get("GOOGLE_API_KEY", "").strip()
+        self.api_key = (
+            os.environ.get("GEMINI_API_KEY", "").strip() or 
+            os.environ.get("GOOGLE_API_KEY", "").strip()
+        )
         if not self.api_key:
-            log.warning("GEMINI_API_KEY is not set. API calls will fail.")
+            log.warning("GEMINI_API_KEY is not set. LLM API calls will fail.")
 
-    def generate_text(self, prompt: str, temperature: float = 0.5, json_mode: bool = False) -> str:
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key={self.api_key}"
-        headers = {"Content-Type": "application/json"}
-        
-        payload = {
-            "contents": [{"parts": [{"text": prompt}]}],
-            "generationConfig": {
-                "temperature": temperature,
+    def generate_text(self, prompt: str, temperature: float = 0.6, json_mode: bool = False, max_retries: int = 3) -> str:
+        if not self.api_key:
+            log.error("Cannot generate text: GEMINI_API_KEY is missing.")
+            return ""
+
+        last_error = None
+        for model in TEXT_MODELS:
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={self.api_key}"
+            headers = {"Content-Type": "application/json"}
+            
+            payload = {
+                "contents": [{"parts": [{"text": prompt}]}],
+                "generationConfig": {
+                    "temperature": temperature,
+                }
             }
-        }
-        
-        if json_mode:
-            payload["generationConfig"]["responseMimeType"] = "application/json"
+            if json_mode:
+                payload["generationConfig"]["responseMimeType"] = "application/json"
 
-        resp = requests.post(url, headers=headers, json=payload, timeout=30)
-        resp.raise_for_status()
-        
-        data = resp.json()
-        candidates = data.get("candidates", [])
-        if candidates and "content" in candidates[0]:
-            parts = candidates[0]["content"].get("parts", [])
-            if parts:
-                return parts[0].get("text", "")
+            for attempt in range(1, max_retries + 1):
+                try:
+                    resp = requests.post(url, headers=headers, json=payload, timeout=45)
+                    if resp.status_code == 200:
+                        data = resp.json()
+                        candidates = data.get("candidates", [])
+                        if candidates and "content" in candidates[0]:
+                            parts = candidates[0]["content"].get("parts", [])
+                            if parts:
+                                return parts[0].get("text", "").strip()
+                        return ""
+                    
+                    if resp.status_code in [429, 500, 502, 503, 504]:
+                        wait_time = attempt * 3
+                        log.warning(f"Model {model} HTTP {resp.status_code}. Retrying in {wait_time}s (attempt {attempt}/{max_retries})...")
+                        time.sleep(wait_time)
+                        continue
+                    
+                    log.warning(f"Model {model} returned HTTP {resp.status_code}. Switching model...")
+                    break
+
+                except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as e:
+                    wait_time = attempt * 3
+                    log.warning(f"Timeout/Connection error on {model}: {e}. Retrying in {wait_time}s...")
+                    time.sleep(wait_time)
+                    last_error = e
+                except Exception as e:
+                    log.warning(f"Error on {model}: {e}")
+                    last_error = e
+                    break
+
+        log.error(f"All Gemini models failed. Last error: {last_error}")
         return ""
 
-    def generate_image(self, prompt: str) -> bytes:
+    def generate_image(self, prompt: str, max_retries: int = 2) -> bytes:
+        if not self.api_key:
+            return b""
+
         url = f"https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict?key={self.api_key}"
         headers = {"Content-Type": "application/json"}
         payload = {
@@ -44,12 +87,20 @@ class GeminiClient:
             "parameters": {"sampleCount": 1, "aspectRatio": "16:9"}
         }
 
-        resp = requests.post(url, headers=headers, json=payload, timeout=90)
-        resp.raise_for_status()
-        
-        predictions = resp.json().get("predictions", [])
-        if predictions and "bytesBase64Encoded" in predictions[0]:
-            import base64
-            b64_str = predictions[0]["bytesBase64Encoded"]
-            return base64.b64decode(b64_str)
+        for attempt in range(1, max_retries + 1):
+            try:
+                resp = requests.post(url, headers=headers, json=payload, timeout=60)
+                if resp.status_code == 200:
+                    predictions = resp.json().get("predictions", [])
+                    if predictions and "bytesBase64Encoded" in predictions[0]:
+                        return base64.b64decode(predictions[0]["bytesBase64Encoded"])
+                elif resp.status_code in [429, 503]:
+                    time.sleep(attempt * 4)
+                else:
+                    log.warning(f"Imagen 3 returned HTTP {resp.status_code}")
+                    break
+            except Exception as e:
+                log.warning(f"Imagen 3 attempt {attempt} failed: {e}")
+                time.sleep(2)
+
         return b""

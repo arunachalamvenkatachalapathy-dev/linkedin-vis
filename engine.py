@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Set up logging before importing src modules
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s"
@@ -21,9 +20,10 @@ from src.review_engine import ReviewEngine
 from src.image_director import ImageDirector
 from src.publisher import publish_to_linkedin
 
-
 def main():
-    log.info("═══ Starting LinkedIn Autopilot v3.0 (Gemini Engine) ═══")
+    log.info("══════════════════════════════════════════════════════════")
+    log.info("🚀 Starting EcoPulse LinkedIn Insight Engine (v4.0 Unified)")
+    log.info("══════════════════════════════════════════════════════════")
 
     # 1. Initialize core engines
     gemini_client = GeminiClient()
@@ -34,54 +34,45 @@ def main():
     review_engine = ReviewEngine(gemini_client)
     image_director = ImageDirector(gemini_client)
 
-    # 2. Research & Selection
-    log.info("═══ Phase 1: Research & Deduplication ═══")
+    # 2. Phase 1: Multi-Source Research
+    log.info("═══ Phase 1: Multi-Source Research & Deduplication ═══")
     raw_data = research_engine.select_topic()
-    log.info(f"Selected Topic Source: {raw_data.get('title', raw_data.get('headline', 'Fallback'))}")
-
-    # 3. Editorial Thesis Generation
-    log.info("═══ Phase 2: Editorial Thesis Generation ═══")
-    raw_text = raw_data.get('raw_text', '')
-    if not raw_text:
-        log.warning("No raw text provided to Editorial Engine.")
-        log.warning("Gracefully skipping today's post because no novel content was found.")
+    if not raw_data or not raw_data.get('raw_text'):
+        log.warning("No novel content found today. Gracefully exiting.")
         sys.exit(0)
+
+    log.info(f"Selected Source: [{raw_data.get('source', 'Unknown')}] {raw_data.get('title', 'Untitled')}")
+
+    # 3. Phase 2: Editorial Thesis Generation
+    log.info("═══ Phase 2: Editorial Thesis Generation ═══")
     thesis = editorial_engine.generate_thesis(raw_data)
     if not thesis:
         log.error("Failed to generate thesis. Aborting.")
         sys.exit(1)
 
-    # 4. Hook Engineering
+    log.info(f"Thesis Headline: {thesis.get('headline')}")
+
+    # 4. Phase 3: Hook Engineering
     log.info("═══ Phase 3: Hook Engineering ═══")
     hooks = hook_engine.generate_hooks(thesis)
     best_hook = hook_engine.select_best_hook(hooks)
     if not best_hook:
-        log.error("Failed to generate hooks. Aborting.")
-        sys.exit(1)
+        best_hook = thesis.get('headline', '')
+    log.info(f"Selected Hook: {best_hook}")
 
-    # 5. Drafting & Review
+    # 5. Phase 4: Quality Review & Formatting
     log.info("═══ Phase 4: Quality Review & Formatting ═══")
     final_post_text = review_engine.draft_and_review(best_hook, thesis)
 
-    # 6. Image Generation
-    log.info("═══ Phase 5: Image Director (Documentary Style) ═══")
-    image_path = image_director.generate_image(thesis, out_path="state/latest_documentary.png")
+    # 6. Phase 5: Image Direction
+    log.info("═══ Phase 5: Image Direction ═══")
+    image_path = image_director.generate_image(thesis, out_path="state/latest_image.png")
 
-    # 7. Publishing
+    # 7. Phase 6: Publishing to LinkedIn
     log.info("═══ Phase 6: Publishing to LinkedIn ═══")
-    try:
-        pub_res = publish_to_linkedin(final_post_text, image_path)
-    except Exception as e:
-        log.error(f"Failed to publish to LinkedIn: {e}")
-        pub_res = {"status": "dry_run", "post_id": None, "post_url": None}
-        
-    with open("scratch/sample_post.txt", "w", encoding="utf-8") as f:
-        f.write("FINAL GENERATED POST TEXT:\n")
-        f.write("="*50 + "\n")
-        f.write(final_post_text + "\n")
-        f.write("="*50 + "\n")
+    pub_res = publish_to_linkedin(final_post_text, image_path)
 
-    # 8. Memory Logging
+    # 8. Phase 7: Memory State Update
     if pub_res.get("status") in ["published", "dry_run"]:
         memory_engine.save_history({
             "id": raw_data.get("id"),
@@ -91,8 +82,11 @@ def main():
             "post_id": pub_res.get("post_id"),
             "post_url": pub_res.get("post_url")
         })
+        log.info("State recorded in memory history.")
 
-    log.info("═══ Pipeline Execution Completed Successfully ═══")
+    log.info("══════════════════════════════════════════════════════════")
+    log.info("✅ EcoPulse Pipeline Execution Completed Successfully")
+    log.info("══════════════════════════════════════════════════════════")
 
 if __name__ == "__main__":
     main()
