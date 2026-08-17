@@ -14,6 +14,12 @@ TEXT_MODELS = [
     "gemini-2.0-flash"
 ]
 
+IMAGE_MODELS = [
+    "gemini-2.5-flash-image",
+    "gemini-3.1-flash-image",
+    "gemini-3-pro-image"
+]
+
 class GeminiClient:
     def __init__(self):
         self.api_key = (
@@ -80,27 +86,40 @@ class GeminiClient:
         if not self.api_key:
             return b""
 
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict?key={self.api_key}"
-        headers = {"Content-Type": "application/json"}
-        payload = {
-            "instances": [{"prompt": prompt}],
-            "parameters": {"sampleCount": 1, "aspectRatio": "16:9"}
-        }
+        for model in IMAGE_MODELS:
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={self.api_key}"
+            headers = {"Content-Type": "application/json"}
+            payload = {
+                "contents": [{
+                    "parts": [{"text": prompt}]
+                }],
+                "generationConfig": {
+                    "responseModalities": ["IMAGE"]
+                }
+            }
 
-        for attempt in range(1, max_retries + 1):
-            try:
-                resp = requests.post(url, headers=headers, json=payload, timeout=60)
-                if resp.status_code == 200:
-                    predictions = resp.json().get("predictions", [])
-                    if predictions and "bytesBase64Encoded" in predictions[0]:
-                        return base64.b64decode(predictions[0]["bytesBase64Encoded"])
-                elif resp.status_code in [429, 503]:
-                    time.sleep(attempt * 4)
-                else:
-                    log.warning(f"Imagen 3 returned HTTP {resp.status_code}")
-                    break
-            except Exception as e:
-                log.warning(f"Imagen 3 attempt {attempt} failed: {e}")
-                time.sleep(2)
+            for attempt in range(1, max_retries + 1):
+                try:
+                    resp = requests.post(url, headers=headers, json=payload, timeout=60)
+                    if resp.status_code == 200:
+                        data = resp.json()
+                        candidates = data.get("candidates", [])
+                        if candidates:
+                            parts = candidates[0].get("content", {}).get("parts", [])
+                            for p in parts:
+                                if "inlineData" in p:
+                                    b64_str = p["inlineData"].get("data", "")
+                                    if b64_str:
+                                        log.info(f"✅ Generated native image via Gemini {model}")
+                                        return base64.b64decode(b64_str)
+                    elif resp.status_code in [429, 503]:
+                        log.warning(f"Gemini image model {model} returned HTTP {resp.status_code} (attempt {attempt}). Retrying...")
+                        time.sleep(attempt * 3)
+                    else:
+                        log.warning(f"Gemini image model {model} returned HTTP {resp.status_code}")
+                        break
+                except Exception as e:
+                    log.warning(f"Gemini image attempt on {model} failed: {e}")
+                    time.sleep(2)
 
         return b""

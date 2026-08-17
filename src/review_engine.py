@@ -38,55 +38,48 @@ class ReviewEngine:
         return "".join(res)
 
     def draft_and_review(self, hook: str, thesis: dict) -> str:
-        prompt = (
-            f"You are a Senior Technology & Sustainability Analyst writing for senior engineering executives.\n"
-            f"Hook: {hook}\n"
-            f"Baseline: {thesis.get('metric_left')}\n"
-            f"Solution: {thesis.get('metric_right')}\n"
-            f"Context: {thesis.get('summary')}\n\n"
-            "Write a high-engagement LinkedIn post adhering to these strict rules:\n"
-            "1. Start directly with the given Hook.\n"
-            "2. Keep every paragraph 1 to 2 short sentences with blank line breaks.\n"
-            "3. Format structure:\n"
-            "   - Opening hook (1-2 sentences)\n"
-            "   - Core operational reality (1-2 sentences)\n"
-            "   - 🛠️ THE ENGINEERING PIVOT: OPERATIONAL BREAKDOWN\n"
-            "   - 1️⃣ Baseline Benchmark: (state baseline)\n"
-            "   - 2️⃣ Advanced Solution: (state advanced solution)\n"
-            "   - 3️⃣ Audit & Telemetry Assurance: (state compliance or measurement rigor)\n"
-            "   - 💡 KEY TAKEAWAY FOR INFRASTRUCTURE & ESG LEADERS\n"
-            "   - Key takeaway paragraph (1-2 sentences)\n"
-            "   - 🤔 Question for the network:\n"
-            "   - One sharp technical discussion question\n"
-            "   - Let's discuss below. 👇\n"
-            "   - #Sustainability #Engineering #CleanTech #ESG #Technology"
-        )
+        archetype = thesis.get("archetype", "deep_dive")
+        headline = thesis.get("headline", "")
+        core_insight = thesis.get("core_insight", "")
+        category = thesis.get("category", "TECH")
+
+        prompt = f"""You are a top-tier LinkedIn creator and technical analyst.
+Write an authentic, highly engaging LinkedIn post based on this story:
+
+Hook to start with: {hook}
+Archetype: {archetype}
+Topic Category: {category}
+Headline: {headline}
+Core Insight: {core_insight}
+
+WRITING & FORMATTING RULES:
+1. START with the exact Hook provided above.
+2. NO COOKIE-CUTTER TEMPLATES: Do NOT use hardcoded sections like 'THE ENGINEERING PIVOT' or force ESG terms unless the story is specifically about ESG.
+3. Structure organically based on the {archetype} archetype:
+   - Paragraphs must be strictly 1-2 short sentences with blank lines between them for maximum mobile readability.
+   - Use clean bullet points with relevant Unicode bold labels (e.g. 𝗧𝗵𝗲 𝗥𝗼𝗼𝘁 𝗖𝗮𝘂𝘀𝗲:, 𝗪𝗵𝗮𝘁 𝗪𝗲𝗻𝘁 𝗪𝗿𝗼𝗻𝗴:, 𝗧𝗵𝗲 𝗙𝗶𝘅:, 𝗞𝗲𝘆 𝗧𝗮𝗸𝗲𝗮𝘄𝗮𝘆:).
+   - Tell the story with technical authority, sharp contrast, and actionable clarity.
+   - End with one provocative, discussion-sparking technical question for the audience.
+   - Add 'Let\'s discuss below. 👇' followed by 3-5 relevant, specific hashtags (e.g. #SoftwareEngineering #DevOps #AI #CloudArchitecture).
+4. FORBIDDEN WORDS: NEVER use 'delve', 'testament', 'fast-paced world', 'paradigm shift', 'synergy', 'game-changer'.
+5. Output pure text.
+"""
 
         post = self.llm.generate_text(prompt, temperature=0.6)
         if not post or any(bad in post.lower() for bad in FORBIDDEN_PHRASES):
             return self._fallback_draft(hook, thesis)
             
-        return self._format_post(post)
+        return post
 
     def _fallback_draft(self, hook: str, thesis: dict) -> str:
-        post = (
+        return (
             f"{hook}\n\n"
-            f"Here is the engineering reality: {thesis.get('summary')}\n\n"
-            f"🛠️ THE ENGINEERING PIVOT: OPERATIONAL BREAKDOWN\n\n"
-            f"1️⃣ Baseline Benchmark: {thesis.get('metric_left')}.\n\n"
-            f"2️⃣ Advanced Solution: {thesis.get('metric_right')}.\n\n"
-            f"3️⃣ Compliance & Audit Assurance: Direct telemetry verification under global standards replaces unverified spend multipliers.\n\n"
-            f"💡 KEY TAKEAWAY FOR INFRASTRUCTURE & ESG LEADERS\n\n"
-            f"As operational density increases, legacy architectures hit physical ceilings. Future resilience belongs to closed-loop, audit-verified engineering.\n\n"
-            f"🤔 Question for the network:\n\n"
-            f"How is your organization evaluating direct telemetry versus spend-based factor estimates this quarter?\n\n"
+            f"{thesis.get('core_insight', '')}\n\n"
+            f"𝗪𝗵𝗮𝘁 𝗧𝗵𝗶𝘀 𝗠𝗲𝗮𝗻𝘀 𝗳𝗼𝗿 𝗘𝗻𝗴𝗶𝗻𝗲𝗲𝗿𝗶𝗻𝗴 𝗟𝗲𝗮𝗱𝗲𝗿𝘀:\n\n"
+            f"1. Visibility beyond shallow pings is essential for reliable operations.\n"
+            f"2. Real user-journey telemetry beats green component dashboards every time.\n\n"
+            f"🤔 Question for the network:\n"
+            f"How is your team ensuring your telemetry matches actual user experience rather than superficial uptime checks?\n\n"
             f"Let's discuss below. 👇\n\n"
-            f"#Sustainability #Engineering #CleanTech #ESG #EcoPulse"
+            f"#Engineering #Technology #SoftwareArchitecture #Systems"
         )
-        return self._format_post(post)
-
-    def _format_post(self, text: str) -> str:
-        text = text.replace("THE ENGINEERING PIVOT: OPERATIONAL BREAKDOWN", self.to_unicode_bold("THE ENGINEERING PIVOT: OPERATIONAL BREAKDOWN"))
-        text = text.replace("KEY TAKEAWAY FOR INFRASTRUCTURE & ESG LEADERS", self.to_unicode_bold("KEY TAKEAWAY FOR INFRASTRUCTURE & ESG LEADERS"))
-        text = text.replace("Question for the network:", self.to_unicode_bold("Question for the network:"))
-        return text

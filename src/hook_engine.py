@@ -8,28 +8,42 @@ class HookEngine:
         self.llm = gemini_client
 
     def generate_hooks(self, thesis: dict) -> list:
-        prompt = (
-            f"Headline: {thesis.get('headline')}\n"
-            f"Context: {thesis.get('summary')}\n"
-            f"Baseline: {thesis.get('metric_left')}\n"
-            f"Solution: {thesis.get('metric_right')}\n\n"
-            "Generate 3 distinct, high-impact 1-2 sentence LinkedIn opening hooks.\n"
-            "Rules:\n"
-            "1. Start directly with a shocking metric, friction point, or engineering contrast.\n"
-            "2. NEVER use generic clichés like 'In today's world', 'Everyone is talking about', 'Did you know?'.\n"
-            "3. No hashtags or emojis in the hook.\n"
-            "Return valid JSON with key 'hooks' containing a list of 3 strings."
-        )
+        archetype = thesis.get("archetype", "deep_dive")
+        headline = thesis.get("headline", "")
+        core_insight = thesis.get("core_insight", "")
+
+        prompt = f"""You are an elite LinkedIn copywriter.
+Write 3 viral, high-CTR opening hooks for a post about:
+Headline: {headline}
+Archetype: {archetype}
+Core Insight: {core_insight}
+
+HOOK RULES:
+1. Must be 1 to 2 punchy sentences (maximum 30 words).
+2. It will appear before the LinkedIn '...see more' fold, so it MUST trigger irresistible curiosity, challenge common wisdom, or present high-stakes tension.
+3. Tailor the hook to the archetype:
+   - 'teardown': Focus on an unexpected failure, hidden blind spot, or outage.
+   - 'contrarian': Challenge a widely accepted best practice or myth.
+   - 'deep_dive': Reveal a non-obvious technical breakthrough or mechanism.
+   - 'narrative': Start in the middle of a high-friction decision or discovery.
+   - 'cheat_sheet': Promise a concise, high-density tactical breakdown.
+4. NEVER start with 'In today's world', 'Did you know?', or 'I'm excited to share'.
+5. No emojis or hashtags in the hook lines.
+
+Return valid JSON with key 'hooks' containing a list of 3 distinct hook strings.
+"""
 
         try:
             res = self.llm.generate_text(prompt, temperature=0.7, json_mode=True)
             if res:
                 data = json.loads(res)
-                return data.get("hooks", [])
+                hooks = data.get("hooks", [])
+                if hooks:
+                    return hooks
         except Exception as e:
-            log.warning(f"Failed to generate hooks via LLM: {e}")
+            log.warning(f"Hook generation failed: {e}")
             
-        return [f"{thesis.get('headline', '')}: {thesis.get('summary', '')}"]
+        return [f"{headline}: {core_insight}"]
 
     def select_best_hook(self, hooks: list) -> str:
         if hooks:
