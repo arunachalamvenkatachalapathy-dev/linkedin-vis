@@ -78,5 +78,14 @@
     "post_id": "urn:li:share:7495117262933245953",
     "post_url": "https://www.linkedin.com/feed/update/urn:li:share:7495117262933245953/",
     "date": "2026-08-17T14:00:08.294193+00:00"
+  },
+  {
+    "id": "hn_49330632",
+    "source": "Hacker News Top Story",
+    "headline": "GitHub Outage: PR Access Unresponsive, Status Discrepancy",
+    "topic": "GitHub Service Disruption",
+    "post_id": "urn:li:share:7495120449433960448",
+    "post_url": "https://www.linkedin.com/feed/update/urn:li:share:7495120449433960448/",
+    "date": "2026-08-17T14:12:48.176912+00:00"
   }
 ]
