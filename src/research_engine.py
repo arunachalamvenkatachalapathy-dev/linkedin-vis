@@ -2,8 +2,10 @@ import os
 import json
 import logging
 import time
-from yt_dlp import YoutubeDL
-from youtube_transcript_api import YouTubeTranscriptApi
+import urllib.request
+import urllib.parse
+import xml.etree.ElementTree as ET
+import random
 
 log = logging.getLogger("ecopulse")
 
@@ -21,13 +23,13 @@ class ResearchEngine:
         self.llm = gemini_client
 
     def generate_niche_query(self) -> str:
-        """Uses Gemini to brainstorm a novel, highly specific long-tail search query."""
+        """Uses Gemini to brainstorm a novel, highly specific long-tail search query for scientific papers."""
         prompt = (
-            "You are a master researcher. I need to search YouTube for a highly technical, specific video.\n"
+            "You are a master scientific researcher. I need to search the ArXiv database for a highly technical, specific academic paper.\n"
             "Pick ONE of the following core themes at random:\n"
             f"{', '.join(CORE_THEMES)}\n\n"
             "Now, generate exactly ONE technical search query (2 to 4 words maximum) related to that theme. "
-            "It must be broad enough to have many educational lectures on YouTube, but still highly technical.\n"
+            "It must be academic and specific enough to find high-quality research papers.\n"
             "Example: 'scope 3 supply chain'\n"
             "Example: 'direct air capture efficiency'\n"
             "Example: 'grid scale battery storage'\n"
@@ -53,61 +55,60 @@ class ResearchEngine:
             "sustainable agriculture",
             "circular economy recycling"
         ]
-        import random
         return random.choice(FALLBACK_QUERIES)
 
-    def fetch_youtube_videos(self, query: str) -> list:
-        log.info(f"Searching YouTube with dynamic query: '{query}'")
-        ydl_opts = {
-            'quiet': True,
-            'extract_flat': True,
-            'force_generic_extractor': True
-            # Removed dateafter filter so we can always find great content based on the niche query
-        }
+    def fetch_arxiv_papers(self, query: str) -> list:
+        log.info(f"Searching ArXiv with dynamic query: '{query}'")
+        encoded_query = urllib.parse.quote(f'all:"{query}"')
+        url = f'http://export.arxiv.org/api/query?search_query={encoded_query}&start=0&max_results=50&sortBy=submittedDate&sortOrder=descending'
         
         items = []
         try:
-            with YoutubeDL(ydl_opts) as ydl:
-                result = ydl.extract_info(f"ytsearch50:{query}", download=False)
-                if 'entries' in result:
-                    for entry in result['entries']:
-                        if entry and entry.get('id'):
-                            items.append({
-                                'source': 'YouTube Transcript',
-                                'title': entry.get('title', ''),
-                                'url': entry.get('url', f"https://www.youtube.com/watch?v={entry['id']}"),
-                                'id': entry['id']
-                            })
+            req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+            with urllib.request.urlopen(req, timeout=30) as response:
+                data = response.read()
+                
+            root = ET.fromstring(data)
+            # ArXiv uses the atom namespace
+            ns = {'atom': 'http://www.w3.org/2005/Atom'}
+            
+            for entry in root.findall('atom:entry', ns):
+                title = entry.find('atom:title', ns).text.strip().replace('\n', ' ')
+                summary = entry.find('atom:summary', ns).text.strip().replace('\n', ' ')
+                link = entry.find('atom:id', ns).text.strip()
+                # Use the unique URL as the ID for deduplication
+                paper_id = link.split('/')[-1]
+                
+                items.append({
+                    'source': 'ArXiv Scientific Paper',
+                    'title': title,
+                    'url': link,
+                    'id': paper_id,
+                    'abstract': summary
+                })
         except Exception as e:
-            log.warning(f"YouTube search failed: {e}")
+            log.warning(f"ArXiv search failed: {e}")
             
         return items
 
-    def extract_youtube_transcript(self, video_id: str) -> str:
-        try:
-            transcript = YouTubeTranscriptApi.get_transcript(video_id)
-            return " ".join([t['text'] for t in transcript])
-        except Exception:
-            return ""
-
     def select_topic(self) -> dict:
-        """Brainstorms a query, searches YouTube, and returns the first fresh transcript."""
+        """Brainstorms a query, searches ArXiv, and returns the first novel paper."""
         for attempt in range(10):
             query = self.generate_niche_query()
-            youtube_candidates = self.fetch_youtube_videos(query)
+            arxiv_candidates = self.fetch_arxiv_papers(query)
             
-            for yt in youtube_candidates:
-                if not self.memory.is_duplicate(yt['id']):
-                    transcript = self.extract_youtube_transcript(yt['id'])
-                    if transcript and len(transcript) > 500:
-                        yt['raw_text'] = transcript[:10000]
-                        log.info(f"✅ Selected YouTube Video: {yt['title']}")
-                        return yt
+            for paper in arxiv_candidates:
+                if not self.memory.is_duplicate(paper['id']):
+                    abstract = paper.get('abstract', '')
+                    if abstract and len(abstract) > 300:
+                        paper['raw_text'] = abstract
+                        log.info(f"✅ Selected ArXiv Paper: {paper['title']}")
+                        return paper
                         
-            log.warning(f"Attempt {attempt + 1}: No valid transcripts found for '{query}'. Retrying in 5s...")
+            log.warning(f"Attempt {attempt + 1}: No valid papers found for '{query}'. Retrying in 5s...")
             time.sleep(5)
             
-        log.error("CRITICAL: Failed to find a valid transcript after 10 attempts. Using hardcoded emergency fallback.")
+        log.error("CRITICAL: Failed to find a valid paper after 10 attempts. Using hardcoded emergency fallback.")
         fallback = {
             "source": "Emergency Fallback Document",
             "title": "The Hidden Water Footprint of AI Data Centers",
