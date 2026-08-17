@@ -6,19 +6,21 @@ sys.path.append('.')
 
 from src.memory_engine import MemoryEngine
 from src.research_engine import ResearchEngine
+from src.gemini_client import GeminiClient
 
 def test():
     memory = MemoryEngine("state")
-    research = ResearchEngine(memory)
+    gemini = GeminiClient()
+    research = ResearchEngine(memory, gemini)
     
-    print("Testing YouTube Search & Transcript Extraction...")
+    print("Testing ArXiv Search & Abstract Extraction...")
     data = research.select_topic()
     
     print("\n--- Result ---")
     print(f"Title: {data.get('title')}")
-    print(f"Video ID: {data.get('video_id')}")
+    print(f"ID: {data.get('id')}")
     print(f"URL: {data.get('url')}")
-    print(f"Transcript Length: {len(data.get('transcript_text', ''))} characters")
+    print(f"Abstract Length: {len(data.get('raw_text', ''))} characters")
     
 if __name__ == '__main__':
     test()
