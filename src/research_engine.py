@@ -69,14 +69,12 @@ class ResearchEngine:
                 data = response.read()
                 
             root = ET.fromstring(data)
-            # ArXiv uses the atom namespace
             ns = {'atom': 'http://www.w3.org/2005/Atom'}
             
             for entry in root.findall('atom:entry', ns):
                 title = entry.find('atom:title', ns).text.strip().replace('\n', ' ')
                 summary = entry.find('atom:summary', ns).text.strip().replace('\n', ' ')
                 link = entry.find('atom:id', ns).text.strip()
-                # Use the unique URL as the ID for deduplication
                 paper_id = link.split('/')[-1]
                 
                 items.append({
@@ -91,24 +89,82 @@ class ResearchEngine:
             
         return items
 
+    def fetch_devto(self) -> list:
+        log.info("Searching Dev.to for trending tech articles")
+        url = "https://dev.to/api/articles?per_page=30&state=fresh"
+        items = []
+        try:
+            req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+            with urllib.request.urlopen(req, timeout=30) as response:
+                articles = json.loads(response.read())
+                for art in articles:
+                    items.append({
+                        'source': 'Dev.to Technical Article',
+                        'title': art.get('title'),
+                        'url': art.get('url'),
+                        'id': str(art.get('id')),
+                        'abstract': art.get('description', '')
+                    })
+        except Exception as e:
+            log.warning(f"Dev.to search failed: {e}")
+        return items
+
+    def fetch_wikipedia(self) -> list:
+        log.info("Fetching random Wikipedia conceptual summary")
+        url = "https://en.wikipedia.org/api/rest_v1/page/random/summary"
+        items = []
+        try:
+            req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+            with urllib.request.urlopen(req, timeout=30) as response:
+                data = json.loads(response.read())
+                items.append({
+                    'source': 'Wikipedia Encyclopedia',
+                    'title': data.get('title'),
+                    'url': data.get('content_urls', {}).get('desktop', {}).get('page', ''),
+                    'id': str(data.get('pageid')),
+                    'abstract': data.get('extract', '')
+                })
+        except Exception as e:
+            log.warning(f"Wikipedia search failed: {e}")
+        return items
+
     def select_topic(self) -> dict:
-        """Brainstorms a query, searches ArXiv, and returns the first novel paper."""
+        """Brainstorms a query, picks a random API source, and returns the first novel piece of content."""
+        sources = ['arxiv', 'devto', 'wikipedia']
+        
         for attempt in range(10):
-            query = self.generate_niche_query()
-            arxiv_candidates = self.fetch_arxiv_papers(query)
+            source_choice = random.choice(sources)
+            candidates = []
             
-            for paper in arxiv_candidates:
+            if source_choice == 'arxiv':
+                query = self.generate_niche_query()
+                candidates = self.fetch_arxiv_papers(query)
+            elif source_choice == 'devto':
+                candidates = self.fetch_devto()
+            elif source_choice == 'wikipedia':
+                candidates = self.fetch_wikipedia()
+                
+            for paper in candidates:
                 if not self.memory.is_duplicate(paper['id']):
                     abstract = paper.get('abstract', '')
-                    if abstract and len(abstract) > 300:
+                    if abstract and len(abstract) > 50:
+                        if source_choice == 'devto':
+                            try:
+                                req = urllib.request.Request(f"https://dev.to/api/articles/{paper['id']}", headers={'User-Agent': 'Mozilla/5.0'})
+                                with urllib.request.urlopen(req, timeout=10) as response:
+                                    full_art = json.loads(response.read())
+                                    abstract = full_art.get('body_markdown', abstract)[:5000]
+                            except:
+                                pass
+                        
                         paper['raw_text'] = abstract
-                        log.info(f"✅ Selected ArXiv Paper: {paper['title']}")
+                        log.info(f"✅ Selected Content [{source_choice}]: {paper['title']}")
                         return paper
                         
-            log.warning(f"Attempt {attempt + 1}: No valid papers found for '{query}'. Retrying in 5s...")
+            log.warning(f"Attempt {attempt + 1}: No valid new content found for {source_choice}. Retrying in 5s...")
             time.sleep(5)
             
-        log.error("CRITICAL: Failed to find a valid paper after 10 attempts. Using hardcoded emergency fallback.")
+        log.error("CRITICAL: Failed to find valid content after 10 attempts. Using hardcoded emergency fallback.")
         fallback = {
             "source": "Emergency Fallback Document",
             "title": "The Hidden Water Footprint of AI Data Centers",

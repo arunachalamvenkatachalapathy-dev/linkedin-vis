@@ -1,0 +1,507 @@
+﻿run-ecopulse	Set up job	∩╗┐2026-08-17T13:14:50.1759383Z Current runner version: '2.336.0'
+run-ecopulse	Set up job	2026-08-17T13:14:50.1784542Z ##[group]Runner Image Provisioner
+run-ecopulse	Set up job	2026-08-17T13:14:50.1785855Z Hosted Compute Agent
+run-ecopulse	Set up job	2026-08-17T13:14:50.1786507Z Version: 20260729.566
+run-ecopulse	Set up job	2026-08-17T13:14:50.1787186Z Commit: cf7153fe6e25b664e8693c24944bf2b00355d109
+run-ecopulse	Set up job	2026-08-17T13:14:50.1788030Z Build Date: 2026-07-29T19:17:02Z
+run-ecopulse	Set up job	2026-08-17T13:14:50.1788730Z Worker ID: {b664257d-0059-48f3-9993-92f6e6c559bb}
+run-ecopulse	Set up job	2026-08-17T13:14:50.1789852Z Azure Region: eastus
+run-ecopulse	Set up job	2026-08-17T13:14:50.1790516Z ##[endgroup]
+run-ecopulse	Set up job	2026-08-17T13:14:50.1792083Z ##[group]Operating System
+run-ecopulse	Set up job	2026-08-17T13:14:50.1792880Z Ubuntu
+run-ecopulse	Set up job	2026-08-17T13:14:50.1793453Z 24.04.4
+run-ecopulse	Set up job	2026-08-17T13:14:50.1794014Z LTS
+run-ecopulse	Set up job	2026-08-17T13:14:50.1794555Z ##[endgroup]
+run-ecopulse	Set up job	2026-08-17T13:14:50.1795331Z ##[group]Runner Image
+run-ecopulse	Set up job	2026-08-17T13:14:50.1796062Z Image: ubuntu-24.04
+run-ecopulse	Set up job	2026-08-17T13:14:50.1796685Z Version: 20260810.271.1
+run-ecopulse	Set up job	2026-08-17T13:14:50.1797803Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260810.271/images/ubuntu/Ubuntu2404-Readme.md
+run-ecopulse	Set up job	2026-08-17T13:14:50.1799566Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260810.271
+run-ecopulse	Set up job	2026-08-17T13:14:50.1800640Z ##[endgroup]
+run-ecopulse	Set up job	2026-08-17T13:14:50.1801808Z ##[group]GITHUB_TOKEN Permissions
+run-ecopulse	Set up job	2026-08-17T13:14:50.1803928Z Contents: write
+run-ecopulse	Set up job	2026-08-17T13:14:50.1804580Z Metadata: read
+run-ecopulse	Set up job	2026-08-17T13:14:50.1805853Z ##[endgroup]
+run-ecopulse	Set up job	2026-08-17T13:14:50.1808606Z Secret source: Actions
+run-ecopulse	Set up job	2026-08-17T13:14:50.1810038Z Prepare workflow directory
+run-ecopulse	Set up job	2026-08-17T13:14:50.2136114Z Prepare all required actions
+run-ecopulse	Set up job	2026-08-17T13:14:50.2183961Z Getting action download info
+run-ecopulse	Set up job	2026-08-17T13:14:50.4518922Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+run-ecopulse	Set up job	2026-08-17T13:14:50.5750585Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+run-ecopulse	Set up job	2026-08-17T13:14:50.7629258Z Complete job name: run-ecopulse
+run-ecopulse	Checkout repo	∩╗┐2026-08-17T13:14:50.8388692Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.8397658Z ##[group]Run actions/checkout@v4
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.8398432Z with:
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.8399084Z   repository: arunachalamvenkatachalapathy-dev/linkedin-insight-engine
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.8402910Z   token: ***
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.8403355Z   ssh-strict: true
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.8403803Z   ssh-user: git
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.8404264Z   persist-credentials: true
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.8404770Z   clean: true
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.8405498Z   sparse-checkout-cone-mode: true
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.8406063Z   fetch-depth: 1
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.8406512Z   fetch-tags: false
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.8406975Z   show-progress: true
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.8407448Z   lfs: false
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.8407922Z   submodules: false
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.8408387Z   set-safe-directory: true
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.8408915Z   allow-unsafe-pr-checkout: false
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.8409720Z ##[endgroup]
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9398103Z Syncing repository: arunachalamvenkatachalapathy-dev/linkedin-insight-engine
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9400825Z ##[group]Getting Git version info
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9401793Z Working directory is '/home/runner/work/linkedin-insight-engine/linkedin-insight-engine'
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9403586Z [command]/usr/bin/git version
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9450358Z git version 2.54.0
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9473623Z ##[endgroup]
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9488733Z Temporarily overriding HOME='/home/runner/work/_temp/eec91a3f-63d0-4dfc-aa02-2b21d85c12ea' before making global git config changes
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9494858Z Adding repository directory to the temporary git global config as a safe directory
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9496752Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/linkedin-insight-engine/linkedin-insight-engine
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9546578Z Deleting the contents of '/home/runner/work/linkedin-insight-engine/linkedin-insight-engine'
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9551443Z ##[group]Initializing the repository
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9559047Z [command]/usr/bin/git init /home/runner/work/linkedin-insight-engine/linkedin-insight-engine
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9669336Z hint: Using 'master' as the name for the initial branch. This default branch name
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9670637Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9671640Z hint: to use in all of your new repositories, which will suppress this warning,
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9672426Z hint: call:
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9672853Z hint:
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9673410Z hint: 	git config --global init.defaultBranch <name>
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9674093Z hint:
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9674701Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9676482Z hint: 'development'. The just-created branch can be renamed via this command:
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9677354Z hint:
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9677799Z hint: 	git branch -m <name>
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9678298Z hint:
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9679103Z hint: Disable this message with "git config set advice.defaultBranchName false"
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9683191Z Initialized empty Git repository in /home/runner/work/linkedin-insight-engine/linkedin-insight-engine/.git/
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9697092Z [command]/usr/bin/git remote add origin https://github.com/arunachalamvenkatachalapathy-dev/linkedin-insight-engine
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9743245Z ##[endgroup]
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9744292Z ##[group]Disabling automatic garbage collection
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9747287Z [command]/usr/bin/git config --local gc.auto 0
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9792678Z ##[endgroup]
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9793920Z ##[group]Setting up auth
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9796949Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+run-ecopulse	Checkout repo	2026-08-17T13:14:50.9833637Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+run-ecopulse	Checkout repo	2026-08-17T13:14:51.0186366Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+run-ecopulse	Checkout repo	2026-08-17T13:14:51.0224550Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+run-ecopulse	Checkout repo	2026-08-17T13:14:51.0494284Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+run-ecopulse	Checkout repo	2026-08-17T13:14:51.0531827Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+run-ecopulse	Checkout repo	2026-08-17T13:14:51.0756230Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+run-ecopulse	Checkout repo	2026-08-17T13:14:51.0795670Z ##[endgroup]
+run-ecopulse	Checkout repo	2026-08-17T13:14:51.0796531Z ##[group]Fetching the repository
+run-ecopulse	Checkout repo	2026-08-17T13:14:51.0805345Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +eb568a03f5a70fdc0f7963088a10cef68c3444c5:refs/remotes/origin/master
+run-ecopulse	Checkout repo	2026-08-17T13:14:51.3420258Z From https://github.com/arunachalamvenkatachalapathy-dev/linkedin-insight-engine
+run-ecopulse	Checkout repo	2026-08-17T13:14:51.3422380Z  * [new ref]         eb568a03f5a70fdc0f7963088a10cef68c3444c5 -> origin/master
+run-ecopulse	Checkout repo	2026-08-17T13:14:51.3456905Z ##[endgroup]
+run-ecopulse	Checkout repo	2026-08-17T13:14:51.3458158Z ##[group]Determining the checkout info
+run-ecopulse	Checkout repo	2026-08-17T13:14:51.3459610Z ##[endgroup]
+run-ecopulse	Checkout repo	2026-08-17T13:14:51.3465924Z [command]/usr/bin/git sparse-checkout disable
+run-ecopulse	Checkout repo	2026-08-17T13:14:51.3512872Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+run-ecopulse	Checkout repo	2026-08-17T13:14:51.3545454Z ##[group]Checking out the ref
+run-ecopulse	Checkout repo	2026-08-17T13:14:51.3549294Z [command]/usr/bin/git checkout --progress --force -B master refs/remotes/origin/master
+run-ecopulse	Checkout repo	2026-08-17T13:14:51.3623034Z Reset branch 'master'
+run-ecopulse	Checkout repo	2026-08-17T13:14:51.3626419Z branch 'master' set up to track 'origin/master'.
+run-ecopulse	Checkout repo	2026-08-17T13:14:51.3631623Z ##[endgroup]
+run-ecopulse	Checkout repo	2026-08-17T13:14:51.3673766Z [command]/usr/bin/git log -1 --format=%H
+run-ecopulse	Checkout repo	2026-08-17T13:14:51.3701468Z eb568a03f5a70fdc0f7963088a10cef68c3444c5
+run-ecopulse	Set up Python	∩╗┐2026-08-17T13:14:51.3982177Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+run-ecopulse	Set up Python	2026-08-17T13:14:51.3985313Z ##[group]Run actions/setup-python@v5
+run-ecopulse	Set up Python	2026-08-17T13:14:51.3985891Z with:
+run-ecopulse	Set up Python	2026-08-17T13:14:51.3986314Z   python-version: 3.11
+run-ecopulse	Set up Python	2026-08-17T13:14:51.3986800Z   check-latest: false
+run-ecopulse	Set up Python	2026-08-17T13:14:51.3990304Z   token: ***
+run-ecopulse	Set up Python	2026-08-17T13:14:51.3990758Z   update-environment: true
+run-ecopulse	Set up Python	2026-08-17T13:14:51.3991275Z   allow-prereleases: false
+run-ecopulse	Set up Python	2026-08-17T13:14:51.3991763Z   freethreaded: false
+run-ecopulse	Set up Python	2026-08-17T13:14:51.3992217Z ##[endgroup]
+run-ecopulse	Set up Python	2026-08-17T13:14:51.5275501Z ##[group]Installed versions
+run-ecopulse	Set up Python	2026-08-17T13:14:51.5365512Z (node:2120) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+run-ecopulse	Set up Python	2026-08-17T13:14:51.5367717Z (Use `node --trace-deprecation ...` to show where the warning was created)
+run-ecopulse	Set up Python	2026-08-17T13:14:51.5369112Z Successfully set up CPython (3.11.15)
+run-ecopulse	Set up Python	2026-08-17T13:14:51.5370738Z ##[endgroup]
+run-ecopulse	Install dependencies	∩╗┐2026-08-17T13:14:51.5529716Z ##[group]Run pip install -r requirements.txt
+run-ecopulse	Install dependencies	2026-08-17T13:14:51.5530494Z ^[[36;1mpip install -r requirements.txt^[[0m
+run-ecopulse	Install dependencies	2026-08-17T13:14:51.5531211Z ^[[36;1mpython -m playwright install chromium --with-deps^[[0m
+run-ecopulse	Install dependencies	2026-08-17T13:14:51.5580815Z shell: /usr/bin/bash -e {0}
+run-ecopulse	Install dependencies	2026-08-17T13:14:51.5661351Z env:
+run-ecopulse	Install dependencies	2026-08-17T13:14:51.5662854Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.15/x64
+run-ecopulse	Install dependencies	2026-08-17T13:14:51.5664538Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.15/x64/lib/pkgconfig
+run-ecopulse	Install dependencies	2026-08-17T13:14:51.5666168Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+run-ecopulse	Install dependencies	2026-08-17T13:14:51.5667374Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+run-ecopulse	Install dependencies	2026-08-17T13:14:51.5668614Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+run-ecopulse	Install dependencies	2026-08-17T13:14:51.5669834Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.15/x64/lib
+run-ecopulse	Install dependencies	2026-08-17T13:14:51.5670933Z ##[endgroup]
+run-ecopulse	Install dependencies	2026-08-17T13:14:52.3511452Z Collecting requests>=2.31.0 (from -r requirements.txt (line 1))
+run-ecopulse	Install dependencies	2026-08-17T13:14:52.3989465Z   Downloading requests-2.34.2-py3-none-any.whl.metadata (4.8 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:52.5616318Z Collecting pillow>=10.0.0 (from -r requirements.txt (line 2))
+run-ecopulse	Install dependencies	2026-08-17T13:14:52.5658012Z   Downloading pillow-12.3.0-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (9.1 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:52.6016823Z Collecting playwright>=1.40.0 (from -r requirements.txt (line 3))
+run-ecopulse	Install dependencies	2026-08-17T13:14:52.6058357Z   Downloading playwright-1.62.0-py3-none-manylinux1_x86_64.whl.metadata (3.3 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:52.6198952Z Collecting jinja2>=3.1.0 (from -r requirements.txt (line 4))
+run-ecopulse	Install dependencies	2026-08-17T13:14:52.6235476Z   Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:52.6378466Z Collecting python-dotenv>=1.0.0 (from -r requirements.txt (line 5))
+run-ecopulse	Install dependencies	2026-08-17T13:14:52.6411828Z   Downloading python_dotenv-1.2.3-py3-none-any.whl.metadata (29 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:52.6607876Z Collecting httpx>=0.28.0 (from -r requirements.txt (line 6))
+run-ecopulse	Install dependencies	2026-08-17T13:14:52.6642189Z   Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:52.6783561Z Collecting youtube-transcript-api>=0.6.2 (from -r requirements.txt (line 7))
+run-ecopulse	Install dependencies	2026-08-17T13:14:52.6820432Z   Downloading youtube_transcript_api-1.2.4-py3-none-any.whl.metadata (24 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:52.7467640Z Collecting yt-dlp>=2024.0.0 (from -r requirements.txt (line 8))
+run-ecopulse	Install dependencies	2026-08-17T13:14:52.7504827Z   Downloading yt_dlp-2026.7.4-py3-none-any.whl.metadata (183 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:52.8711721Z Collecting charset_normalizer<4,>=2 (from requests>=2.31.0->-r requirements.txt (line 1))
+run-ecopulse	Install dependencies	2026-08-17T13:14:52.8754267Z   Downloading charset_normalizer-3.5.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (45 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:52.8908599Z Collecting idna<4,>=2.5 (from requests>=2.31.0->-r requirements.txt (line 1))
+run-ecopulse	Install dependencies	2026-08-17T13:14:52.8948416Z   Downloading idna-3.18-py3-none-any.whl.metadata (6.1 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:52.9142094Z Collecting urllib3<3,>=1.26 (from requests>=2.31.0->-r requirements.txt (line 1))
+run-ecopulse	Install dependencies	2026-08-17T13:14:52.9191591Z   Downloading urllib3-2.7.0-py3-none-any.whl.metadata (6.9 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:52.9357149Z Collecting certifi>=2023.5.7 (from requests>=2.31.0->-r requirements.txt (line 1))
+run-ecopulse	Install dependencies	2026-08-17T13:14:52.9393762Z   Downloading certifi-2026.7.22-py3-none-any.whl.metadata (2.5 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:52.9537511Z Collecting pyee<14,>=13 (from playwright>=1.40.0->-r requirements.txt (line 3))
+run-ecopulse	Install dependencies	2026-08-17T13:14:52.9579591Z   Downloading pyee-13.0.1-py3-none-any.whl.metadata (3.0 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.0994320Z Collecting greenlet<4.0.0,>=3.1.1 (from playwright>=1.40.0->-r requirements.txt (line 3))
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.1032316Z   Downloading greenlet-3.5.5-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (3.8 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.1194111Z Collecting typing-extensions (from pyee<14,>=13->playwright>=1.40.0->-r requirements.txt (line 3))
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.1234233Z   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.1685332Z Collecting MarkupSafe>=2.0 (from jinja2>=3.1.0->-r requirements.txt (line 4))
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.1723247Z   Downloading markupsafe-3.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.1896924Z Collecting anyio (from httpx>=0.28.0->-r requirements.txt (line 6))
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.1930890Z   Downloading anyio-4.14.2-py3-none-any.whl.metadata (4.6 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.2076279Z Collecting httpcore==1.* (from httpx>=0.28.0->-r requirements.txt (line 6))
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.2111328Z   Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.2237475Z Collecting h11>=0.16 (from httpcore==1.*->httpx>=0.28.0->-r requirements.txt (line 6))
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.2271221Z   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.2384954Z Collecting defusedxml<0.8.0,>=0.7.1 (from youtube-transcript-api>=0.6.2->-r requirements.txt (line 7))
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.2426097Z   Downloading defusedxml-0.7.1-py2.py3-none-any.whl.metadata (32 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.2558486Z Downloading requests-2.34.2-py3-none-any.whl (73 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.2616044Z Downloading charset_normalizer-3.5.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (262 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.2691615Z Downloading idna-3.18-py3-none-any.whl (65 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.2749670Z Downloading urllib3-2.7.0-py3-none-any.whl (131 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.2810453Z Downloading pillow-12.3.0-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (6.9 MB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.3115522Z    ΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöü 6.9/6.9 MB 239.8 MB/s  0:00:00
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.3154690Z Downloading playwright-1.62.0-py3-none-manylinux1_x86_64.whl (47.7 MB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.4631459Z    ΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöü 47.7/47.7 MB 327.4 MB/s  0:00:00
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.4685196Z Downloading greenlet-3.5.5-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (624 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.4762584Z    ΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöü 624.6/624.6 kB 73.1 MB/s  0:00:00
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.4801331Z Downloading pyee-13.0.1-py3-none-any.whl (15 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.4864761Z Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.4923466Z Downloading python_dotenv-1.2.3-py3-none-any.whl (22 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.4981376Z Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.5043801Z Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.5111782Z Downloading youtube_transcript_api-1.2.4-py3-none-any.whl (485 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.5183067Z Downloading defusedxml-0.7.1-py2.py3-none-any.whl (25 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.5254568Z Downloading yt_dlp-2026.7.4-py3-none-any.whl (3.2 MB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.5384549Z    ΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöü 3.2/3.2 MB 277.1 MB/s  0:00:00
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.5425906Z Downloading certifi-2026.7.22-py3-none-any.whl (136 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.5486701Z Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.5543867Z Downloading markupsafe-3.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (22 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.5599866Z Downloading anyio-4.14.2-py3-none-any.whl (125 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.5660674Z Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+run-ecopulse	Install dependencies	2026-08-17T13:14:53.7342409Z Installing collected packages: yt-dlp, urllib3, typing-extensions, python-dotenv, pillow, MarkupSafe, idna, h11, greenlet, defusedxml, charset_normalizer, certifi, requests, pyee, jinja2, httpcore, anyio, youtube-transcript-api, playwright, httpx
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.0533872Z 
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.0549988Z Successfully installed MarkupSafe-3.0.3 anyio-4.14.2 certifi-2026.7.22 charset_normalizer-3.5.1 defusedxml-0.7.1 greenlet-3.5.5 h11-0.16.0 httpcore-1.0.9 httpx-0.28.1 idna-3.18 jinja2-3.1.6 pillow-12.3.0 playwright-1.62.0 pyee-13.0.1 python-dotenv-1.2.3 requests-2.34.2 typing-extensions-4.16.0 urllib3-2.7.0 youtube-transcript-api-1.2.4 yt-dlp-2026.7.4
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.4692452Z Installing dependencies...
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.4760090Z Switching to root user to install dependencies...
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.5549489Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.5830779Z Get:6 https://packages.microsoft.com/repos/azure-cli noble InRelease [3564 B]
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.5927378Z Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.5928907Z Get:7 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.5944673Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.6028598Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.6098448Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.6200375Z Get:8 https://dl.google.com/linux/chrome-stable/deb stable InRelease [2548 B]
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.6651761Z Get:9 https://packages.microsoft.com/repos/azure-cli noble/main amd64 Packages [2452 B]
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.7647096Z Get:10 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [326 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.7745849Z Get:11 https://packages.microsoft.com/ubuntu/24.04/prod noble/main armhf Packages [12.4 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.7791777Z Get:12 https://packages.microsoft.com/ubuntu/24.04/prod noble/main arm64 Packages [285 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.8121097Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1208 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.8225345Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble-updates/main Translation-en [284 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.8243734Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Components [181 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.8277914Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1683 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.8355854Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe Translation-en [336 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.8402812Z Get:18 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Components [388 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.8417044Z Get:19 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [1452 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.8526480Z Get:20 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en [330 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.8562957Z Get:21 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse Translation-en [12.6 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.8575824Z Get:22 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Components [940 B]
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.9260202Z Get:23 http://azure.archive.ubuntu.com/ubuntu noble-backports/main amd64 Components [5744 B]
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.9269264Z Get:24 http://azure.archive.ubuntu.com/ubuntu noble-backports/universe amd64 Components [12.6 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.9445825Z Get:25 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Packages [934 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.9489502Z Get:26 http://azure.archive.ubuntu.com/ubuntu noble-security/main Translation-en [202 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.9512569Z Get:27 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Components [46.3 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.9550401Z Get:28 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1201 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.9621442Z Get:29 http://azure.archive.ubuntu.com/ubuntu noble-security/universe Translation-en [240 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.9645256Z Get:30 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Components [76.2 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.9662822Z Get:31 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [1330 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.9795982Z Get:32 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted Translation-en [304 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:14:57.9896448Z Get:33 http://azure.archive.ubuntu.com/ubuntu noble-security/multiverse Translation-en [10.9 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:14:58.0395480Z Get:34 https://dl.google.com/linux/chrome-stable/deb stable/main amd64 Packages [1416 B]
+run-ecopulse	Install dependencies	2026-08-17T13:15:01.8563012Z Fetched 11.3 MB in 1s (8438 kB/s)
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.5812318Z Reading package lists...
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.6058662Z Reading package lists...
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.7666144Z Building dependency tree...
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.7672796Z Reading state information...
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9007323Z libasound2t64 is already the newest version (1.2.11-1ubuntu0.3).
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9008451Z libasound2t64 set to manually installed.
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9009304Z libatk-bridge2.0-0t64 is already the newest version (2.52.0-1build1).
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9010199Z libatk-bridge2.0-0t64 set to manually installed.
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9010907Z libatk1.0-0t64 is already the newest version (2.52.0-1build1).
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9011533Z libatk1.0-0t64 set to manually installed.
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9012014Z libatspi2.0-0t64 is already the newest version (2.52.0-1build1).
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9012477Z libatspi2.0-0t64 set to manually installed.
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9012892Z libcairo2 is already the newest version (1.18.0-3build1).
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9013324Z libcairo2 set to manually installed.
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9013740Z libcups2t64 is already the newest version (2.4.7-1.2ubuntu7.14).
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9014179Z libcups2t64 set to manually installed.
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9014592Z libdbus-1-3 is already the newest version (1.14.10-4ubuntu4.1).
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9015319Z libdbus-1-3 set to manually installed.
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9015766Z libdrm2 is already the newest version (2.4.125-1ubuntu0.1~24.04.2).
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9016217Z libdrm2 set to manually installed.
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9016618Z libgbm1 is already the newest version (25.2.8-0ubuntu0.24.04.2).
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9017045Z libgbm1 set to manually installed.
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9017466Z libglib2.0-0t64 is already the newest version (2.80.0-6ubuntu3.8).
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9017919Z libglib2.0-0t64 set to manually installed.
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9018334Z libnspr4 is already the newest version (2:4.35-1.1build1).
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9018745Z libnspr4 set to manually installed.
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9019130Z libnss3 is already the newest version (2:3.98-1ubuntu0.2).
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9019536Z libnss3 set to manually installed.
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9019937Z libpango-1.0-0 is already the newest version (1.52.1+ds-1build1).
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9020380Z libpango-1.0-0 set to manually installed.
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9020771Z libx11-6 is already the newest version (2:1.8.7-1build1).
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9021177Z libx11-6 set to manually installed.
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9021537Z libxcb1 is already the newest version (1.15-1ubuntu2).
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9021922Z libxcb1 set to manually installed.
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9022268Z libxcomposite1 is already the newest version (1:0.4.5-1build3).
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9023000Z libxcomposite1 set to manually installed.
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9023342Z libxdamage1 is already the newest version (1:1.1.6-1build1).
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9023680Z libxdamage1 set to manually installed.
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9023993Z libxext6 is already the newest version (2:1.3.4-1build2).
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9024317Z libxext6 set to manually installed.
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9024636Z libxfixes3 is already the newest version (1:6.0.0-2build1).
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9025103Z libxfixes3 set to manually installed.
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9025432Z libxkbcommon0 is already the newest version (1.6.0-1build1).
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9025778Z libxkbcommon0 set to manually installed.
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9026105Z libxrandr2 is already the newest version (2:1.5.2-2build1).
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9026443Z libxrandr2 set to manually installed.
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9026757Z xvfb is already the newest version (2:21.1.12-1ubuntu1.6).
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9027204Z fonts-noto-color-emoji is already the newest version (2.047-0ubuntu0.24.04.1).
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9027697Z libfontconfig1 is already the newest version (2.15.0-1.1ubuntu2).
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9028071Z libfontconfig1 set to manually installed.
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9028431Z libfreetype6 is already the newest version (2.13.2+dfsg-1ubuntu0.1).
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9029017Z libfreetype6 set to manually installed.
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9029347Z fonts-liberation is already the newest version (1:2.1.5-3).
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9029697Z fonts-liberation set to manually installed.
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9030036Z The following additional packages will be installed:
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9030363Z   xfonts-encodings xfonts-utils
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9030621Z Recommended packages:
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9030861Z   fonts-ipafont-mincho fonts-tlwg-loma
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9189323Z The following NEW packages will be installed:
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9190157Z   fonts-freefont-ttf fonts-ipafont-gothic fonts-tlwg-loma-otf fonts-unifont
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9197048Z   fonts-wqy-zenhei xfonts-cyrillic xfonts-encodings xfonts-scalable
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9197740Z   xfonts-utils
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9374097Z 0 upgraded, 9 newly installed, 0 to remove and 12 not upgraded.
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9374777Z Need to get 21.1 MB of archives.
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9375477Z After this operation, 79.5 MB of additional disk space will be used.
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9375954Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9616388Z Get:2 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-ipafont-gothic all 00303-21ubuntu1 [3513 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:15:02.9982725Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 fonts-freefont-ttf all 20211204+svn4273-2 [5641 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:15:03.0536193Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-tlwg-loma-otf all 1:0.7.3-1 [107 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:15:03.0613403Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-unifont all 1:15.1.01-1build1 [2993 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:15:03.0945203Z Get:6 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-wqy-zenhei all 0.9.45-8 [7472 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:15:03.1676134Z Get:7 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-encodings all 1:1.0.5-0ubuntu2 [578 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:15:03.1797004Z Get:8 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-utils amd64 1:7.7+6build3 [94.4 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:15:03.1873375Z Get:9 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 xfonts-cyrillic all 1:1.0.5+nmu1 [384 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:15:03.1976768Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-scalable all 1:1.0.3-1.3 [304 kB]
+run-ecopulse	Install dependencies	2026-08-17T13:15:03.4706406Z Fetched 21.1 MB in 0s (77.2 MB/s)
+run-ecopulse	Install dependencies	2026-08-17T13:15:03.6106263Z Selecting previously unselected package fonts-ipafont-gothic.
+run-ecopulse	Install dependencies	2026-08-17T13:15:03.8561273Z (Reading database ... 
+run-ecopulse	Install dependencies	2026-08-17T13:15:03.8561692Z (Reading database ... 5%
+run-ecopulse	Install dependencies	2026-08-17T13:15:03.8561960Z (Reading database ... 10%
+run-ecopulse	Install dependencies	2026-08-17T13:15:03.8562211Z (Reading database ... 15%
+run-ecopulse	Install dependencies	2026-08-17T13:15:03.8562687Z (Reading database ... 20%
+run-ecopulse	Install dependencies	2026-08-17T13:15:03.8562911Z (Reading database ... 25%
+run-ecopulse	Install dependencies	2026-08-17T13:15:03.8563530Z (Reading database ... 30%
+run-ecopulse	Install dependencies	2026-08-17T13:15:03.8563753Z (Reading database ... 35%
+run-ecopulse	Install dependencies	2026-08-17T13:15:03.8564248Z (Reading database ... 40%
+run-ecopulse	Install dependencies	2026-08-17T13:15:03.8564677Z (Reading database ... 45%
+run-ecopulse	Install dependencies	2026-08-17T13:15:03.8565348Z (Reading database ... 50%
+run-ecopulse	Install dependencies	2026-08-17T13:15:03.8586903Z (Reading database ... 55%
+run-ecopulse	Install dependencies	2026-08-17T13:15:04.6082680Z (Reading database ... 60%
+run-ecopulse	Install dependencies	2026-08-17T13:15:04.8126398Z (Reading database ... 65%
+run-ecopulse	Install dependencies	2026-08-17T13:15:05.0143683Z (Reading database ... 70%
+run-ecopulse	Install dependencies	2026-08-17T13:15:05.2087446Z (Reading database ... 75%
+run-ecopulse	Install dependencies	2026-08-17T13:15:05.3634512Z (Reading database ... 80%
+run-ecopulse	Install dependencies	2026-08-17T13:15:05.5098090Z (Reading database ... 85%
+run-ecopulse	Install dependencies	2026-08-17T13:15:05.7165751Z (Reading database ... 90%
+run-ecopulse	Install dependencies	2026-08-17T13:15:05.8695400Z (Reading database ... 95%
+run-ecopulse	Install dependencies	2026-08-17T13:15:05.8696252Z (Reading database ... 100%
+run-ecopulse	Install dependencies	2026-08-17T13:15:05.8697052Z (Reading database ... 203139 files and directories currently installed.)
+run-ecopulse	Install dependencies	2026-08-17T13:15:05.8737357Z Preparing to unpack .../0-fonts-ipafont-gothic_00303-21ubuntu1_all.deb ...
+run-ecopulse	Install dependencies	2026-08-17T13:15:05.8847597Z Unpacking fonts-ipafont-gothic (00303-21ubuntu1) ...
+run-ecopulse	Install dependencies	2026-08-17T13:15:06.1099433Z Selecting previously unselected package fonts-freefont-ttf.
+run-ecopulse	Install dependencies	2026-08-17T13:15:06.1225881Z Preparing to unpack .../1-fonts-freefont-ttf_20211204+svn4273-2_all.deb ...
+run-ecopulse	Install dependencies	2026-08-17T13:15:06.1236090Z Unpacking fonts-freefont-ttf (20211204+svn4273-2) ...
+run-ecopulse	Install dependencies	2026-08-17T13:15:06.2046633Z Selecting previously unselected package fonts-tlwg-loma-otf.
+run-ecopulse	Install dependencies	2026-08-17T13:15:06.2174295Z Preparing to unpack .../2-fonts-tlwg-loma-otf_1%3a0.7.3-1_all.deb ...
+run-ecopulse	Install dependencies	2026-08-17T13:15:06.2183358Z Unpacking fonts-tlwg-loma-otf (1:0.7.3-1) ...
+run-ecopulse	Install dependencies	2026-08-17T13:15:06.2389866Z Selecting previously unselected package fonts-unifont.
+run-ecopulse	Install dependencies	2026-08-17T13:15:06.2517019Z Preparing to unpack .../3-fonts-unifont_1%3a15.1.01-1build1_all.deb ...
+run-ecopulse	Install dependencies	2026-08-17T13:15:06.2526231Z Unpacking fonts-unifont (1:15.1.01-1build1) ...
+run-ecopulse	Install dependencies	2026-08-17T13:15:06.3559172Z Selecting previously unselected package fonts-wqy-zenhei.
+run-ecopulse	Install dependencies	2026-08-17T13:15:06.3687361Z Preparing to unpack .../4-fonts-wqy-zenhei_0.9.45-8_all.deb ...
+run-ecopulse	Install dependencies	2026-08-17T13:15:06.3785969Z Unpacking fonts-wqy-zenhei (0.9.45-8) ...
+run-ecopulse	Install dependencies	2026-08-17T13:15:06.8317526Z Selecting previously unselected package xfonts-encodings.
+run-ecopulse	Install dependencies	2026-08-17T13:15:06.8445978Z Preparing to unpack .../5-xfonts-encodings_1%3a1.0.5-0ubuntu2_all.deb ...
+run-ecopulse	Install dependencies	2026-08-17T13:15:06.8454106Z Unpacking xfonts-encodings (1:1.0.5-0ubuntu2) ...
+run-ecopulse	Install dependencies	2026-08-17T13:15:06.8738515Z Selecting previously unselected package xfonts-utils.
+run-ecopulse	Install dependencies	2026-08-17T13:15:06.8866860Z Preparing to unpack .../6-xfonts-utils_1%3a7.7+6build3_amd64.deb ...
+run-ecopulse	Install dependencies	2026-08-17T13:15:06.8877216Z Unpacking xfonts-utils (1:7.7+6build3) ...
+run-ecopulse	Install dependencies	2026-08-17T13:15:06.9232216Z Selecting previously unselected package xfonts-cyrillic.
+run-ecopulse	Install dependencies	2026-08-17T13:15:06.9362277Z Preparing to unpack .../7-xfonts-cyrillic_1%3a1.0.5+nmu1_all.deb ...
+run-ecopulse	Install dependencies	2026-08-17T13:15:06.9372292Z Unpacking xfonts-cyrillic (1:1.0.5+nmu1) ...
+run-ecopulse	Install dependencies	2026-08-17T13:15:06.9710433Z Selecting previously unselected package xfonts-scalable.
+run-ecopulse	Install dependencies	2026-08-17T13:15:06.9839367Z Preparing to unpack .../8-xfonts-scalable_1%3a1.0.3-1.3_all.deb ...
+run-ecopulse	Install dependencies	2026-08-17T13:15:06.9850547Z Unpacking xfonts-scalable (1:1.0.3-1.3) ...
+run-ecopulse	Install dependencies	2026-08-17T13:15:07.0247777Z Setting up fonts-wqy-zenhei (0.9.45-8) ...
+run-ecopulse	Install dependencies	2026-08-17T13:15:07.0367055Z Setting up fonts-freefont-ttf (20211204+svn4273-2) ...
+run-ecopulse	Install dependencies	2026-08-17T13:15:07.0386460Z Setting up fonts-tlwg-loma-otf (1:0.7.3-1) ...
+run-ecopulse	Install dependencies	2026-08-17T13:15:07.0409078Z Setting up xfonts-encodings (1:1.0.5-0ubuntu2) ...
+run-ecopulse	Install dependencies	2026-08-17T13:15:07.0430186Z Setting up fonts-ipafont-gothic (00303-21ubuntu1) ...
+run-ecopulse	Install dependencies	2026-08-17T13:15:07.0495620Z update-alternatives: using /usr/share/fonts/opentype/ipafont-gothic/ipag.ttf to provide /usr/share/fonts/truetype/fonts-japanese-gothic.ttf (fonts-japanese-gothic.ttf) in auto mode
+run-ecopulse	Install dependencies	2026-08-17T13:15:07.0511206Z Setting up fonts-unifont (1:15.1.01-1build1) ...
+run-ecopulse	Install dependencies	2026-08-17T13:15:07.0529451Z Setting up xfonts-utils (1:7.7+6build3) ...
+run-ecopulse	Install dependencies	2026-08-17T13:15:07.0567601Z Setting up xfonts-cyrillic (1:1.0.5+nmu1) ...
+run-ecopulse	Install dependencies	2026-08-17T13:15:07.0853289Z Setting up xfonts-scalable (1:1.0.3-1.3) ...
+run-ecopulse	Install dependencies	2026-08-17T13:15:07.1124334Z Processing triggers for man-db (2.12.0-4build2) ...
+run-ecopulse	Install dependencies	2026-08-17T13:15:07.1145993Z Not building database; man-db/auto-update is not 'true'.
+run-ecopulse	Install dependencies	2026-08-17T13:15:07.1159579Z Processing triggers for fontconfig (2.15.0-1.1ubuntu2) ...
+run-ecopulse	Install dependencies	2026-08-17T13:15:07.8036912Z 
+run-ecopulse	Install dependencies	2026-08-17T13:15:07.8037526Z Running kernel seems to be up-to-date.
+run-ecopulse	Install dependencies	2026-08-17T13:15:07.8037863Z 
+run-ecopulse	Install dependencies	2026-08-17T13:15:07.8038016Z No services need to be restarted.
+run-ecopulse	Install dependencies	2026-08-17T13:15:07.8038270Z 
+run-ecopulse	Install dependencies	2026-08-17T13:15:07.8038426Z No containers need to be restarted.
+run-ecopulse	Install dependencies	2026-08-17T13:15:07.8038675Z 
+run-ecopulse	Install dependencies	2026-08-17T13:15:07.8038849Z No user sessions are running outdated binaries.
+run-ecopulse	Install dependencies	2026-08-17T13:15:07.8039193Z 
+run-ecopulse	Install dependencies	2026-08-17T13:15:07.8039476Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+run-ecopulse	Install dependencies	2026-08-17T13:15:08.7668506Z Downloading Chrome for Testing 151.0.7922.34 (playwright chromium v1234) from https://cdn.playwright.dev/builds/cft/151.0.7922.34/linux64/chrome-linux64.zip
+run-ecopulse	Install dependencies	2026-08-17T13:15:09.7466996Z |                                                                                |   0% of 184.3 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:10.1397149Z |ΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûá                                                                        |  10% of 184.3 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:10.2516532Z |ΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûá                                                                |  20% of 184.3 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:10.3599068Z |ΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûá                                                        |  30% of 184.3 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:10.4534093Z |ΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûá                                                |  40% of 184.3 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:10.5666680Z |ΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûá                                        |  50% of 184.3 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:10.6433925Z |ΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûá                                |  60% of 184.3 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:10.7189305Z |ΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûá                        |  70% of 184.3 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:10.8022162Z |ΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûá                |  80% of 184.3 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:10.8622412Z |ΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûá        |  90% of 184.3 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:10.9456389Z |ΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûá| 100% of 184.3 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:13.9427289Z Chrome for Testing 151.0.7922.34 (playwright chromium v1234) downloaded to /home/runner/.cache/ms-playwright/chromium-1234
+run-ecopulse	Install dependencies	2026-08-17T13:15:13.9431552Z Downloading FFmpeg (playwright ffmpeg v1011) from https://cdn.playwright.dev/dbazure/download/playwright/builds/ffmpeg/1011/ffmpeg-linux.zip
+run-ecopulse	Install dependencies	2026-08-17T13:15:14.9988024Z |                                                                                |   0% of 2.3 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:15.0041164Z |ΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûá                                                                        |  10% of 2.3 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:15.0084483Z |ΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûá                                                                |  20% of 2.3 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:15.0118791Z |ΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûá                                                        |  30% of 2.3 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:15.0131979Z |ΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûá                                                |  40% of 2.3 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:15.0155528Z |ΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûá                                        |  50% of 2.3 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:15.0167047Z |ΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûá                                |  60% of 2.3 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:15.0179619Z |ΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûá                        |  70% of 2.3 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:15.0192464Z |ΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûá                |  80% of 2.3 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:15.0239704Z |ΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûá        |  90% of 2.3 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:15.0253192Z |ΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûá| 100% of 2.3 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:15.0811304Z FFmpeg (playwright ffmpeg v1011) downloaded to /home/runner/.cache/ms-playwright/ffmpeg-1011
+run-ecopulse	Install dependencies	2026-08-17T13:15:15.0815328Z Downloading Chrome Headless Shell 151.0.7922.34 (playwright chromium-headless-shell v1234) from https://cdn.playwright.dev/builds/cft/151.0.7922.34/linux64/chrome-headless-shell-linux64.zip
+run-ecopulse	Install dependencies	2026-08-17T13:15:16.0544287Z |                                                                                |   0% of 114.7 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:16.1943294Z |ΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûá                                                                        |  10% of 114.7 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:16.2668988Z |ΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûá                                                                |  20% of 114.7 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:16.3349552Z |ΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûá                                                        |  30% of 114.7 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:16.3926258Z |ΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûá                                                |  40% of 114.7 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:16.4511803Z |ΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûá                                        |  50% of 114.7 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:16.5141798Z |ΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûá                                |  60% of 114.7 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:16.5596369Z |ΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûá                        |  70% of 114.7 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:16.6217523Z |ΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûá                |  80% of 114.7 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:16.6613897Z |ΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûá        |  90% of 114.7 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:16.6985736Z |ΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûáΓûá| 100% of 114.7 MiB
+run-ecopulse	Install dependencies	2026-08-17T13:15:19.0706644Z Chrome Headless Shell 151.0.7922.34 (playwright chromium-headless-shell v1234) downloaded to /home/runner/.cache/ms-playwright/chromium_headless_shell-1234
+run-ecopulse	Run EcoPulse 4-Step Pipeline	∩╗┐2026-08-17T13:15:19.0970365Z ##[group]Run python engine.py
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:15:19.0970726Z ^[[36;1mpython engine.py^[[0m
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:15:19.1009452Z shell: /usr/bin/bash -e {0}
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:15:19.1009710Z env:
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:15:19.1009981Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.15/x64
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:15:19.1010440Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.15/x64/lib/pkgconfig
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:15:19.1010884Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:15:19.1011301Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:15:19.1011709Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:15:19.1012108Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.15/x64/lib
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:15:19.1014139Z   LINKEDIN_ACCESS_TOKEN: ***
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:15:19.1014450Z   LINKEDIN_PERSON_URN: ***
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:15:19.1014817Z   GEMINI_API_KEY: ***
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:15:19.1015720Z   GOOGLE_API_KEY: 
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:15:19.1015949Z   ECOPULSE_DRY_RUN: false
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:15:19.1016181Z ##[endgroup]
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:15:19.3839214Z 2026-08-17 13:15:19,383 [INFO] ΓòÉΓòÉΓòÉ Starting LinkedIn Autopilot v3.0 (Gemini Engine) ΓòÉΓòÉΓòÉ
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:15:19.3840302Z 2026-08-17 13:15:19,383 [INFO] ΓòÉΓòÉΓòÉ Phase 1: Research & Deduplication ΓòÉΓòÉΓòÉ
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:15:22.5055525Z 2026-08-17 13:15:22,505 [INFO] Searching YouTube with dynamic query: 'climate scenario analysis'
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:15:24.4995319Z 2026-08-17 13:15:24,499 [WARNING] Attempt 1: No valid transcripts found for 'climate scenario analysis'. Retrying in 5s...
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:15:35.1430469Z 2026-08-17 13:15:35,142 [INFO] Searching YouTube with dynamic query: 'advanced oxidation processes'
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:15:36.8899819Z 2026-08-17 13:15:36,889 [WARNING] Attempt 2: No valid transcripts found for 'advanced oxidation processes'. Retrying in 5s...
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:15:48.4842072Z 2026-08-17 13:15:48,483 [INFO] Searching YouTube with dynamic query: 'pfas soil remediation'
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:15:50.1112031Z 2026-08-17 13:15:50,110 [WARNING] Attempt 3: No valid transcripts found for 'pfas soil remediation'. Retrying in 5s...
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:15:58.1460346Z 2026-08-17 13:15:58,145 [INFO] Searching YouTube with dynamic query: 'double materiality assessment'
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:15:59.7500854Z 2026-08-17 13:15:59,749 [WARNING] Attempt 4: No valid transcripts found for 'double materiality assessment'. Retrying in 5s...
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:16:07.5940701Z 2026-08-17 13:16:07,593 [INFO] Searching YouTube with dynamic query: 'biogenic carbon accounting'
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:16:09.2655895Z 2026-08-17 13:16:09,265 [WARNING] Attempt 5: No valid transcripts found for 'biogenic carbon accounting'. Retrying in 5s...
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:16:17.4262015Z 2026-08-17 13:16:17,425 [INFO] Searching YouTube with dynamic query: 'csrd double materiality'
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:16:19.0227078Z 2026-08-17 13:16:19,022 [WARNING] Attempt 6: No valid transcripts found for 'csrd double materiality'. Retrying in 5s...
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:16:27.5703532Z 2026-08-17 13:16:27,569 [INFO] Searching YouTube with dynamic query: 'csrd double materiality'
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:16:29.2309090Z 2026-08-17 13:16:29,230 [WARNING] Attempt 7: No valid transcripts found for 'csrd double materiality'. Retrying in 5s...
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:16:51.6764523Z 2026-08-17 13:16:51,676 [INFO] Searching YouTube with dynamic query: 'climate stress testing'
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:16:53.5030522Z 2026-08-17 13:16:53,502 [WARNING] Attempt 8: No valid transcripts found for 'climate stress testing'. Retrying in 5s...
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:17:02.2536698Z 2026-08-17 13:17:02,253 [INFO] Searching YouTube with dynamic query: 'biological nutrient removal'
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:17:03.8374266Z 2026-08-17 13:17:03,836 [WARNING] Attempt 9: No valid transcripts found for 'biological nutrient removal'. Retrying in 5s...
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:17:22.3945443Z 2026-08-17 13:17:22,394 [INFO] Searching YouTube with dynamic query: 'membrane bioreactor fouling'
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:17:24.2505638Z 2026-08-17 13:17:24,250 [WARNING] Attempt 10: No valid transcripts found for 'membrane bioreactor fouling'. Retrying in 5s...
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:17:29.2508246Z 2026-08-17 13:17:29,250 [ERROR] CRITICAL: Failed to find a valid transcript after 10 attempts. Using hardcoded emergency fallback.
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:17:29.2509969Z 2026-08-17 13:17:29,250 [INFO] Selected Topic Source: Fallback
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:17:29.2511223Z 2026-08-17 13:17:29,250 [INFO] ΓòÉΓòÉΓòÉ Phase 2: Editorial Thesis Generation ΓòÉΓòÉΓòÉ
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:17:29.2512146Z 2026-08-17 13:17:29,250 [WARNING] No raw text provided to Editorial Engine.
+run-ecopulse	Run EcoPulse 4-Step Pipeline	2026-08-17T13:17:29.2515559Z 2026-08-17 13:17:29,250 [WARNING] Gracefully skipping today's post because no novel content was found.
+run-ecopulse	Commit updated state	∩╗┐2026-08-17T13:17:29.2913608Z ##[group]Run git config user.name "ecopulse-bot"
+run-ecopulse	Commit updated state	2026-08-17T13:17:29.2914027Z ^[[36;1mgit config user.name "ecopulse-bot"^[[0m
+run-ecopulse	Commit updated state	2026-08-17T13:17:29.2914359Z ^[[36;1mgit config user.email "actions@github.com"^[[0m
+run-ecopulse	Commit updated state	2026-08-17T13:17:29.2914673Z ^[[36;1mgit add state/posted_log.json^[[0m
+run-ecopulse	Commit updated state	2026-08-17T13:17:29.2915291Z ^[[36;1mgit diff --cached --quiet || git commit -m "chore: update posted_log [skip ci]"^[[0m
+run-ecopulse	Commit updated state	2026-08-17T13:17:29.2915765Z ^[[36;1mgit pull --rebase origin master^[[0m
+run-ecopulse	Commit updated state	2026-08-17T13:17:29.2916043Z ^[[36;1mgit push^[[0m
+run-ecopulse	Commit updated state	2026-08-17T13:17:29.2954781Z shell: /usr/bin/bash -e {0}
+run-ecopulse	Commit updated state	2026-08-17T13:17:29.2955180Z env:
+run-ecopulse	Commit updated state	2026-08-17T13:17:29.2955454Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.15/x64
+run-ecopulse	Commit updated state	2026-08-17T13:17:29.2955901Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.15/x64/lib/pkgconfig
+run-ecopulse	Commit updated state	2026-08-17T13:17:29.2956331Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+run-ecopulse	Commit updated state	2026-08-17T13:17:29.2956707Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+run-ecopulse	Commit updated state	2026-08-17T13:17:29.2957081Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+run-ecopulse	Commit updated state	2026-08-17T13:17:29.2957500Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.15/x64/lib
+run-ecopulse	Commit updated state	2026-08-17T13:17:29.2957818Z ##[endgroup]
+run-ecopulse	Commit updated state	2026-08-17T13:17:29.5250355Z From https://github.com/arunachalamvenkatachalapathy-dev/linkedin-insight-engine
+run-ecopulse	Commit updated state	2026-08-17T13:17:29.5251318Z  * branch            master     -> FETCH_HEAD
+run-ecopulse	Commit updated state	2026-08-17T13:17:29.5323309Z Already up to date.
+run-ecopulse	Commit updated state	2026-08-17T13:17:29.7944055Z Everything up-to-date
+run-ecopulse	Post Set up Python	∩╗┐2026-08-17T13:17:29.8063661Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+run-ecopulse	Post Set up Python	2026-08-17T13:17:29.8064935Z Post job cleanup.
+run-ecopulse	Post Set up Python	2026-08-17T13:17:29.9259250Z (node:2895) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+run-ecopulse	Post Set up Python	2026-08-17T13:17:29.9260652Z (Use `node --trace-deprecation ...` to show where the warning was created)
+run-ecopulse	Post Checkout repo	∩╗┐2026-08-17T13:17:29.9459040Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+run-ecopulse	Post Checkout repo	2026-08-17T13:17:29.9460351Z Post job cleanup.
+run-ecopulse	Post Checkout repo	2026-08-17T13:17:30.0375722Z [command]/usr/bin/git version
+run-ecopulse	Post Checkout repo	2026-08-17T13:17:30.0411197Z git version 2.54.0
+run-ecopulse	Post Checkout repo	2026-08-17T13:17:30.0451034Z Temporarily overriding HOME='/home/runner/work/_temp/48422530-21bf-42e6-87ae-0d349479e94d' before making global git config changes
+run-ecopulse	Post Checkout repo	2026-08-17T13:17:30.0452474Z Adding repository directory to the temporary git global config as a safe directory
+run-ecopulse	Post Checkout repo	2026-08-17T13:17:30.0458341Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/linkedin-insight-engine/linkedin-insight-engine
+run-ecopulse	Post Checkout repo	2026-08-17T13:17:30.0498383Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+run-ecopulse	Post Checkout repo	2026-08-17T13:17:30.0537761Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+run-ecopulse	Post Checkout repo	2026-08-17T13:17:30.0797286Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+run-ecopulse	Post Checkout repo	2026-08-17T13:17:30.0825958Z http.https://github.com/.extraheader
+run-ecopulse	Post Checkout repo	2026-08-17T13:17:30.0839884Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+run-ecopulse	Post Checkout repo	2026-08-17T13:17:30.0879142Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+run-ecopulse	Post Checkout repo	2026-08-17T13:17:30.1133756Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+run-ecopulse	Post Checkout repo	2026-08-17T13:17:30.1178379Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+run-ecopulse	Complete job	∩╗┐2026-08-17T13:17:30.1605437Z Cleaning up orphan processes
+run-ecopulse	Complete job	2026-08-17T13:17:30.1940609Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
