@@ -1,6 +1,9 @@
 import os
 import logging
+import random
 from datetime import datetime
+from jinja2 import Template
+from playwright.sync_api import sync_playwright
 
 log = logging.getLogger("ecopulse")
 
@@ -9,73 +12,73 @@ class ImageDirector:
         self.llm = gemini_client
 
     def generate_image(self, thesis: dict, out_path: str = "state/latest_image.png") -> str:
-        headline = thesis.get("headline", "")
-        core_insight = thesis.get("core_insight", "")
-        category = thesis.get("category", "TECH")
+        """
+        Renders an ultra-clean, realistic Tweet / X or Apple Notes Screenshot Card.
+        """
+        card_type = thesis.get("card_type", "tweet")
+        topic_tag = thesis.get("topic_tag", "Engineering")
+        headline = thesis.get("headline", "Systems Analysis")
+        tweet_body = thesis.get("tweet_body", "")
+        quote_box = thesis.get("quote_box", None)
+        memo_points = thesis.get("memo_points", [])
+        takeaway_box = thesis.get("takeaway_box", "")
 
-        image_prompt = (
-            f"A high-resolution, photorealistic documentary photograph illustrating: {headline}. "
-            f"Context: {core_insight}. "
-            f"Style: Authentic natural lighting, professional Reuters/Financial Times editorial photography, sharp focus, natural color grading, 16:9 widescreen composition. "
-            f"Strictly NO neon glows, NO dark cyber aesthetics, NO floating generic 3D icons, NO cartoon graphics, NO text overlays."
-        )
+        # Randomize views & engagement metrics for authentic realism
+        views_k = random.randint(85, 320)
+        likes_k = f"{random.randint(1, 4)}.{random.randint(1, 9)}K"
+        retweets = random.randint(80, 420)
+        comments = random.randint(30, 150)
+        bookmarks = random.randint(120, 650)
+        now = datetime.now()
+        timestamp_str = f"{now.strftime('%I:%M %p')} · {now.strftime('%b %d, %Y')}"
 
-        log.info(f"Requesting authentic Gemini AI image: {headline}...")
-        
-        if self.llm:
-            try:
-                img_bytes = self.llm.generate_image(image_prompt)
-                if img_bytes:
-                    os.makedirs(os.path.dirname(out_path) or '.', exist_ok=True)
-                    with open(out_path, "wb") as f:
-                        f.write(img_bytes)
-                    log.info(f"✅ Successfully saved authentic Gemini AI image to {out_path} ({len(img_bytes)} bytes)")
-                    return out_path
-            except Exception as e:
-                log.warning(f"Gemini image generation attempt failed: {e}")
+        template_path = os.path.join(os.path.dirname(__file__), "templates", "social_screenshot.html")
+        css_path = os.path.join(os.path.dirname(__file__), "templates", "social_screenshot.css")
 
-        # Fallback to a clean editorial visual if quota is temporarily capped
         try:
-            template_path = os.path.join(os.path.dirname(__file__), "templates", "dynamic_slide.html")
-            css_path = os.path.join(os.path.dirname(__file__), "templates", "dynamic_styles.css")
+            with open(template_path, "r", encoding="utf-8") as f:
+                html_template = f.read()
+            with open(css_path, "r", encoding="utf-8") as f:
+                css_content = f.read()
 
-            if os.path.exists(template_path) and os.path.exists(css_path):
-                from jinja2 import Template
-                from playwright.sync_api import sync_playwright
+            html_with_css = html_template.replace("/* INLINE_STYLES */", css_content)
+            template = Template(html_with_css)
+            rendered_html = template.render(
+                card_type=card_type,
+                author_name="Arunachalam Venkatachalapathy",
+                author_handle="arunachalamvenv",
+                author_initials="AV",
+                topic_tag=topic_tag,
+                headline=headline,
+                tweet_body=tweet_body.replace('\n', '<br>'),
+                quote_box=quote_box,
+                memo_points=memo_points,
+                takeaway_box=takeaway_box,
+                timestamp_str=timestamp_str,
+                views_count=f"{views_k}.4K",
+                likes_count=likes_k,
+                retweets_count=str(retweets),
+                comments_count=str(comments),
+                bookmarks_count=str(bookmarks)
+            )
 
-                with open(template_path, "r", encoding="utf-8") as f:
-                    html_template = f.read()
-                with open(css_path, "r", encoding="utf-8") as f:
-                    css_content = f.read()
+            os.makedirs(os.path.dirname(out_path) or '.', exist_ok=True)
 
-                html_with_css = html_template.replace("/* INLINE_STYLES */", css_content)
-                template = Template(html_with_css)
-                rendered_html = template.render(
-                    layout="three_pillars",
-                    theme="cyan",
-                    badge=category,
-                    subtitle="EXECUTIVE BRIEFING",
-                    headline=headline,
-                    three_pillars=[
-                        {"tag": "01 OVERVIEW", "title": "Core Context", "desc": core_insight[:120]},
-                        {"tag": "02 IMPLICATION", "title": "Operational Reality", "desc": "Strategic shifts require audit-verified telemetry."},
-                        {"tag": "03 TAKEAWAY", "title": "Next Step", "desc": "Evaluate direct systems telemetry this quarter."}
-                    ],
-                    footer_left=category,
-                    date_str=datetime.now().strftime("%B %Y")
+            log.info(f"Rendering Social Screenshot Card [{card_type.upper()}]: {headline}")
+            with sync_playwright() as p:
+                browser = p.chromium.launch(headless=True)
+                page = browser.new_page(
+                    viewport={"width": 1200, "height": 675},
+                    device_scale_factor=2  # High-DPI Retina sharpness
                 )
+                page.set_content(rendered_html, wait_until="domcontentloaded")
+                page.screenshot(path=out_path, type="png")
+                browser.close()
 
-                os.makedirs(os.path.dirname(out_path) or '.', exist_ok=True)
-                with sync_playwright() as p:
-                    browser = p.chromium.launch(headless=True)
-                    page = browser.new_page(viewport={"width": 1200, "height": 630})
-                    page.set_content(rendered_html, wait_until="domcontentloaded")
-                    page.screenshot(path=out_path, type="png")
-                    browser.close()
+            log.info(f"✅ Successfully generated realistic screenshot card at {out_path} ({os.path.getsize(out_path)} bytes)")
+            return out_path
 
-                log.info(f"✅ Saved clean fallback visual to {out_path}")
-                return out_path
         except Exception as e:
-            log.warning(f"Fallback visual generation skipped: {e}")
+            log.warning(f"Screenshot card generation failed: {e}")
 
         return ""

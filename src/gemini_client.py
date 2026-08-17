@@ -8,10 +8,9 @@ import requests
 log = logging.getLogger("ecopulse")
 
 TEXT_MODELS = [
-    "gemini-2.5-flash",
-    "gemini-1.5-flash",
-    "gemini-1.5-pro",
-    "gemini-2.0-flash"
+    "gemini-3.5-flash",
+    "gemini-3.7-flash",
+    "gemini-flash-latest"
 ]
 
 IMAGE_MODELS = [
@@ -29,7 +28,7 @@ class GeminiClient:
         if not self.api_key:
             log.warning("GEMINI_API_KEY is not set. LLM API calls will fail.")
 
-    def generate_text(self, prompt: str, temperature: float = 0.6, json_mode: bool = False, max_retries: int = 3) -> str:
+    def generate_text(self, prompt: str, temperature: float = 0.6, json_mode: bool = False, max_retries: int = 2) -> str:
         if not self.api_key:
             log.error("Cannot generate text: GEMINI_API_KEY is missing.")
             return ""
@@ -50,7 +49,7 @@ class GeminiClient:
 
             for attempt in range(1, max_retries + 1):
                 try:
-                    resp = requests.post(url, headers=headers, json=payload, timeout=45)
+                    resp = requests.post(url, headers=headers, json=payload, timeout=30)
                     if resp.status_code == 200:
                         data = resp.json()
                         candidates = data.get("candidates", [])
@@ -61,7 +60,7 @@ class GeminiClient:
                         return ""
                     
                     if resp.status_code in [429, 500, 502, 503, 504]:
-                        wait_time = attempt * 3
+                        wait_time = attempt * 2
                         log.warning(f"Model {model} HTTP {resp.status_code}. Retrying in {wait_time}s (attempt {attempt}/{max_retries})...")
                         time.sleep(wait_time)
                         continue
@@ -70,7 +69,7 @@ class GeminiClient:
                     break
 
                 except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as e:
-                    wait_time = attempt * 3
+                    wait_time = attempt * 2
                     log.warning(f"Timeout/Connection error on {model}: {e}. Retrying in {wait_time}s...")
                     time.sleep(wait_time)
                     last_error = e
@@ -100,7 +99,7 @@ class GeminiClient:
 
             for attempt in range(1, max_retries + 1):
                 try:
-                    resp = requests.post(url, headers=headers, json=payload, timeout=60)
+                    resp = requests.post(url, headers=headers, json=payload, timeout=45)
                     if resp.status_code == 200:
                         data = resp.json()
                         candidates = data.get("candidates", [])
@@ -114,7 +113,7 @@ class GeminiClient:
                                         return base64.b64decode(b64_str)
                     elif resp.status_code in [429, 503]:
                         log.warning(f"Gemini image model {model} returned HTTP {resp.status_code} (attempt {attempt}). Retrying...")
-                        time.sleep(attempt * 3)
+                        time.sleep(attempt * 2)
                     else:
                         log.warning(f"Gemini image model {model} returned HTTP {resp.status_code}")
                         break

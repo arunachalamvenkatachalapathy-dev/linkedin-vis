@@ -1,5 +1,6 @@
 import json
 import logging
+from datetime import datetime
 
 log = logging.getLogger("ecopulse")
 
@@ -9,91 +10,74 @@ class EditorialEngine:
 
     def generate_thesis(self, raw_data: dict) -> dict:
         raw_text = raw_data.get("raw_text", "")
-        source_name = raw_data.get("source", "Industry Insight")
-        title = raw_data.get("title", "Untitled Story")
+        source_name = raw_data.get("source", "Technical Insight")
+        title = raw_data.get("title", "Systems Analysis")
         
         if not raw_text:
             log.warning("No raw text provided to Editorial Engine.")
             return {}
             
-        prompt = f"""You are a world-class technology journalist and viral LinkedIn strategist.
-Analyze the following story and decide on the best angle, narrative structure, and visual asset to maximize executive engagement and discussion.
+        prompt = f'''You are a top-tier Principal Engineer and Sustainability Strategist.
+Distill this technical development into a purposeful, high-value, actionable insight that teaches readers a real principle or mental model.
+
+DO NOT write sensational media reporting, outrage, or gossip.
+Focus on: Why this matters, what the engineering principle is, and how professionals can apply it.
 
 Source: {source_name}
 Title: {title}
 Context:
 {raw_text[:4000]}
 
-DECIDE ON THE FOLLOWING:
-1. Archetype: Pick ONE of ['teardown', 'contrarian', 'deep_dive', 'narrative', 'cheat_sheet'] that best fits this story.
-2. Category: A sharp 2-3 word uppercase label (e.g. 'INCIDENT ANALYSIS', 'AI BREAKTHROUGH', 'SYSTEMS DESIGN', 'SUSTAINABILITY PIVOT', 'DEV INSIGHT').
-3. Headline: High-impact title for the visual slide (max 8 words).
-4. Visual Layout: Pick ONE of ['hero_stat', 'comparison', 'three_pillars', 'terminal'] based on the story type:
-   - 'terminal': for outages, bugs, code, CLI, or developer architecture stories.
-   - 'hero_stat': for breakthrough metrics, massive efficiency leaps, or shocking numbers.
-   - 'three_pillars': for multi-step breakdowns, key takeaways, or architectural pillars.
-   - 'comparison': for before-vs-after, myth-vs-reality, or legacy-vs-nextgen.
-5. Visual Theme: Pick ONE of ['emerald', 'cyan', 'violet', 'amber'].
+REQUIREMENTS:
+1. card_type: Pick 'tweet' (for strong single-idea takeaways) or 'memo' (for 3-point tactical principles).
+2. topic_tag: A short 1-2 word professional domain (e.g. 'Systems', 'CleanTech', 'ESG Telemetry', 'AI Infra', 'Architecture').
+3. headline: Clean, professional title (max 7 words).
+4. tweet_body: 2 to 3 crisp, purposeful sentences explaining the principle.
+5. quote_box: A clean summary box with 'badge' (e.g. 'CORE PRINCIPLE' or 'METRIC'), 'source', 'title', and 'desc'.
+6. memo_points: 2 to 3 practical bullet takeaways with 'label' and 'text'.
+7. takeaway_box: 1-sentence golden rule.
 
 Return ONLY valid JSON matching this schema:
 {{
-  "category": "CATEGORY STRING",
-  "archetype": "teardown | contrarian | deep_dive | narrative | cheat_sheet",
-  "headline": "Punchy 6-8 Word Headline",
-  "core_insight": "2-sentence synthesis of why this matters to leaders and builders.",
-  "visual": {{
-    "layout": "hero_stat | comparison | three_pillars | terminal",
-    "theme": "emerald | cyan | violet | amber",
-    "badge": "BADGE TEXT (e.g. 'POST-MORTEM', 'AI RESEARCH', 'DEVOPS')",
-    "subtitle": "SUBTITLE (e.g. 'INCIDENT ANALYSIS • AUG 2026')",
-    "hero_stat": {{
-      "big_number": "e.g. '3.5 Hrs' or '40% PUE' or '100x'",
-      "label": "Short label for stat",
-      "context": "1-sentence context for the number"
-    }},
-    "comparison": {{
-      "left_label": "e.g. 'OFFICIAL STATUS' or 'LEGACY APPROACH'",
-      "left_text": "e.g. 'Status green while queue was blocked'",
-      "right_label": "e.g. 'ACTUAL USER REALITY' or 'ENGINEERING FIX'",
-      "right_text": "e.g. 'Merge queue frozen across teams'"
-    }},
-    "three_pillars": [
-      {{"tag": "01 ROOT CAUSE", "title": "Pillar 1 Title", "desc": "Pillar 1 brief description"}},
-      {{"tag": "02 HIDDEN GAP", "title": "Pillar 2 Title", "desc": "Pillar 2 brief description"}},
-      {{"tag": "03 THE LESSON", "title": "Pillar 3 Title", "desc": "Pillar 3 brief description"}}
-    ],
-    "terminal": {{
-      "title": "bash — terminal",
-      "command": "e.g. git push origin main",
-      "output": "e.g. RPC failed: HTTP 504 gateway timeout",
-      "note": "Key takeaway from the command/incident"
-    }}
-  }}
+  "card_type": "tweet",
+  "topic_tag": "Systems",
+  "headline": "Telemetry Beats Estimation",
+  "tweet_body": "Calculated estimates look clean on paper, but direct telemetry exposes the truth.\n\nWhether tracking datacenter thermal load or Scope 3 carbon intensity, audit-grade sensors change the entire engineering equation.",
+  "quote_box": {{
+    "badge": "KEY PRINCIPLE",
+    "source": "Infrastructure Review",
+    "title": "Hardware Telemetry > Top-Down Models",
+    "desc": "Real-time sensor data uncovers 30%+ efficiency gaps invisible in spreadsheet models."
+  }},
+  "memo_points": [
+    {{"label": "The Gap", "text": "Top-down estimates hide micro-inefficiencies and silent baseline drift."}},
+    {{"label": "The Standard", "text": "Continuous telemetry provides verifiable, audit-ready operational data."}}
+  ],
+  "takeaway_box": "If you can't measure it with direct sensors, you can't reliably optimize it."
 }}
-"""
+'''
 
         try:
             res = self.llm.generate_text(prompt, temperature=0.5, json_mode=True)
             if res:
                 return json.loads(res)
         except Exception as e:
-            log.warning(f"Failed to generate dynamic thesis via LLM: {e}")
+            log.warning(f"Failed to generate purposeful thesis via LLM: {e}")
             
         return {
-            "category": "ENGINEERING BRIEFING",
-            "archetype": "teardown",
+            "card_type": "tweet",
+            "topic_tag": "Systems Design",
             "headline": title[:50],
-            "core_insight": raw_text[:200],
-            "visual": {
-                "layout": "comparison",
-                "theme": "emerald",
-                "badge": "TECH BRIEFING",
-                "subtitle": "SYSTEMS & ENGINEERING",
-                "comparison": {
-                    "left_label": "CONVENTIONAL ASSUMPTION",
-                    "left_text": "Standard operational baseline",
-                    "right_label": "ENGINEERING REALITY",
-                    "right_text": "Observed friction and next-gen solution"
-                }
-            }
+            "tweet_body": f"The key engineering principle behind {title[:60]}:\n\nDirect hardware telemetry and audit-grade measurements always outperform unverified assumptions.",
+            "quote_box": {
+                "badge": "KEY PRINCIPLE",
+                "source": source_name,
+                "title": title[:40],
+                "desc": raw_text[:120]
+            },
+            "memo_points": [
+                {"label": "Observation", "text": raw_text[:100]},
+                {"label": "Action", "text": "Prioritize direct operational telemetry over theoretical estimates."}
+            ],
+            "takeaway_box": "Direct telemetry and audit-ready data beat unverified assumptions every time."
         }

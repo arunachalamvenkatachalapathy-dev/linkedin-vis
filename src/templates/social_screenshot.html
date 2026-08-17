@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    /* INLINE_STYLES */
+  </style>
+</head>
+<body class="canvas-bg">
+  <div class="card-container">
+    {% if card_type == 'tweet' %}
+    <!-- REALISTIC X/TWITTER POST SCREENSHOT -->
+    <div class="tweet-card">
+      <div class="tweet-top">
+        <div class="avatar">
+          <span>{{ author_initials or 'AV' }}</span>
+        </div>
+        <div class="author-meta">
+          <div class="author-name-row">
+            <span class="author-name">{{ author_name or 'Arunachalam Venkatachalapathy' }}</span>
+            <svg class="badge-verified" viewBox="0 0 24 24">
+              <path fill="#1d9bf0" d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.79-4-4-4-.495 0-.965.084-1.4.238C14.45 2.375 13.08 1.5 11.5 1.5c-1.58 0-2.95.875-3.6 2.148-.435-.154-.905-.238-1.4-.238-2.21 0-4 1.79-4 4 0 .495.084.965.238 1.4C1.375 10.55.5 11.92.5 13.5c0 1.58.875 2.95 2.148 3.6-.154.435-.238.905-.238 1.4 0 2.21 1.79 4 4 4 .495 0 .965-.084 1.4-.238 1.05 1.273 2.42 2.148 4 2.148 1.58 0 2.95-.875 3.6-2.148.435.154.905.238 1.4.238 2.21 0 4-1.79 4-4 0-.495-.084-.965-.238-1.4 1.273-1.05 2.148-2.42 2.148-4zm-12.707 3.707l-3.5-3.5 1.414-1.414L10.5 14.086l6.793-6.793 1.414 1.414-8.207 8.207z"/>
+            </svg>
+          </div>
+          <div class="author-handle">@{{ author_handle or 'arunachalamvenv' }} · <span class="tag-pill">{{ topic_tag or 'Engineering' }}</span></div>
+        </div>
+        <div class="x-brand">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="#536471">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 22.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="tweet-content">
+        {{ tweet_body }}
+      </div>
+
+      {% if quote_box %}
+      <div class="quote-card">
+        <div class="quote-header">
+          <span class="quote-badge">{{ quote_box.badge or 'KEY METRIC' }}</span>
+          <span class="quote-source">{{ quote_box.source or 'Telemetry Report' }}</span>
+        </div>
+        <div class="quote-title">{{ quote_box.title }}</div>
+        <div class="quote-desc">{{ quote_box.desc }}</div>
+      </div>
+      {% endif %}
+
+      <div class="tweet-meta-bar">
+        <span class="tweet-timestamp">{{ timestamp_str }}</span>
+        <span class="meta-dot">·</span>
+        <span class="tweet-views"><strong>{{ views_count or '184.2K' }}</strong> Views</span>
+      </div>
+
+      <div class="tweet-actions-bar">
+        <div class="action-item"><span class="act-icon">💬</span> {{ comments_count or '48' }}</div>
+        <div class="action-item"><span class="act-icon">🔁</span> {{ retweets_count or '129' }}</div>
+        <div class="action-item"><span class="act-icon">❤️</span> {{ likes_count or '1.4K' }}</div>
+        <div class="action-item"><span class="act-icon">🔖</span> {{ bookmarks_count or '312' }}</div>
+      </div>
+    </div>
+
+    {% else %}
+    <!-- CLEAN NOTION / APPLE NOTES MICRO-MEMO -->
+    <div class="memo-card">
+      <div class="memo-topbar">
+        <div class="window-controls">
+          <span class="control-dot close"></span>
+          <span class="control-dot min"></span>
+          <span class="control-dot max"></span>
+        </div>
+        <div class="memo-tab">{{ topic_tag or 'SYSTEMS NOTE' }} — {{ timestamp_str }}</div>
+      </div>
+      <div class="memo-inner">
+        <div class="memo-title">{{ headline }}</div>
+        <div class="memo-separator"></div>
+        <div class="memo-points">
+          {% for pt in memo_points %}
+          <div class="memo-point-row">
+            <span class="point-num">0{{ loop.index }}</span>
+            <div class="point-text">
+              <span class="point-label">{{ pt.label }}:</span> {{ pt.text }}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% if takeaway_box %}
+        <div class="memo-callout">
+          <span class="callout-icon">💡</span>
+          <div class="callout-text"><strong>Key Rule:</strong> {{ takeaway_box }}</div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</body>
+</html>
