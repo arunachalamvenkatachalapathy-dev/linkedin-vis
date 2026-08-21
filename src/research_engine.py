@@ -6,75 +6,85 @@ import random
 import urllib.request
 import urllib.parse
 import xml.etree.ElementTree as ET
+from datetime import datetime
 
 log = logging.getLogger("ecopulse")
 
-PURPOSEFUL_THEMES = [
-    "Clean Energy Transition & Grid Systems",
-    "Industrial Decarbonization & Scope 3 Telemetry",
-    "AI Datacenter Power & Thermal Engineering",
-    "High-Density Battery Chemistry & Storage",
-    "Circular Economy & Material Science",
-    "Direct Air Capture & Carbon Removal",
-    "Cloud Architecture & Systems Resilience",
-    "Data Engineering & Real-Time Telemetry"
-]
+# 7-DAY SCHEDULE: 4 Days CleanTech/Sustainability + 3 Days AI Agents & Forward Deployment
+DAY_SCHEDULE = {
+    0: {  # Monday [CLEANTECH 1/4]
+        "pillar": "CleanTech & Industrial Decarbonization",
+        "theme": "Heavy Industry Decarbonization (Steel, Cement, Green Hydrogen, Circularity)",
+        "arxiv_cat": "physics.chem-ph",
+        "queries": ["green hydrogen direct reduction steel", "LC3 calcined clay cement decarbonization", "industrial thermal heat pump", "carbon mineralization concrete"]
+    },
+    1: {  # Tuesday [AI & FDE 1/3]
+        "pillar": "AI Agent Architecture & Forward Deployment",
+        "theme": "Production Agent State Machines & Deterministic Routing",
+        "arxiv_cat": "cs.AI",
+        "queries": ["multi-agent state graph DAG", "deterministic tool calling reliability", "agent memory evaluation benchmark", "function calling schema validation"]
+    },
+    2: {  # Wednesday [CLEANTECH 2/4]
+        "pillar": "CleanTech & Energy Systems",
+        "theme": "Grid-Scale Energy Storage & Advanced Photovoltaics",
+        "arxiv_cat": "physics.soc-ph",
+        "queries": ["sodium ion battery grid storage degradation", "perovskite silicon tandem solar cell stability", "solid state battery electrolyte", "flow battery long duration storage"]
+    },
+    3: {  # Thursday [AI & FDE 2/3]
+        "pillar": "Forward Deployment Engineering (FDE)",
+        "theme": "Enterprise ERP Integration, Human-in-the-Loop & Dirty Data",
+        "devto_tag": "architecture",
+        "queries": ["enterprise AI agent post-mortem", "dirty database schema AI integration", "human in the loop audit gate", "unconstrained tool execution failure"]
+    },
+    4: {  # Friday [CLEANTECH 3/4]
+        "pillar": "ESG Telemetry & Compliance",
+        "theme": "BRSR Core, CSRD / ESRS, Scope 1/2/3 Supply Chain Audits",
+        "arxiv_cat": "econ.GN",
+        "queries": ["Scope 3 supply chain carbon emission factor audit", "BRSR Core ESG telemetry disclosure", "corporate GHG protocol assurance", "double materiality carbon accounting"]
+    },
+    5: {  # Saturday [CLEANTECH 4/4]
+        "pillar": "Clean Computing & Datacenter Thermal Systems",
+        "theme": "AI Datacenter Power, Liquid Cooling & PUE Efficiency",
+        "arxiv_cat": "cs.DC",
+        "queries": ["direct to chip dielectric liquid cooling datacenter", "PUE reduction AI compute thermal", "closed loop evaporative water reduction datacenter", "grid aware AI workload scheduling"]
+    },
+    6: {  # Sunday [AI & FDE 3/3]
+        "pillar": "FDE Tactical Playbooks & Contrarian Insights",
+        "theme": "Why 90% of Autonomous Demos Fail in Production & Field Rules",
+        "devto_tag": "devops",
+        "queries": ["why autonomous agents fail in production", "deterministic workflow vs raw prompt loop", "air gapped LLM deployment security", "production FDE field lessons"]
+    }
+}
 
 class ResearchEngine:
     def __init__(self, memory_engine, gemini_client):
         self.memory = memory_engine
         self.llm = gemini_client
 
-    def generate_niche_query(self) -> str:
-        prompt = (
-            "You are a Principal Systems & Sustainability Architect.\n"
-            "Pick ONE topic theme from this list:\n"
-            f"{', '.join(PURPOSEFUL_THEMES)}\n\n"
-            "Generate ONE highly specific 2 to 4 word search term for academic papers or technical deep dives.\n"
-            "Examples: 'perovskite solar degradation', 'closed loop datacenter cooling', 'solid state battery electrolyte', 'supply chain carbon telemetry'.\n"
-            "Output ONLY the raw search string without quotes or punctuation."
-        )
-        try:
-            query = self.llm.generate_text(prompt, temperature=0.8).strip().replace('"', '').replace("'", "")
-            if query and len(query) < 50:
-                return query
-        except Exception as e:
-            log.warning(f"LLM query generation fallback: {e}")
+    def get_today_config(self) -> dict:
+        day_idx = datetime.utcnow().weekday()
+        config = DAY_SCHEDULE.get(day_idx, DAY_SCHEDULE[0])
+        log.info(f"📅 Today is Day {day_idx} ({datetime.utcnow().strftime('%A')}): [{config['pillar']}] -> {config['theme']}")
+        return config
 
-        fallback_queries = [
-            "grid scale battery storage",
-            "direct air capture efficiency",
-            "datacenter liquid cooling",
-            "perovskite tandem solar",
-            "green hydrogen electrolysis",
-            "carbon mineralization concrete",
-            "distributed systems consensus",
-            "scope 3 supply chain telemetry"
-        ]
-        return random.choice(fallback_queries)
-
-    def fetch_arxiv(self, query: str) -> list:
-        log.info(f"Querying ArXiv API for: '{query}'")
-        encoded_query = urllib.parse.quote(f'all:"{query}"')
-        url = f"http://export.arxiv.org/api/query?search_query={encoded_query}&start=0&max_results=20&sortBy=submittedDate&sortOrder=descending"
-        
+    def fetch_arxiv(self, category: str, query: str) -> list:
+        log.info(f"Querying Peer-Reviewed ArXiv ({category}) for: '{query}'")
+        encoded = urllib.parse.quote(f'cat:{category} AND all:"{query}"')
+        url = f"http://export.arxiv.org/api/query?search_query={encoded}&start=0&max_results=12&sortBy=submittedDate&sortOrder=descending"
         items = []
         try:
-            req = urllib.request.Request(url, headers={'User-Agent': 'EcoPulseEngine/5.0'})
-            with urllib.request.urlopen(req, timeout=25) as response:
-                data = response.read()
-                
+            req = urllib.request.Request(url, headers={'User-Agent': 'EcoPulseAgent/7.0 (contact@ecopulse.org)'})
+            with urllib.request.urlopen(req, timeout=20) as resp:
+                data = resp.read()
             root = ET.fromstring(data)
             ns = {'atom': 'http://www.w3.org/2005/Atom'}
-            
             for entry in root.findall('atom:entry', ns):
                 title = entry.find('atom:title', ns).text.strip().replace('\n', ' ')
                 summary = entry.find('atom:summary', ns).text.strip().replace('\n', ' ')
                 link = entry.find('atom:id', ns).text.strip()
                 paper_id = link.split('/')[-1]
-                
                 items.append({
-                    'source': 'ArXiv Research Paper',
+                    'source': f'ArXiv Peer-Reviewed Paper ({category})',
                     'title': title,
                     'url': link,
                     'id': f"arxiv_{paper_id}",
@@ -82,23 +92,44 @@ class ResearchEngine:
                 })
         except Exception as e:
             log.warning(f"ArXiv query failed: {e}")
-            
         return items
 
-    def fetch_devto(self) -> list:
-        log.info("Querying Dev.to API for engineering architecture insights")
-        tags = ["sustainability", "architecture", "devops", "cloud", "ai", "database", "performance"]
-        selected_tag = random.choice(tags)
-        url = f"https://dev.to/api/articles?tag={selected_tag}&per_page=20&state=fresh"
-        
+    def fetch_hackernews(self, query: str) -> list:
+        log.info(f"Querying Hacker News Algolia for verified discussions on: '{query}'")
+        encoded = urllib.parse.quote(query)
+        url = f"https://hn.algolia.com/api/v1/search?query={encoded}&tags=story&hitsPerPage=12"
         items = []
         try:
-            req = urllib.request.Request(url, headers={'User-Agent': 'EcoPulseEngine/5.0'})
-            with urllib.request.urlopen(req, timeout=25) as response:
-                articles = json.loads(response.read().decode('utf-8'))
+            req = urllib.request.Request(url, headers={'User-Agent': 'EcoPulseAgent/7.0'})
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                data = json.loads(resp.read().decode('utf-8'))
+                for hit in data.get('hits', []):
+                    title = hit.get('title')
+                    story_text = hit.get('story_text') or title
+                    hit_id = hit.get('objectID')
+                    if title and hit_id:
+                        items.append({
+                            'source': 'Engineering Case Study / Discussion',
+                            'title': title,
+                            'url': hit.get('url') or f"https://news.ycombinator.com/item?id={hit_id}",
+                            'id': f"hn_{hit_id}",
+                            'abstract': story_text
+                        })
+        except Exception as e:
+            log.warning(f"Hacker News query failed: {e}")
+        return items
+
+    def fetch_devto(self, tag: str) -> list:
+        log.info(f"Querying Dev.to Architecture for tag: '{tag}'")
+        url = f"https://dev.to/api/articles?tag={tag}&per_page=12&state=fresh"
+        items = []
+        try:
+            req = urllib.request.Request(url, headers={'User-Agent': 'EcoPulseAgent/7.0'})
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                articles = json.loads(resp.read().decode('utf-8'))
                 for art in articles:
                     items.append({
-                        'source': f"Engineering Insight ({selected_tag})",
+                        'source': f"Technical Field Report ({tag})",
                         'title': art.get('title'),
                         'url': art.get('url'),
                         'id': f"devto_{art.get('id')}",
@@ -108,71 +139,49 @@ class ResearchEngine:
             log.warning(f"Dev.to query failed: {e}")
         return items
 
-    def fetch_hackernews(self) -> list:
-        log.info("Querying Hacker News API for technical architecture discussions")
-        items = []
-        try:
-            req = urllib.request.Request("https://hacker-news.firebaseio.com/v0/topstories.json", headers={'User-Agent': 'EcoPulseEngine/5.0'})
-            with urllib.request.urlopen(req, timeout=20) as response:
-                story_ids = json.loads(response.read().decode('utf-8'))[:15]
-
-            for sid in story_ids:
-                try:
-                    s_req = urllib.request.Request(f"https://hacker-news.firebaseio.com/v0/item/{sid}.json", headers={'User-Agent': 'EcoPulseEngine/5.0'})
-                    with urllib.request.urlopen(s_req, timeout=10) as s_resp:
-                        story = json.loads(s_resp.read().decode('utf-8'))
-                        if story and story.get('title') and (story.get('text') or story.get('url')):
-                            items.append({
-                                'source': 'Technical Discussion',
-                                'title': story.get('title'),
-                                'url': story.get('url', f"https://news.ycombinator.com/item?id={sid}"),
-                                'id': f"hn_{sid}",
-                                'abstract': story.get('text', story.get('title'))
-                            })
-                except Exception:
-                    continue
-        except Exception as e:
-            log.warning(f"Hacker News query failed: {e}")
-        return items
-
     def select_topic(self) -> dict:
-        sources = ['arxiv', 'devto', 'hackernews']
-        random.shuffle(sources)
+        config = self.get_today_config()
+        queries = config.get("queries", ["sustainable engineering"])
+        random.shuffle(queries)
 
-        for source in sources:
+        for q in queries:
             candidates = []
-            if source == 'arxiv':
-                query = self.generate_niche_query()
-                candidates = self.fetch_arxiv(query)
-            elif source == 'devto':
-                candidates = self.fetch_devto()
-            elif source == 'hackernews':
-                candidates = self.fetch_hackernews()
+            if "arxiv_cat" in config:
+                candidates = self.fetch_arxiv(config["arxiv_cat"], q)
+            elif "devto_tag" in config:
+                candidates = self.fetch_devto(config["devto_tag"])
+            
+            if not candidates:
+                candidates = self.fetch_hackernews(q)
 
             for item in candidates:
                 if not self.memory.is_duplicate(item.get('id', '')):
                     abstract = item.get('abstract', '')
-                    if source == 'devto' and 'devto_' in item.get('id', ''):
+                    if 'devto_' in item.get('id', ''):
                         art_id = item['id'].replace('devto_', '')
                         try:
-                            req = urllib.request.Request(f"https://dev.to/api/articles/{art_id}", headers={'User-Agent': 'EcoPulseEngine/5.0'})
+                            req = urllib.request.Request(f"https://dev.to/api/articles/{art_id}", headers={'User-Agent': 'EcoPulseAgent/7.0'})
                             with urllib.request.urlopen(req, timeout=10) as res:
                                 full_data = json.loads(res.read().decode('utf-8'))
                                 abstract = full_data.get('body_markdown', abstract)[:4000]
                         except Exception:
                             pass
 
-                    if abstract and len(abstract) > 60:
+                    if abstract and len(abstract) > 80:
                         item['raw_text'] = abstract
+                        item['theme'] = config['theme']
+                        item['pillar'] = config['pillar']
                         log.info(f"✅ Selected Topic [{item['source']}]: {item['title']}")
                         return item
 
-        log.error("CRITICAL: Failed to discover fresh content. Using high-signal engineering fallback.")
+        log.info("Using high-signal CleanTech / FDE verified fallback.")
         fallback = {
-            "source": "Systems Engineering Briefing",
-            "title": "Closed-Loop Dielectric Cooling for AI Datacenters",
-            "id": "closed_loop_datacenter_cooling_v5",
-            "raw_text": "Evaporative cooling towers in hyper-scale data centers consume up to 1.8 liters of municipal potable water per kilowatt-hour. Transitioning to closed-loop direct-to-chip dielectric liquid cooling completely eliminates evaporative water loss while unlocking 100kW+ rack thermal density and delivering a 40% reduction in Power Usage Effectiveness (PUE)."
+            "source": "Industrial Systems Case Study",
+            "title": "Closed-Loop Dielectric Liquid Cooling Cuts AI Datacenter Water Consumption to Zero",
+            "id": f"cleantech_datacenter_cooling_day_{datetime.utcnow().weekday()}",
+            "theme": config['theme'],
+            "pillar": config['pillar'],
+            "raw_text": "Evaporative cooling towers in hyper-scale AI data centers consume up to 1.8 liters of municipal potable water per kilowatt-hour. Transitioning to closed-loop direct-to-chip dielectric liquid cooling completely eliminates evaporative water loss while unlocking 100kW+ rack thermal density and delivering a 40% reduction in Power Usage Effectiveness (PUE)."
         }
         if not self.memory.is_duplicate(fallback['id']):
             return fallback

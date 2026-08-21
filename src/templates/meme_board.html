@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    /* INLINE_STYLES */
+  </style>
+</head>
+<body class="canvas-bg">
+  <div class="visual-wrapper">
+    {% if visual_type == 'meme_comparison' %}
+    <!-- TECHNICAL VIRAL MEME: LAB VS PRODUCTION -->
+    <div class="meme-card">
+      <div class="meme-header">
+        <span class="meme-tag">⚡ {{ topic_tag or 'FORWARD DEPLOYMENT REALITY' }}</span>
+        <span class="meme-brand">@arunachalamvenv</span>
+      </div>
+      <div class="meme-grid">
+        <div class="meme-col left-col">
+          <div class="col-banner">IN THE RESEARCH PAPER / PROTOTYPE</div>
+          <div class="col-content">
+            <div class="code-box">
+              <span class="code-comment"># Autonomous Agent Loop</span><br>
+              while goal_not_met:<br>
+              &nbsp;&nbsp;action = llm.decide(user_input)<br>
+              &nbsp;&nbsp;db.execute(action.query)<br>
+              &nbsp;&nbsp;<span class="status-green">✓ 100% Benchmark Score</span>
+            </div>
+            <div class="col-caption">{{ left_caption or 'Clean synthetic JSON & unlimited LLM retries' }}</div>
+          </div>
+        </div>
+        <div class="meme-col right-col">
+          <div class="col-banner danger">FORWARD DEPLOYED TO ENTERPRISE PROD</div>
+          <div class="col-content">
+            <div class="code-box danger-box">
+              <span class="code-comment"># Reality Check</span><br>
+              <span class="status-red">✖ SQL Syntax Error on SAP DB</span><br>
+              <span class="status-red">✖ Hallucinated DROP TABLE command</span><br>
+              <span class="status-red">✖ $4,200 token budget blown</span><br>
+              <span class="status-yellow">⚠ Human-in-the-Loop triggered</span>
+            </div>
+            <div class="col-caption danger-text">{{ right_caption or 'Legacy dirty ERP tables & unconstrained tool calls' }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="meme-punchline">
+        <span class="punch-icon">💡</span>
+        <span class="punch-text"><strong>The FDE Rule:</strong> {{ takeaway_rule or 'Production agents require deterministic DAG state machines, not infinite autonomous loops.' }}</span>
+      </div>
+    </div>
+
+    {% elif visual_type == 'whiteboard_flow' %}
+    <!-- WHITEBOARD ARCHITECTURAL SKETCH -->
+    <div class="whiteboard-card">
+      <div class="wb-topbar">
+        <div class="wb-pill">ARCHITECTURAL BLUEPRINT</div>
+        <div class="wb-title">{{ headline }}</div>
+      </div>
+      <div class="wb-flow">
+        {% for step in flow_steps %}
+        <div class="flow-node">
+          <div class="node-badge">STEP 0{{ loop.index }}</div>
+          <div class="node-title">{{ step.title }}</div>
+          <div class="node-desc">{{ step.desc }}</div>
+        </div>
+        {% if not loop.last %}
+        <div class="flow-arrow">➔</div>
+        {% endif %}
+        {% endfor %}
+      </div>
+      <div class="wb-metric-row">
+        <div class="wb-stat-pill">
+          <span class="stat-label">FAIL RATE</span>
+          <span class="stat-val red-text">{{ baseline_stat or '14.2%' }}</span>
+        </div>
+        <div class="stat-arrow">➔</div>
+        <div class="wb-stat-pill">
+          <span class="stat-label">PRODUCTION FDE</span>
+          <span class="stat-val green-text">{{ target_stat or '0.0%' }}</span>
+        </div>
+        <div class="wb-takeaway">{{ takeaway_rule }}</div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</body>
+</html>

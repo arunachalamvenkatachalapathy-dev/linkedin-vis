@@ -7,36 +7,45 @@ class ReviewEngine:
         self.llm = gemini_client
 
     def draft_and_review(self, hook: str, thesis: dict) -> str:
+        """
+        Drafts an ultra-short, specific, high-signal LinkedIn post (under 45 words).
+        """
         headline = thesis.get("headline", "")
-        tweet_body = thesis.get("tweet_body", "")
-        topic_tag = thesis.get("topic_tag", "Systems")
+        problem = thesis.get("concrete_problem", "")
+        mechanism = thesis.get("technical_mechanism", "")
+        metric = thesis.get("hard_metric", "")
+        rule = thesis.get("takeaway_rule", "")
+        topic_tag = thesis.get("topic_tag", "AIEngineering")
 
-        prompt = f'''You are Arunachalam Venkatachalapathy, an ESG & Systems Engineering Specialist.
-Write an ULTRA-SHORT, PUNCHY, HIGH-VALUE LinkedIn post caption for this insight.
+        prompt = f"""You are Arunachalam Venkatachalapathy, an AI Agent & Forward Deployment Engineer.
+Write an ULTRA-SHORT, PUNCHY, HIGH-SIGNAL LinkedIn post for this engineering takeaway.
 
-Topic: {headline}
-Core Insight: {tweet_body}
-Domain: {topic_tag}
+Headline: {headline}
+The Concrete Problem: {problem}
+The Technical Fix: {mechanism}
+The Hard Metric: {metric}
+The Golden Rule: {rule}
 
 RULES:
-1. LENGTH: 3 to 4 short lines MAXIMUM (strictly 30-50 words total).
-2. TONE: Thoughtful, professional, high-signal, purposeful. Zero media outrage, zero clickbait.
-3. STRUCTURE:
-   - Line 1: 1 punchy hook / core truth.
-   - Line 2: 1 sentence explaining why this principle matters.
-   - Line 3: 1 concise takeaway or golden rule.
-   - Line 4: 3 clean hashtags (e.g. #Sustainability #SystemsEngineering #Innovation).
+1. STRICT LENGTH: 35 to 48 words total.
+2. FORMAT:
+   - Line 1: Bold statement or hook with specific noun ({headline}).
+   - Line 2: The concrete problem & why raw prompt loops fail.
+   - Line 3: The architectural fix + metric.
+   - Line 4: The 1-sentence FDE rule.
+   - Line 5: 3 hashtags (e.g., #AIAgents #ForwardDeployment #SystemsArchitecture).
+3. Zero fluff, zero generic platitudes.
 
-Output ONLY the final short post text.
-'''
+Output ONLY the final post text.
+"""
 
-        post = self.llm.generate_text(prompt, temperature=0.5)
-        if post and len(post.split()) < 75:
+        post = self.llm.generate_text(prompt, temperature=0.4)
+        if post and 25 < len(post.split()) < 65:
             return post.strip()
             
         return (
-            f"Estimation gives you an illusion of control. Direct telemetry gives you the truth.\n\n"
-            f"Whether managing thermal load or Scope 3 emissions, verifiable real-time data is the only foundation for real optimization.\n\n"
-            f"Audit-grade telemetry beats spreadsheet assumptions every single time.\n\n"
-            f"#{topic_tag.replace(' ', '')} #SystemsEngineering #Sustainability"
+            f"Autonomous LLM loops fail the moment they touch enterprise ERPs.\n\n"
+            f"Unconstrained tool calls cause schema crashes and runaway token bills. The fix: replace autonomous loops with deterministic DAG state machines and strict Pydantic gates.\n\n"
+            f"{metric} Production agents require strict boundaries, not infinite freedom.\n\n"
+            f"#AIAgents #ForwardDeployment #SystemsEngineering"
         )
