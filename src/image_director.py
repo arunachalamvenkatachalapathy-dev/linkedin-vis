@@ -1,9 +1,8 @@
 import os
 import logging
-import urllib.request
-import urllib.parse
-import time
 from datetime import datetime
+from jinja2 import Template
+from playwright.sync_api import sync_playwright
 
 log = logging.getLogger("ecopulse")
 
@@ -12,59 +11,81 @@ class ImageDirector:
         self.llm = gemini_client
 
     def generate_image(self, thesis: dict, out_path: str = "state/latest_image.png") -> str:
-        img_prompt = thesis.get("image_generation_prompt", "")
-        if not img_prompt:
-            headline = thesis.get("headline", "AI Systems Architecture")
-            img_prompt = f"A photorealistic, cinematic documentary photo of a software engineer in an industrial server room, dramatic lighting, high detail, 16:9, regarding {headline}"
+        """
+        Renders a pixel-perfect, high-DPI Infographic / Telemetry Card via Playwright.
+        """
+        visual_type = thesis.get("visual_type", "realtime_telemetry")
+        topic_tag = thesis.get("topic_tag", "REAL-TIME TELEMETRY")
+        headline = thesis.get("headline", "Live Environmental Telemetry")
+        left_caption = thesis.get("left_caption", "")
+        right_caption = thesis.get("right_caption", "")
+        takeaway_rule = thesis.get("takeaway_rule", "")
+        flow_steps = thesis.get("flow_steps", [])
+        baseline_stat = thesis.get("baseline_stat", "14.2% Flat Factor")
+        target_stat = thesis.get("target_stat", "0.0% Telemetry Gap")
+        
+        # Telemetry metrics
+        metric_1_label = thesis.get("metric_1_label", "LIVE GRID INTENSITY")
+        metric_1_val = thesis.get("metric_1_val", "89 gCO2/kWh")
+        metric_1_sub = thesis.get("metric_1_sub", "Actual live sensor intensity")
+        metric_2_label = thesis.get("metric_2_label", "CLEAN ENERGY SHARE")
+        metric_2_val = thesis.get("metric_2_val", "64.4%")
+        metric_2_sub = thesis.get("metric_2_sub", "Renewables + Nuclear")
+        metric_3_label = thesis.get("metric_3_label", "ATMOSPHERIC CO2")
+        metric_3_val = thesis.get("metric_3_val", "427.8 ppm")
+        metric_3_sub = thesis.get("metric_3_sub", "NOAA Global Baseline")
+        timestamp_str = datetime.utcnow().strftime("%d %b %Y · %H:%M UTC")
 
-        os.makedirs(os.path.dirname(out_path) or '.', exist_ok=True)
-
-        # 1. Primary: High-Resolution Photorealistic AI Image via Pollinations AI (Flux Model)
-        encoded_prompt = urllib.parse.quote(img_prompt.replace("\n", " ").strip())
         try:
-            log.info(f"🎨 Generating photorealistic viral visual via Flux Engine...")
-            seed = int(time.time())
-            url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=1200&height=675&model=flux&seed={seed}&nologo=true"
-            
-            req = urllib.request.Request(url, headers={
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-            })
-            with urllib.request.urlopen(req, timeout=45) as resp:
-                img_bytes = resp.read()
-                if len(img_bytes) > 5000:
-                    with open(out_path, "wb") as f:
-                        f.write(img_bytes)
-                    log.info(f"✅ Generated photorealistic Flux visual at {out_path} ({len(img_bytes)} bytes)")
-                    return out_path
+            template_path = os.path.join(os.path.dirname(__file__), "templates", "meme_board.html")
+            css_path = os.path.join(os.path.dirname(__file__), "templates", "meme_board.css")
+
+            with open(template_path, "r", encoding="utf-8") as f:
+                html_template = f.read()
+            with open(css_path, "r", encoding="utf-8") as f:
+                css_content = f.read()
+
+            html_with_css = html_template.replace("/* INLINE_STYLES */", css_content)
+            template = Template(html_with_css)
+            rendered_html = template.render(
+                visual_type=visual_type,
+                topic_tag=topic_tag,
+                headline=headline,
+                left_caption=left_caption,
+                right_caption=right_caption,
+                takeaway_rule=takeaway_rule,
+                flow_steps=flow_steps,
+                baseline_stat=baseline_stat,
+                target_stat=target_stat,
+                metric_1_label=metric_1_label,
+                metric_1_val=metric_1_val,
+                metric_1_sub=metric_1_sub,
+                metric_2_label=metric_2_label,
+                metric_2_val=metric_2_val,
+                metric_2_sub=metric_2_sub,
+                metric_3_label=metric_3_label,
+                metric_3_val=metric_3_val,
+                metric_3_sub=metric_3_sub,
+                timestamp_str=timestamp_str
+            )
+
+            os.makedirs(os.path.dirname(out_path) or '.', exist_ok=True)
+            log.info(f"📊 Rendering Crisp High-DPI Infographic [{visual_type.upper()}]: {headline}")
+
+            with sync_playwright() as p:
+                browser = p.chromium.launch(headless=True)
+                page = browser.new_page(
+                    viewport={"width": 1200, "height": 675},
+                    device_scale_factor=2
+                )
+                page.set_content(rendered_html, wait_until="domcontentloaded")
+                page.screenshot(path=out_path, type="png")
+                browser.close()
+
+            log.info(f"✅ Generated Infographic Image at {out_path} ({os.path.getsize(out_path)} bytes)")
+            return out_path
+
         except Exception as e:
-            log.warning(f"Pollinations Flux generation failed: {e}. Trying Turbo model fallback...")
+            log.error(f"Infographic visual rendering failed: {e}")
 
-        # 2. Secondary: Pollinations Turbo fallback
-        try:
-            url_turbo = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=1200&height=675&model=turbo&nologo=true"
-            req = urllib.request.Request(url_turbo, headers={'User-Agent': 'Mozilla/5.0'})
-            with urllib.request.urlopen(req, timeout=30) as resp:
-                img_bytes = resp.read()
-                if len(img_bytes) > 5000:
-                    with open(out_path, "wb") as f:
-                        f.write(img_bytes)
-                    log.info(f"✅ Generated Turbo visual at {out_path} ({len(img_bytes)} bytes)")
-                    return out_path
-        except Exception as e:
-            log.warning(f"Pollinations Turbo fallback failed: {e}")
-
-        # 3. Tertiary: Gemini Native Image API
-        if self.llm:
-            try:
-                log.info("Trying Gemini native image model...")
-                img_bytes = self.llm.generate_image(img_prompt, max_retries=1)
-                if img_bytes and len(img_bytes) > 5000:
-                    with open(out_path, "wb") as f:
-                        f.write(img_bytes)
-                    log.info(f"✅ Generated Gemini visual at {out_path} ({len(img_bytes)} bytes)")
-                    return out_path
-            except Exception as e:
-                log.warning(f"Gemini image generation skipped: {e}")
-
-        log.error("All image generation strategies failed.")
         return ""
