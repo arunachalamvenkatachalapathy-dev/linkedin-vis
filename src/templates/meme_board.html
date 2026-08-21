@@ -8,116 +8,42 @@
 </head>
 <body class="canvas-bg">
   <div class="visual-wrapper">
-    {% if visual_type == 'realtime_telemetry' %}
-    <!-- LIVE REAL-TIME ENVIRONMENTAL TELEMETRY DASHBOARD -->
-    <div class="telemetry-card">
-      <div class="telemetry-top">
-        <div class="live-indicator">
-          <span class="live-dot"></span>
-          <span class="live-text">LIVE SENSOR TELEMETRY</span>
-        </div>
-        <div class="telemetry-timestamp">{{ timestamp_str or 'REAL-TIME DATA STREAM' }}</div>
-      </div>
-      <div class="telemetry-headline">{{ headline }}</div>
-      
-      <div class="telemetry-metrics-grid">
-        <div class="metric-box primary">
-          <div class="metric-label">{{ metric_1_label or 'GRID CARBON INTENSITY' }}</div>
-          <div class="metric-value">{{ metric_1_val or '89 gCO2/kWh' }}</div>
-          <div class="metric-sub">{{ metric_1_sub or 'Actual live intensity' }}</div>
-        </div>
-        <div class="metric-box">
-          <div class="metric-label">{{ metric_2_label or 'COAL GENERATION' }}</div>
-          <div class="metric-value green-val">{{ metric_2_val or '0.0%' }}</div>
-          <div class="metric-sub">{{ metric_2_sub or 'Zero thermal coal' }}</div>
-        </div>
-        <div class="metric-box">
-          <div class="metric-label">{{ metric_3_label or 'ATMOSPHERIC CO2' }}</div>
-          <div class="metric-value">{{ metric_3_val or '427.8 ppm' }}</div>
-          <div class="metric-sub">{{ metric_3_sub or 'Global baseline' }}</div>
-        </div>
+    <div class="alien-card">
+      <div class="card-header">
+        <div class="topic-pill">⚡ {{ topic_tag or 'GALACTIC AUDIT REPORT' }}</div>
+        <div class="author-tag">@arunachalamvenv · SYSTEMS ARCHITECT</div>
       </div>
 
-      <div class="telemetry-takeaway">
-        <span class="takeaway-tag">ENGINEERING IMPLICATION</span>
-        <span class="takeaway-text">{{ takeaway_rule }}</span>
-      </div>
-    </div>
-
-    {% elif visual_type == 'meme_comparison' %}
-    <!-- TECHNICAL VIRAL MEME: LAB VS PRODUCTION -->
-    <div class="meme-card">
-      <div class="meme-header">
-        <span class="meme-tag">⚡ {{ topic_tag or 'FORWARD DEPLOYMENT REALITY' }}</span>
-        <span class="meme-brand">@arunachalamvenv</span>
-      </div>
-      <div class="meme-grid">
-        <div class="meme-col left-col">
-          <div class="col-banner">IN THE RESEARCH PAPER / PROTOTYPE</div>
-          <div class="col-content">
-            <div class="code-box">
-              <span class="code-comment"># Autonomous Agent Loop</span><br>
-              while goal_not_met:<br>
-              &nbsp;&nbsp;action = llm.decide(user_input)<br>
-              &nbsp;&nbsp;db.execute(action.query)<br>
-              &nbsp;&nbsp;<span class="status-green">✓ 100% Benchmark Score</span>
-            </div>
-            <div class="col-caption">{{ left_caption or 'Clean synthetic JSON & unlimited LLM retries' }}</div>
+      <div class="dialogue-container">
+        <!-- HUMAN SPEECH BLOCK -->
+        <div class="speech-box human-box">
+          <div class="speaker-label human-label">
+            <span class="speaker-icon">👤</span>
+            <span class="speaker-title">HUMAN TECH LEAD / EXECUTIVE</span>
+          </div>
+          <div class="speaker-quote">
+            "{{ human_question or 'We bought 5,000 vintage tree offsets in 2011, so running our heavy AI cluster during peak coal hours is 100% green... right?' }}"
           </div>
         </div>
-        <div class="meme-col right-col">
-          <div class="col-banner danger">FORWARD DEPLOYED TO ENTERPRISE PROD</div>
-          <div class="col-content">
-            <div class="code-box danger-box">
-              <span class="code-comment"># Reality Check</span><br>
-              <span class="status-red">✖ SQL Syntax Error on SAP DB</span><br>
-              <span class="status-red">✖ Hallucinated DROP TABLE command</span><br>
-              <span class="status-red">✖ $4,200 token budget blown</span><br>
-              <span class="status-yellow">⚠ Human-in-the-Loop triggered</span>
-            </div>
-            <div class="col-caption danger-text">{{ right_caption or 'Legacy dirty ERP tables & unconstrained tool calls' }}</div>
+
+        <!-- ALIEN SPEECH BLOCK -->
+        <div class="speech-box alien-box">
+          <div class="speaker-label alien-label">
+            <span class="speaker-icon">👽</span>
+            <span class="speaker-title">ALIEN SYSTEMS AUDITOR</span>
+          </div>
+          <div class="speaker-quote">
+            "{{ alien_answer or 'With all due galactic respect, the live grid is at 93 gCO2/kWh right now. Trees do not absorb midnight coal spikes. Dynamic workload scheduling does.' }}"
           </div>
         </div>
       </div>
-      <div class="meme-punchline">
-        <span class="punch-icon">💡</span>
-        <span class="punch-text"><strong>The FDE Rule:</strong> {{ takeaway_rule or 'Production agents require deterministic DAG state machines, not infinite autonomous loops.' }}</span>
-      </div>
-    </div>
 
-    {% else %}
-    <!-- WHITEBOARD ARCHITECTURAL SKETCH -->
-    <div class="whiteboard-card">
-      <div class="wb-topbar">
-        <div class="wb-pill">ARCHITECTURAL BLUEPRINT</div>
-        <div class="wb-title">{{ headline }}</div>
-      </div>
-      <div class="wb-flow">
-        {% for step in flow_steps %}
-        <div class="flow-node">
-          <div class="node-badge">STEP 0{{ loop.index }}</div>
-          <div class="node-title">{{ step.title }}</div>
-          <div class="node-desc">{{ step.desc }}</div>
-        </div>
-        {% if not loop.last %}
-        <div class="flow-arrow">➔</div>
-        {% endif %}
-        {% endfor %}
-      </div>
-      <div class="wb-metric-row">
-        <div class="wb-stat-pill">
-          <span class="stat-label">BASELINE / ESTIMATE</span>
-          <span class="stat-val red-text">{{ baseline_stat or '14.2%' }}</span>
-        </div>
-        <div class="stat-arrow">➔</div>
-        <div class="wb-stat-pill">
-          <span class="stat-label">DIRECT TELEMETRY</span>
-          <span class="stat-val green-text">{{ target_stat or '0.0%' }}</span>
-        </div>
-        <div class="wb-takeaway">{{ takeaway_rule }}</div>
+      <!-- BOTTOM PUNCHLINE BAR -->
+      <div class="punchline-bar">
+        <span class="punch-badge">💡 THE LAW OF PHYSICS</span>
+        <span class="punch-text">{{ takeaway_rule or 'Static emissions accounting is dead. Real-time telemetry is mandatory.' }}</span>
       </div>
     </div>
-    {% endif %}
   </div>
 </body>
 </html>
