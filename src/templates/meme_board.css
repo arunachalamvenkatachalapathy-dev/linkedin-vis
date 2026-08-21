@@ -25,6 +25,132 @@ body.canvas-bg {
   max-width: 1100px;
 }
 
+/* ==================== REAL-TIME TELEMETRY CARD ==================== */
+.telemetry-card {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 2px solid #0f172a;
+  box-shadow: 10px 10px 0px #0f172a;
+  padding: 34px 40px;
+}
+
+.telemetry-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.live-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  padding: 4px 12px;
+  border-radius: 9999px;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  background: #16a34a;
+  border-radius: 50%;
+}
+
+.live-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 800;
+  color: #15803d;
+  letter-spacing: 0.5px;
+}
+
+.telemetry-timestamp {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.telemetry-headline {
+  font-size: 28px;
+  font-weight: 900;
+  color: #0f172a;
+  letter-spacing: -0.5px;
+  margin-bottom: 24px;
+  line-height: 1.25;
+}
+
+.telemetry-metrics-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.metric-box {
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.metric-box.primary {
+  background: #f0f9ff;
+  border-color: #7dd3fc;
+}
+
+.metric-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 800;
+  color: #475569;
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+
+.metric-value {
+  font-size: 32px;
+  font-weight: 900;
+  color: #0f172a;
+  letter-spacing: -0.5px;
+  margin-bottom: 4px;
+}
+
+.green-val { color: #16a34a; }
+
+.metric-sub {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.telemetry-takeaway {
+  background: #f8fafc;
+  border-left: 4px solid #0284c7;
+  padding: 14px 18px;
+  border-radius: 0 10px 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.takeaway-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 800;
+  color: #0284c7;
+  flex-shrink: 0;
+}
+
+.takeaway-text {
+  font-size: 15px;
+  color: #1e293b;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
 /* ==================== MEME CARD ==================== */
 .meme-card {
   background: #ffffff;
@@ -84,13 +210,9 @@ body.canvas-bg {
   letter-spacing: 0.5px;
 }
 
-.col-banner.danger {
-  background: #dc2626;
-}
+.col-banner.danger { background: #dc2626; }
 
-.col-content {
-  padding: 20px;
-}
+.col-content { padding: 20px; }
 
 .code-box {
   background: #0f172a;
@@ -120,9 +242,7 @@ body.canvas-bg {
   text-align: center;
 }
 
-.col-caption.danger-text {
-  color: #b91c1c;
-}
+.col-caption.danger-text { color: #b91c1c; }
 
 .meme-punchline {
   background: #f0fdf4;
@@ -147,9 +267,7 @@ body.canvas-bg {
   padding: 32px 36px;
 }
 
-.wb-topbar {
-  margin-bottom: 24px;
-}
+.wb-topbar { margin-bottom: 24px; }
 
 .wb-pill {
   font-family: 'JetBrains Mono', monospace;
@@ -219,10 +337,7 @@ body.canvas-bg {
   padding: 14px 20px;
 }
 
-.wb-stat-pill {
-  display: flex;
-  flex-direction: column;
-}
+.wb-stat-pill { display: flex; flex-direction: column; }
 
 .stat-label {
   font-family: 'JetBrains Mono', monospace;
@@ -231,11 +346,7 @@ body.canvas-bg {
   color: #64748b;
 }
 
-.stat-val {
-  font-size: 20px;
-  font-weight: 900;
-}
-
+.stat-val { font-size: 20px; font-weight: 900; }
 .red-text { color: #dc2626; }
 .green-text { color: #16a34a; }
 .stat-arrow { font-size: 18px; color: #94a3b8; font-weight: bold; }

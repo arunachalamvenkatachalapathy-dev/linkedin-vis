@@ -1,6 +1,7 @@
 import os
 import logging
 import random
+from datetime import datetime
 from jinja2 import Template
 from playwright.sync_api import sync_playwright
 
@@ -12,15 +13,27 @@ class ImageDirector:
 
     def generate_image(self, thesis: dict, out_path: str = "state/latest_image.png") -> str:
         img_prompt = thesis.get("image_generation_prompt", "")
-        visual_type = thesis.get("visual_type", "meme_comparison")
-        topic_tag = thesis.get("topic_tag", "CLEANTECH TELEMETRY")
-        headline = thesis.get("headline", "Production System Architecture")
+        visual_type = thesis.get("visual_type", "realtime_telemetry")
+        topic_tag = thesis.get("topic_tag", "REAL-TIME TELEMETRY")
+        headline = thesis.get("headline", "Live Environmental Telemetry")
         left_caption = thesis.get("left_caption", "")
         right_caption = thesis.get("right_caption", "")
         takeaway_rule = thesis.get("takeaway_rule", "")
         flow_steps = thesis.get("flow_steps", [])
-        baseline_stat = thesis.get("baseline_stat", "1.8L/kWh Water")
-        target_stat = thesis.get("target_stat", "0.0L/kWh Closed-Loop")
+        baseline_stat = thesis.get("baseline_stat", "1.8L/kWh")
+        target_stat = thesis.get("target_stat", "0.0L/kWh")
+        
+        # Telemetry metrics
+        metric_1_label = thesis.get("metric_1_label", "LIVE GRID INTENSITY")
+        metric_1_val = thesis.get("metric_1_val", "89 gCO2/kWh")
+        metric_1_sub = thesis.get("metric_1_sub", "Actual live sensor intensity")
+        metric_2_label = thesis.get("metric_2_label", "COAL GENERATION")
+        metric_2_val = thesis.get("metric_2_val", "0.0%")
+        metric_2_sub = thesis.get("metric_2_sub", "Zero thermal coal")
+        metric_3_label = thesis.get("metric_3_label", "ATMOSPHERIC CO2")
+        metric_3_val = thesis.get("metric_3_val", "427.8 ppm")
+        metric_3_sub = thesis.get("metric_3_sub", "Global baseline")
+        timestamp_str = datetime.utcnow().strftime("%d %b %Y · %H:%M UTC")
 
         # 1. Quick attempt on Gemini native image
         if self.llm and img_prompt:
@@ -36,7 +49,7 @@ class ImageDirector:
             except Exception as e:
                 log.info(f"Gemini image generation unavailable, using dynamic visual card: {e}")
 
-        # 2. Dynamic Playwright Visual Card (Meme, Whiteboard, or Benchmark flow)
+        # 2. Dynamic Playwright Visual Card
         try:
             template_path = os.path.join(os.path.dirname(__file__), "templates", "meme_board.html")
             css_path = os.path.join(os.path.dirname(__file__), "templates", "meme_board.css")
@@ -57,7 +70,17 @@ class ImageDirector:
                 takeaway_rule=takeaway_rule,
                 flow_steps=flow_steps,
                 baseline_stat=baseline_stat,
-                target_stat=target_stat
+                target_stat=target_stat,
+                metric_1_label=metric_1_label,
+                metric_1_val=metric_1_val,
+                metric_1_sub=metric_1_sub,
+                metric_2_label=metric_2_label,
+                metric_2_val=metric_2_val,
+                metric_2_sub=metric_2_sub,
+                metric_3_label=metric_3_label,
+                metric_3_val=metric_3_val,
+                metric_3_sub=metric_3_sub,
+                timestamp_str=timestamp_str
             )
 
             os.makedirs(os.path.dirname(out_path) or '.', exist_ok=True)

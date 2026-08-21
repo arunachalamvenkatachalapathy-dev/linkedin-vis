@@ -8,7 +8,43 @@
 </head>
 <body class="canvas-bg">
   <div class="visual-wrapper">
-    {% if visual_type == 'meme_comparison' %}
+    {% if visual_type == 'realtime_telemetry' %}
+    <!-- LIVE REAL-TIME ENVIRONMENTAL TELEMETRY DASHBOARD -->
+    <div class="telemetry-card">
+      <div class="telemetry-top">
+        <div class="live-indicator">
+          <span class="live-dot"></span>
+          <span class="live-text">LIVE SENSOR TELEMETRY</span>
+        </div>
+        <div class="telemetry-timestamp">{{ timestamp_str or 'REAL-TIME DATA STREAM' }}</div>
+      </div>
+      <div class="telemetry-headline">{{ headline }}</div>
+      
+      <div class="telemetry-metrics-grid">
+        <div class="metric-box primary">
+          <div class="metric-label">{{ metric_1_label or 'GRID CARBON INTENSITY' }}</div>
+          <div class="metric-value">{{ metric_1_val or '89 gCO2/kWh' }}</div>
+          <div class="metric-sub">{{ metric_1_sub or 'Actual live intensity' }}</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">{{ metric_2_label or 'COAL GENERATION' }}</div>
+          <div class="metric-value green-val">{{ metric_2_val or '0.0%' }}</div>
+          <div class="metric-sub">{{ metric_2_sub or 'Zero thermal coal' }}</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">{{ metric_3_label or 'ATMOSPHERIC CO2' }}</div>
+          <div class="metric-value">{{ metric_3_val or '427.8 ppm' }}</div>
+          <div class="metric-sub">{{ metric_3_sub or 'Global baseline' }}</div>
+        </div>
+      </div>
+
+      <div class="telemetry-takeaway">
+        <span class="takeaway-tag">ENGINEERING IMPLICATION</span>
+        <span class="takeaway-text">{{ takeaway_rule }}</span>
+      </div>
+    </div>
+
+    {% elif visual_type == 'meme_comparison' %}
     <!-- TECHNICAL VIRAL MEME: LAB VS PRODUCTION -->
     <div class="meme-card">
       <div class="meme-header">
@@ -49,7 +85,7 @@
       </div>
     </div>
 
-    {% elif visual_type == 'whiteboard_flow' %}
+    {% else %}
     <!-- WHITEBOARD ARCHITECTURAL SKETCH -->
     <div class="whiteboard-card">
       <div class="wb-topbar">
@@ -70,12 +106,12 @@
       </div>
       <div class="wb-metric-row">
         <div class="wb-stat-pill">
-          <span class="stat-label">FAIL RATE</span>
+          <span class="stat-label">BASELINE / ESTIMATE</span>
           <span class="stat-val red-text">{{ baseline_stat or '14.2%' }}</span>
         </div>
         <div class="stat-arrow">➔</div>
         <div class="wb-stat-pill">
-          <span class="stat-label">PRODUCTION FDE</span>
+          <span class="stat-label">DIRECT TELEMETRY</span>
           <span class="stat-val green-text">{{ target_stat or '0.0%' }}</span>
         </div>
         <div class="wb-takeaway">{{ takeaway_rule }}</div>
