@@ -28,7 +28,7 @@ class GeminiClient:
         if not self.api_key:
             log.warning("GEMINI_API_KEY is not set. LLM API calls will fail.")
 
-    def generate_text(self, prompt: str, temperature: float = 0.6, json_mode: bool = False, max_retries: int = 2) -> str:
+    def generate_text(self, prompt: str, temperature: float = 0.6, json_mode: bool = False, max_retries: int = 5) -> str:
         if not self.api_key:
             log.error("Cannot generate text: GEMINI_API_KEY is missing.")
             return ""
@@ -60,8 +60,9 @@ class GeminiClient:
                         return ""
                     
                     if resp.status_code in [429, 500, 502, 503, 504]:
-                        wait_time = attempt * 5
-                        log.warning(f"Model {model} HTTP {resp.status_code}. Retrying in {wait_time}s (attempt {attempt}/{max_retries})...")
+                        import random
+                        wait_time = min(60, 5 * (2.0 ** (attempt - 1))) + random.uniform(1, 5)
+                        log.warning(f"Model {model} HTTP {resp.status_code}. Retrying in {wait_time:.1f}s (attempt {attempt}/{max_retries})...")
                         time.sleep(wait_time)
                         continue
                     
@@ -69,8 +70,9 @@ class GeminiClient:
                     break
 
                 except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as e:
-                    wait_time = attempt * 5
-                    log.warning(f"Timeout/Connection error on {model}: {e}. Retrying in {wait_time}s...")
+                    import random
+                    wait_time = min(60, 5 * (2.0 ** (attempt - 1))) + random.uniform(1, 5)
+                    log.warning(f"Timeout/Connection error on {model}: {e}. Retrying in {wait_time:.1f}s...")
                     time.sleep(wait_time)
                     last_error = e
                 except Exception as e:
