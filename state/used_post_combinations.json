@@ -148,5 +148,17 @@
     "length_preset": "deep",
     "date": "2026-08-22T15:42:28.213868+00:00",
     "post_id": "simulated"
+  },
+  {
+    "post_format": "carousel",
+    "hook_type": "pattern_interrupt",
+    "framing": "narrative",
+    "body_structure": "E",
+    "cta_type": "save_bait",
+    "image_style": "editorial_illustration",
+    "visual_variant": "variant_b",
+    "length_preset": "standard",
+    "date": "2026-08-22T15:59:28.132838+00:00",
+    "post_id": "urn:li:ugcPost:7496959232601305088"
   }
 ]

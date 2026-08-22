@@ -443,5 +443,25 @@
     "pillar": "",
     "source_type": "default",
     "topic_fingerprint": "artificial|audit|behind|cannot|explain|explainable|fail|intelligence"
+  },
+  {
+    "id": "ss_35d992fd33278b601ecf1bb977bcc9ab965d490f",
+    "source": "Semantic Scholar (Peer-Reviewed)",
+    "headline": "ID-RAG: Identity Retrieval-Augmented Generation for Long-Hor",
+    "topic": "Orchestration Patterns, Agent Memory & Tool Call Governance",
+    "post_id": "urn:li:ugcPost:7496959232601305088",
+    "post_url": "https://www.linkedin.com/feed/update/urn:li:ugcPost:7496959232601305088/",
+    "date": "2026-08-22T15:59:28.131868+00:00",
+    "hook_type": "pattern_interrupt",
+    "framing": "narrative",
+    "body_structure": "E",
+    "cta_type": "save_bait",
+    "image_style": "editorial_illustration",
+    "length_preset": "standard",
+    "turn_line": "Without structured identity, your AI ESG agents aren't upholding your values\u2014they're automating greenwashing.",
+    "proof_fact": "ID-RAG achieves a 42% reduction in AI persona drift over long-horizon tasks.",
+    "pillar": "",
+    "source_type": "default",
+    "topic_fingerprint": "agents|aren|augmented|automating|generation|greenwashing|identity|long"
   }
 ]
