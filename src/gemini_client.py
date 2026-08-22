@@ -8,15 +8,14 @@ import requests
 log = logging.getLogger("ecopulse")
 
 TEXT_MODELS = [
-    "gemini-3.5-flash",
-    "gemini-3.7-flash",
-    "gemini-flash-latest"
+    "gemini-2.0-flash",
+    "gemini-1.5-flash",
+    "gemini-1.5-pro",
 ]
 
 IMAGE_MODELS = [
-    "gemini-2.5-flash-image",
-    "gemini-3.1-flash-image",
-    "gemini-3-pro-image"
+    "imagen-3.0-generate-002",
+    "gemini-2.0-flash",
 ]
 
 class GeminiClient:
@@ -60,7 +59,7 @@ class GeminiClient:
                         return ""
                     
                     if resp.status_code in [429, 500, 502, 503, 504]:
-                        wait_time = attempt * 2
+                        wait_time = attempt * 5
                         log.warning(f"Model {model} HTTP {resp.status_code}. Retrying in {wait_time}s (attempt {attempt}/{max_retries})...")
                         time.sleep(wait_time)
                         continue
@@ -69,7 +68,7 @@ class GeminiClient:
                     break
 
                 except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as e:
-                    wait_time = attempt * 2
+                    wait_time = attempt * 5
                     log.warning(f"Timeout/Connection error on {model}: {e}. Retrying in {wait_time}s...")
                     time.sleep(wait_time)
                     last_error = e
