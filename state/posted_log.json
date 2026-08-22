@@ -425,6 +425,7 @@
     "topic_fingerprint": "agents|autonomous|based|building|environments|exist|language|large"
   },
   {
+<<<<<<< Updated upstream
     "id": "ss_35d992fd33278b601ecf1bb977bcc9ab965d490f",
     "source": "Semantic Scholar (Peer-Reviewed)",
     "headline": "ID-RAG: Identity Retrieval-Augmented Generation for Long-Hor",
@@ -443,5 +444,25 @@
     "pillar": "",
     "source_type": "default",
     "topic_fingerprint": "aligned|augmented|begins|compliance|drift|generation|identity|keep"
+=======
+    "id": "oa_W4391848979",
+    "source": "OpenAlex Scholarly Graph (CC0)",
+    "headline": "Explainable Artificial Intelligence (XAI) 2.0: A manifesto o",
+    "topic": "Orchestration Patterns, Agent Memory & Tool Call Governance",
+    "post_id": "simulated",
+    "post_url": "N/A",
+    "date": "2026-08-22T15:42:28.205254+00:00",
+    "hook_type": "curiosity_gap",
+    "framing": "framework_howto",
+    "body_structure": "B",
+    "cta_type": "specific_ask",
+    "image_style": "diagram_framework",
+    "length_preset": "deep",
+    "turn_line": "If you cannot explain the physics behind the prediction, the audit will fail.",
+    "proof_fact": "The XAI 2.0 manifesto outlines exactly 28 open problems categorized into nine categories.",
+    "pillar": "",
+    "source_type": "default",
+    "topic_fingerprint": "artificial|audit|behind|cannot|explain|explainable|fail|intelligence"
+>>>>>>> Stashed changes
   }
 ]

@@ -138,6 +138,7 @@
     "post_id": "simulated"
   },
   {
+<<<<<<< Updated upstream
     "post_format": "carousel",
     "hook_type": "curiosity_gap",
     "framing": "framework_howto",
@@ -148,5 +149,17 @@
     "length_preset": "standard",
     "date": "2026-08-22T15:45:38.109783+00:00",
     "post_id": "urn:li:ugcPost:7496955751282655232"
+=======
+    "post_format": "single_image",
+    "hook_type": "curiosity_gap",
+    "framing": "framework_howto",
+    "body_structure": "B",
+    "cta_type": "specific_ask",
+    "image_style": "diagram_framework",
+    "visual_variant": "variant_b",
+    "length_preset": "deep",
+    "date": "2026-08-22T15:42:28.213868+00:00",
+    "post_id": "simulated"
+>>>>>>> Stashed changes
   }
 ]
