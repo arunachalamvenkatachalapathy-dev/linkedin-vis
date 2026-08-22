@@ -39,11 +39,13 @@ ABSOLUTE RULES:
 1. First line of each hook MUST be ≤12 words.
 2. Each hook is 1–2 sentences maximum (≤30 words total).
 3. NEVER start with "I" + mundane verb ("I recently...", "I wanted to...", "I'm excited to...").
-4. NEVER start with "In today's world", "Did you know?", or "I'm excited to share".
+4. NEVER start with "In today's world", "Did you know?", "I'm excited to share", "Let's dive in", "What's interesting is".
 5. No emojis in the hook lines.
 6. No hashtags in the hook lines.
 7. Make the reader feel they MUST click "...see more" — trigger curiosity, challenge, or tension.
 8. Each hook must be distinctly different from the others while staying in the "{hook_type}" style.
+9. FORBIDDEN words in any hook: leverage, ecosystem, unlock, drive value, transformative, revolutionize, game-changer, paradigm shift.
+10. Write like an engineer, not a LinkedIn influencer. Name the system, the failure mode, the specific number.
 
 Return valid JSON:
 {{

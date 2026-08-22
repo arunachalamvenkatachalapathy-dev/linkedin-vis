@@ -14,6 +14,7 @@ from typing import Optional
 # ── Section 13: Cliché Blacklist ─────────────────────────────────────────────
 
 CLICHE_PHRASES = [
+    # Classic LinkedIn bait
     "In today's fast-paced world",
     "In today's world",
     "Let that sink in",
@@ -34,6 +35,34 @@ CLICHE_PHRASES = [
     "I'm excited to share",
     "I recently",
     "I wanted to share",
+    # Corporate fluff — user-specified hard blacklist
+    "leverage",
+    "ecosystems",
+    "unlock potential",
+    "unlock the potential",
+    "drive value",
+    "deliver value",
+    "create value",
+    "It's worth noting",
+    "This is fascinating",
+    "I find this compelling",
+    "What's interesting is",
+    "Let's dive in",
+    "At the end of the day",
+    "In conclusion",
+    "as we know",
+    "the future of",
+    "going forward",
+    "move the needle",
+    "low-hanging fruit",
+    "deep dive",
+    # AI writing patterns
+    "I find it interesting",
+    "It is important to note",
+    "It is worth noting",
+    "needless to say",
+    "transformative",
+    "revolutionize",
 ]
 # ── Section 2: Hook Library ──────────────────────────────────────────────────
 

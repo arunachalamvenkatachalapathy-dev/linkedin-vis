@@ -3,59 +3,59 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Merriweather:wght@400;700;900&family=Oswald:wght@500;700&display=swap');
 
-/* Default (Variant A): Dark Navy / Emerald & Teal Accent */
+/* Variant A (Default): Brutalist Dark — Pure Black / Electric Red */
 body {
   width: 1080px;
   height: 1350px;
   font-family: 'Inter', 'Segoe UI', sans-serif;
-  background: #0B0F1A;
+  background: #000000;
   color: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  --bg-color: #0B0F1A;
+  --bg-color: #000000;
   --text-color: #FFFFFF;
-  --badge-color: #00E5A0;
-  --badge-border: rgba(0, 229, 160, 0.3);
-  --tag-color: #00B4D8;
+  --badge-color: #EF4444;
+  --badge-border: rgba(239, 68, 68, 0.4);
+  --tag-color: #FF6B6B;
+  --card-bg: rgba(255, 255, 255, 0.025);
+  --card-border: rgba(239, 68, 68, 0.12);
+  --font-family: 'Inter', sans-serif;
+  --title-size: 44px;
+  --hook-size: 54px;
+}
+
+/* Variant B: High-Contrast White / Deep Red Accent */
+body.variant_b {
+  background: #FAFAFA;
+  color: #0A0A0A;
+  --bg-color: #FAFAFA;
+  --text-color: #0A0A0A;
+  --badge-color: #DC2626;
+  --badge-border: rgba(220, 38, 38, 0.3);
+  --tag-color: #B91C1C;
+  --card-bg: #FFFFFF;
+  --card-border: rgba(0, 0, 0, 0.06);
+  --font-family: 'Inter', sans-serif;
+  --title-size: 40px;
+  --hook-size: 50px;
+}
+
+/* Variant C: Deep Charcoal / Vivid Red — Max intensity */
+body.variant_c {
+  background: #0A0A0A;
+  color: #FFFFFF;
+  --bg-color: #0A0A0A;
+  --text-color: #FFFFFF;
+  --badge-color: #FF4444;
+  --badge-border: rgba(255, 68, 68, 0.45);
+  --tag-color: #FF6B6B;
   --card-bg: rgba(255, 255, 255, 0.03);
   --card-border: rgba(255, 255, 255, 0.08);
   --font-family: 'Inter', sans-serif;
-  --title-size: 42px;
-  --hook-size: 52px;
-}
-
-/* Variant B: Off-White / Forest Green & Gold Accent */
-body.variant_b {
-  background: #F8F9FA;
-  color: #111827;
-  --bg-color: #F8F9FA;
-  --text-color: #111827;
-  --badge-color: #1B4D3E;
-  --badge-border: rgba(27, 77, 62, 0.3);
-  --tag-color: #D97706;
-  --card-bg: #FFFFFF;
-  --card-border: rgba(0, 0, 0, 0.08);
-  --font-family: 'Merriweather', Georgia, serif;
-  --title-size: 38px;
-  --hook-size: 46px;
-}
-
-/* Variant C: Charcoal / Amber & Violet Accent */
-body.variant_c {
-  background: #18181B;
-  color: #FAFAFA;
-  --bg-color: #18181B;
-  --text-color: #FAFAFA;
-  --badge-color: #F59E0B;
-  --badge-border: rgba(245, 158, 11, 0.3);
-  --tag-color: #C084FC;
-  --card-bg: rgba(255, 255, 255, 0.04);
-  --card-border: rgba(255, 255, 255, 0.1);
-  --font-family: 'Oswald', sans-serif;
-  --title-size: 46px;
-  --hook-size: 56px;
+  --title-size: 48px;
+  --hook-size: 58px;
 }
 
 .slide-canvas {

@@ -3,56 +3,56 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Merriweather:wght@400;700;900&family=Oswald:wght@500;700&display=swap');
 
-/* Default (Variant A): Dark Navy / Teal Accent / Sans Bold */
+/* Variant A (Default): Brutalist Dark — Pure Black / Electric Red */
 body {
   width: 1080px;
   height: 1080px;
   font-family: 'Inter', 'Segoe UI', sans-serif;
-  background: #0B0F1A;
+  background: #000000;
   color: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  --bg-color: #0B0F1A;
-  --accent-color: #00E5A0;
-  --accent-grad: linear-gradient(180deg, #00E5A0, #00B4D8);
-  --badge-border: rgba(0, 229, 160, 0.3);
+  --bg-color: #000000;
+  --accent-color: #EF4444;
+  --accent-grad: linear-gradient(180deg, #EF4444, #DC2626);
+  --badge-border: rgba(239, 68, 68, 0.4);
   --quote-color: #FFFFFF;
   --quote-font: 'Inter', sans-serif;
   --quote-weight: 900;
-  --quote-size: 46px;
-  --attr-color: rgba(255, 255, 255, 0.65);
+  --quote-size: 50px;
+  --attr-color: rgba(255, 255, 255, 0.6);
 }
 
-/* Variant B: Off-White BG / Deep Green Accent / Serif Headline */
+/* Variant B: High-Contrast White / Red Accent — Print-editorial feel */
 body.variant_b {
-  background: #F8F9FA;
-  font-family: 'Merriweather', Georgia, serif;
-  --bg-color: #F8F9FA;
-  --accent-color: #1B4D3E;
-  --accent-grad: linear-gradient(180deg, #1B4D3E, #2E8B57);
-  --badge-border: rgba(27, 77, 62, 0.3);
-  --quote-color: #111827;
-  --quote-font: 'Merriweather', Georgia, serif;
-  --quote-weight: 700;
-  --quote-size: 44px;
+  background: #FAFAFA;
+  font-family: 'Inter', sans-serif;
+  --bg-color: #FAFAFA;
+  --accent-color: #DC2626;
+  --accent-grad: linear-gradient(180deg, #DC2626, #EF4444);
+  --badge-border: rgba(220, 38, 38, 0.3);
+  --quote-color: #0A0A0A;
+  --quote-font: 'Inter', sans-serif;
+  --quote-weight: 900;
+  --quote-size: 48px;
   --attr-color: #374151;
 }
 
-/* Variant C: Charcoal BG / Amber Accent / Condensed Sans, Larger Scale */
+/* Variant C: Deep Charcoal / Vivid Red + White — Max intensity */
 body.variant_c {
-  background: #18181B;
-  font-family: 'Oswald', sans-serif;
-  --bg-color: #18181B;
-  --accent-color: #F59E0B;
-  --accent-grad: linear-gradient(180deg, #F59E0B, #EF4444);
-  --badge-border: rgba(245, 158, 11, 0.3);
-  --quote-color: #FAFAFA;
-  --quote-font: 'Oswald', sans-serif;
-  --quote-weight: 700;
-  --quote-size: 52px;
-  --attr-color: rgba(250, 250, 250, 0.7);
+  background: #0A0A0A;
+  font-family: 'Inter', sans-serif;
+  --bg-color: #0A0A0A;
+  --accent-color: #FF4444;
+  --accent-grad: linear-gradient(180deg, #FF4444, #EF4444);
+  --badge-border: rgba(255, 68, 68, 0.45);
+  --quote-color: #FFFFFF;
+  --quote-font: 'Inter', sans-serif;
+  --quote-weight: 900;
+  --quote-size: 54px;
+  --attr-color: rgba(255, 255, 255, 0.65);
 }
 
 .card-canvas {

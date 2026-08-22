@@ -59,7 +59,28 @@ class EditorialEngine:
         cta_desc = CTA_DESCRIPTIONS.get(config.cta_type, "")
         length_spec = LENGTH_PRESETS.get(config.length_preset, LENGTH_PRESETS["standard"])
 
-        prompt = f"""You are a top-performing LinkedIn content strategist writing a post for Arunachalam Venkatachalapathy, an AI Agent & Forward Deployment Engineer who also works in environmental engineering / CleanTech / ESG systems.
+        from datetime import datetime as _dt
+        _niche_day = _dt.utcnow().weekday()  # 0=Mon, 6=Sun
+        _is_ai_day = (_niche_day % 2 == 0)  # Mon/Wed/Fri/Sun → AI Engineering
+        _persona = (
+            "Arunachalam Venkatachalapathy — a Senior AI & Forward Deployment Engineer "
+            "who ships autonomous agent systems, LLM ops pipelines, and production AI infrastructure. "
+            "Your voice is that of someone who has debugged these systems at 2 AM, not someone describing them from a whitepaper."
+            if _is_ai_day else
+            "Arunachalam Venkatachalapathy — a CleanTech & ESG Systems Engineer "
+            "who works on grid decarbonization, BRSR compliance, industrial Scope 3 measurement, and clean energy systems. "
+            "Your voice is that of someone who has read the emissions sensor data, not just the sustainability report."
+        )
+        _tone_rule = (
+            "VOICE: Sharp, technical, zero corporate fluff. Write like a senior engineer explaining this to another senior engineer "
+            "at a whiteboard. No 'leverage', no 'ecosystem', no 'unlock value'. Name the specific failure mode, the specific system, "
+            "the specific number. If a sentence could appear in a McKinsey deck, delete it and rewrite."
+        )
+
+        prompt = f"""You are a top-performing LinkedIn content strategist writing a post for {_persona}
+
+VOICE & TONE:
+{_tone_rule}
 
 SOURCE MATERIAL:
 Title: {title}
