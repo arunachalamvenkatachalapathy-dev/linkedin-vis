@@ -221,5 +221,22 @@
     "length_preset": "standard",
     "turn_line": "",
     "proof_fact": "Live Grid Carbon Intensity Measured at 64 gCO2/kWh (60.2% Clean Energy)"
+  },
+  {
+    "id": "live_grid_carbon_2026_08_22_03",
+    "source": "National Grid ESO Real-Time Telemetry API",
+    "headline": "Live Grid Carbon Intensity Measured at 64 gCO2/kWh (60.8% Cl",
+    "topic": "AI Datacenter Power, Liquid Cooling & PUE Efficiency",
+    "post_id": "urn:li:share:7496767583308787712",
+    "post_url": "https://www.linkedin.com/feed/update/urn:li:share:7496767583308787712/",
+    "date": "2026-08-22T03:17:55.357509+00:00",
+    "hook_type": "story_cold_open",
+    "framing": "industry_observation",
+    "body_structure": "B",
+    "cta_type": "specific_ask",
+    "image_style": "text_on_card",
+    "length_preset": "punch",
+    "turn_line": "Routing batch compute during clean grid windows reduces Scope 2 emissions by up to 34% without new hardware.",
+    "proof_fact": "Reduces Scope 2 emissions by up to 34% during low grid carbon intensity windows (measured at 64 gCO2/kWh)"
   }
 ]
