@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <style>/* INLINE_STYLES */</style>
 </head>
-<body>
+<body class="{{ variant | default('variant_a') }}">
   <div class="diagram-canvas">
     <div class="diagram-header">
       <div class="diagram-badge">{{ badge or 'FRAMEWORK' }}</div>

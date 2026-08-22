@@ -1,17 +1,60 @@
-/* Before/After Split — Two-panel comparison */
+/* Before/After Split — Two-panel comparison with 3 visual variants */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
 
+/* Default (Variant A): Classic Red vs Emerald Green / Dark Navy Canvas */
 body {
   width: 1080px;
   height: 1080px;
   font-family: 'Inter', 'Segoe UI', sans-serif;
   background: #0A0E1A;
+  color: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  --bg-color: #0A0E1A;
+  --text-primary: #FFFFFF;
+  --badge-color: #F59E0B;
+  --badge-border: rgba(245, 158, 11, 0.3);
+  --before-bg: rgba(239, 68, 68, 0.06);
+  --before-border: rgba(239, 68, 68, 0.15);
+  --before-color: #EF4444;
+  --after-bg: rgba(0, 229, 160, 0.06);
+  --after-border: rgba(0, 229, 160, 0.15);
+  --after-color: #00E5A0;
+}
+
+/* Variant B: Muted Slate / Coral Rose vs Cyan Blue */
+body.variant_b {
+  background: #0F172A;
+  --bg-color: #0F172A;
+  --text-primary: #FFFFFF;
+  --badge-color: #38BDF8;
+  --badge-border: rgba(56, 189, 248, 0.3);
+  --before-bg: rgba(251, 113, 133, 0.06);
+  --before-border: rgba(251, 113, 133, 0.18);
+  --before-color: #FB7185;
+  --after-bg: rgba(56, 189, 248, 0.06);
+  --after-border: rgba(56, 189, 248, 0.18);
+  --after-color: #38BDF8;
+}
+
+/* Variant C: High Contrast Light / Dark Gray vs Electric Amber */
+body.variant_c {
+  background: #F1F5F9;
+  color: #0F172A;
+  --bg-color: #F1F5F9;
+  --text-primary: #0F172A;
+  --badge-color: #D97706;
+  --badge-border: rgba(217, 119, 6, 0.3);
+  --before-bg: #E2E8F0;
+  --before-border: rgba(148, 163, 184, 0.4);
+  --before-color: #475569;
+  --after-bg: #FEF3C7;
+  --after-border: rgba(245, 158, 11, 0.4);
+  --after-color: #D97706;
 }
 
 .split-canvas {
@@ -33,22 +76,22 @@ body {
   font-weight: 700;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: #F59E0B;
+  color: var(--badge-color);
   padding: 8px 18px;
-  border: 1.5px solid rgba(245, 158, 11, 0.3);
+  border: 1.5px solid var(--badge-border);
   border-radius: 6px;
 }
 
 .split-attr {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.35);
+  color: opacity(0.5);
   font-weight: 600;
 }
 
 .split-headline {
   font-size: 30px;
   font-weight: 900;
-  color: #FFFFFF;
+  color: var(--text-primary);
   line-height: 1.2;
 }
 
@@ -69,13 +112,13 @@ body {
 }
 
 .panel-before {
-  background: rgba(239, 68, 68, 0.06);
-  border: 1px solid rgba(239, 68, 68, 0.15);
+  background: var(--before-bg);
+  border: 1px solid var(--before-border);
 }
 
 .panel-after {
-  background: rgba(0, 229, 160, 0.06);
-  border: 1px solid rgba(0, 229, 160, 0.15);
+  background: var(--after-bg);
+  border: 1px solid var(--after-border);
 }
 
 .panel-label {
@@ -86,22 +129,22 @@ body {
 }
 
 .panel-before .panel-label {
-  color: #EF4444;
+  color: var(--before-color);
 }
 
 .panel-after .panel-label {
-  color: #00E5A0;
+  color: var(--after-color);
 }
 
 .panel-title {
   font-size: 22px;
   font-weight: 700;
-  color: #FFFFFF;
+  color: var(--text-primary);
 }
 
 .panel-body {
   font-size: 15px;
-  color: rgba(255, 255, 255, 0.55);
+  opacity: 0.75;
   line-height: 1.5;
   flex: 1;
 }
@@ -113,11 +156,11 @@ body {
 }
 
 .panel-before .panel-stat {
-  color: #EF4444;
+  color: var(--before-color);
 }
 
 .panel-after .panel-stat {
-  color: #00E5A0;
+  color: var(--after-color);
 }
 
 .panel-divider {
@@ -132,17 +175,17 @@ body {
 .divider-line {
   width: 2px;
   height: 80px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(128, 128, 128, 0.2);
 }
 
 .divider-icon {
   font-size: 24px;
-  color: rgba(245, 158, 11, 0.6);
+  color: var(--badge-color);
   font-weight: 700;
 }
 
 .split-footer {
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid rgba(128, 128, 128, 0.15);
   padding-top: 20px;
   display: flex;
   justify-content: space-between;
@@ -152,12 +195,12 @@ body {
 .footer-rule {
   font-size: 15px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.55);
+  opacity: 0.7;
   max-width: 600px;
   line-height: 1.4;
 }
 
 .footer-date {
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.25);
+  opacity: 0.4;
 }

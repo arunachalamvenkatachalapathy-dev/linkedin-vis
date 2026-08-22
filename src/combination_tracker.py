@@ -16,7 +16,7 @@ from datetime import datetime, timezone, timedelta
 
 from src.post_config import (
     PostConfig, HOOK_TYPES, FRAMINGS, BODY_STRUCTURES, CTA_TYPES,
-    IMAGE_STYLES, LENGTH_PRESETS,
+    IMAGE_STYLES, VISUAL_VARIANTS, LENGTH_PRESETS,
     SOURCE_FRAMING_HINTS, FRAMING_IMAGE_HINTS, FRAMING_LENGTH_HINTS,
 )
 
@@ -128,6 +128,17 @@ class CombinationTracker:
             fallback=random.choice(IMAGE_STYLES)
         )
 
+        # 5b. Select visual_variant (no immediate repeat of the same (image_style, visual_variant) pair)
+        last_entry = self.history[-1] if self.history else {}
+        last_style = last_entry.get("image_style")
+        last_variant = last_entry.get("visual_variant")
+
+        if last_style == config.image_style and last_variant in VISUAL_VARIANTS:
+            available_variants = [v for v in VISUAL_VARIANTS if v != last_variant]
+        else:
+            available_variants = VISUAL_VARIANTS
+        config.visual_variant = random.choice(available_variants)
+
         # 6. Select length_preset (framing heuristic)
         preferred_lengths = FRAMING_LENGTH_HINTS.get(config.framing, ["standard"])
         config.length_preset = random.choice(preferred_lengths)
@@ -135,7 +146,7 @@ class CombinationTracker:
         log.info(
             f"📋 Selected components: hook={config.hook_type}, frame={config.framing}, "
             f"body={config.body_structure}, length={config.length_preset}, "
-            f"cta={config.cta_type}, image={config.image_style}"
+            f"cta={config.cta_type}, image={config.image_style}, variant={config.visual_variant}"
         )
         return config
 

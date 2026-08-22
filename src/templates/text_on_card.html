@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <style>/* INLINE_STYLES */</style>
 </head>
-<body>
+<body class="{{ variant | default('variant_a') }}">
   <div class="card-canvas">
     <div class="card-badge">{{ badge or 'INSIGHT' }}</div>
     <div class="card-quote">{{ turn_line or 'The engineering details matter more than the headline.' }}</div>

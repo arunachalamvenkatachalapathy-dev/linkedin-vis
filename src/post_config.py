@@ -154,6 +154,8 @@ IMAGE_STYLES = [
     "before_after_split",     # Two-panel visual contrast
 ]
 
+VISUAL_VARIANTS = ["variant_a", "variant_b", "variant_c"]
+
 IMAGE_STYLE_DESCRIPTIONS = {
     "text_on_card":           "Bold single statement or stat, high contrast, minimal — treat as a 'quote card'. Best for punch/data posts using the Turn line itself.",
     "data_visual":            "Clean chart/graph rendering the one key number — no decorative chart junk. Best for data breakdown framing.",
@@ -212,6 +214,7 @@ class PostConfig:
     length_preset: str = "standard"
     cta_type: str = "soft_mirror"
     image_style: str = "text_on_card"
+    visual_variant: str = "variant_a"
 
     # Extracted during generation
     proof_fact: str = ""
@@ -226,7 +229,7 @@ class PostConfig:
 
     def combination_key(self) -> str:
         """Returns a string key representing the component combination."""
-        return f"{self.hook_type}|{self.body_structure}|{self.framing}|{self.cta_type}|{self.image_style}"
+        return f"{self.hook_type}|{self.body_structure}|{self.framing}|{self.cta_type}|{self.image_style}|{self.visual_variant}"
 
     def combo_summary(self) -> dict:
         """Returns the fields tracked for variety enforcement."""
@@ -236,5 +239,6 @@ class PostConfig:
             "body_structure": self.body_structure,
             "cta_type": self.cta_type,
             "image_style": self.image_style,
+            "visual_variant": self.visual_variant,
             "length_preset": self.length_preset,
         }

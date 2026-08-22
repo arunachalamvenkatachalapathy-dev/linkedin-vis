@@ -1,17 +1,47 @@
-/* Diagram/Framework — Vertical flow for how-to posts */
+/* Diagram/Framework — Vertical flow for how-to posts with 3 visual variants */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
 
+/* Default (Variant A): Deep Indigo / Violet Nodes */
 body {
   width: 1080px;
   height: 1350px;
   font-family: 'Inter', 'Segoe UI', sans-serif;
   background: #0A0E1A;
+  color: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  --bg-color: #0A0E1A;
+  --badge-color: #A78BFA;
+  --badge-border: rgba(167, 139, 250, 0.3);
+  --node-grad: linear-gradient(135deg, #A78BFA, #7C3AED);
+  --connector-line: rgba(167, 139, 250, 0.3);
+  --connector-arrow: rgba(167, 139, 250, 0.4);
+}
+
+/* Variant B: Dark Emerald / Mint Nodes */
+body.variant_b {
+  background: #061A14;
+  --bg-color: #061A14;
+  --badge-color: #34D399;
+  --badge-border: rgba(52, 211, 153, 0.3);
+  --node-grad: linear-gradient(135deg, #34D399, #059669);
+  --connector-line: rgba(52, 211, 153, 0.3);
+  --connector-arrow: rgba(52, 211, 153, 0.4);
+}
+
+/* Variant C: Mono Slate / Crimson Accent Nodes */
+body.variant_c {
+  background: #111827;
+  --bg-color: #111827;
+  --badge-color: #F87171;
+  --badge-border: rgba(248, 113, 113, 0.3);
+  --node-grad: linear-gradient(135deg, #F87171, #DC2626);
+  --connector-line: rgba(248, 113, 113, 0.3);
+  --connector-arrow: rgba(248, 113, 113, 0.4);
 }
 
 .diagram-canvas {
@@ -33,9 +63,9 @@ body {
   font-weight: 700;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: #A78BFA;
+  color: var(--badge-color);
   padding: 8px 18px;
-  border: 1.5px solid rgba(167, 139, 250, 0.3);
+  border: 1.5px solid var(--badge-border);
   border-radius: 6px;
 }
 
@@ -73,7 +103,7 @@ body {
   width: 48px;
   height: 48px;
   border-radius: 12px;
-  background: linear-gradient(135deg, #A78BFA, #7C3AED);
+  background: var(--node-grad);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -110,11 +140,11 @@ body {
 .connector-line {
   width: 2px;
   height: 16px;
-  background: rgba(167, 139, 250, 0.3);
+  background: var(--connector-line);
 }
 
 .connector-arrow {
-  color: rgba(167, 139, 250, 0.4);
+  color: var(--connector-arrow);
   font-size: 12px;
 }
 

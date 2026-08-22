@@ -1,17 +1,50 @@
-/* Data Visual — Clean stat card for data breakdown posts */
+/* Data Visual — Clean stat card with 3 visual variants */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
 
+/* Default (Variant A): Dark Slate / Neon Cyan & Emerald */
 body {
   width: 1080px;
   height: 1080px;
   font-family: 'Inter', 'Segoe UI', sans-serif;
   background: #0A0E1A;
+  color: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  --bg-color: #0A0E1A;
+  --badge-color: #00B4D8;
+  --badge-border: rgba(0, 180, 216, 0.3);
+  --stat-grad: linear-gradient(135deg, #00E5A0, #00B4D8);
+  --target-border: rgba(0, 229, 160, 0.25);
+  --target-bg: rgba(0, 229, 160, 0.04);
+  --target-val-color: #00E5A0;
+}
+
+/* Variant B: Midnight Purple / Electric Violet & Magenta */
+body.variant_b {
+  background: #0F0A1C;
+  --bg-color: #0F0A1C;
+  --badge-color: #C084FC;
+  --badge-border: rgba(192, 132, 252, 0.3);
+  --stat-grad: linear-gradient(135deg, #C084FC, #E879F9);
+  --target-border: rgba(192, 132, 252, 0.25);
+  --target-bg: rgba(192, 132, 252, 0.04);
+  --target-val-color: #C084FC;
+}
+
+/* Variant C: Warm Obsidian / Gold & Flame Orange */
+body.variant_c {
+  background: #1A140E;
+  --bg-color: #1A140E;
+  --badge-color: #F97316;
+  --badge-border: rgba(249, 115, 22, 0.3);
+  --stat-grad: linear-gradient(135deg, #F59E0B, #F97316);
+  --target-border: rgba(249, 115, 22, 0.25);
+  --target-bg: rgba(249, 115, 22, 0.04);
+  --target-val-color: #F59E0B;
 }
 
 .data-canvas {
@@ -33,9 +66,9 @@ body {
   font-weight: 700;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: #00B4D8;
+  color: var(--badge-color);
   padding: 8px 18px;
-  border: 1.5px solid rgba(0, 180, 216, 0.3);
+  border: 1.5px solid var(--badge-border);
   border-radius: 6px;
 }
 
@@ -64,7 +97,7 @@ body {
 .hero-number {
   font-size: 96px;
   font-weight: 900;
-  background: linear-gradient(135deg, #00E5A0, #00B4D8);
+  background: var(--stat-grad);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -107,8 +140,8 @@ body {
 }
 
 .comp-item.target {
-  border-color: rgba(0, 229, 160, 0.25);
-  background: rgba(0, 229, 160, 0.04);
+  border-color: var(--target-border);
+  background: var(--target-bg);
 }
 
 .comp-label {
@@ -126,7 +159,7 @@ body {
 }
 
 .comp-item.target .comp-value {
-  color: #00E5A0;
+  color: var(--target-val-color);
 }
 
 .comp-sub {

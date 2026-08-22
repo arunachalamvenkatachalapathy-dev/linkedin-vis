@@ -43,44 +43,45 @@ class ImageDirector:
 
     def generate_image(self, image_style: str, turn_line: str,
                        thesis_data: dict, raw_data: dict,
-                       out_path: str = "state/latest_image.png") -> str:
+                       out_path: str = "state/latest_image.png",
+                       visual_variant: str = "variant_a") -> str:
         """
-        Generate the visual for the selected image_style.
+        Generate the visual for the selected image_style and visual_variant.
         The Turn line drives the visual message, not the whole post.
         """
-        log.info(f"🎨 Generating [{image_style.upper()}] visual for: '{turn_line[:60]}...'")
+        log.info(f"🎨 Generating [{image_style.upper()} - {visual_variant.upper()}] visual for: '{turn_line[:60]}...'")
 
         if image_style == "text_on_card":
-            return self._render_text_on_card(turn_line, thesis_data, out_path)
+            return self._render_text_on_card(turn_line, thesis_data, out_path, visual_variant)
         elif image_style == "data_visual":
-            return self._render_data_visual(turn_line, thesis_data, raw_data, out_path)
+            return self._render_data_visual(turn_line, thesis_data, raw_data, out_path, visual_variant)
         elif image_style == "diagram_framework":
-            return self._render_diagram_framework(turn_line, thesis_data, raw_data, out_path)
+            return self._render_diagram_framework(turn_line, thesis_data, raw_data, out_path, visual_variant)
         elif image_style == "editorial_illustration":
             return self._render_editorial_illustration(turn_line, thesis_data, out_path)
         elif image_style == "before_after_split":
-            return self._render_before_after_split(turn_line, thesis_data, raw_data, out_path)
+            return self._render_before_after_split(turn_line, thesis_data, raw_data, out_path, visual_variant)
         else:
             log.warning(f"Unknown image style '{image_style}', falling back to text_on_card")
-            return self._render_text_on_card(turn_line, thesis_data, out_path)
+            return self._render_text_on_card(turn_line, thesis_data, out_path, visual_variant)
 
     # ── 1. Text-on-Card ──────────────────────────────────────────────────
 
-    def _render_text_on_card(self, turn_line: str, thesis_data: dict, out_path: str) -> str:
+    def _render_text_on_card(self, turn_line: str, thesis_data: dict, out_path: str, visual_variant: str = "variant_a") -> str:
         headline = thesis_data.get("headline", "")
         badge = self._extract_badge(headline)
 
         return self._render_html_template(
             "text_on_card",
             {"turn_line": turn_line, "badge": badge,
-             "date_str": self._date_str()},
+             "date_str": self._date_str(), "variant": visual_variant},
             ASPECT_1x1, out_path
         )
 
     # ── 2. Data Visual ───────────────────────────────────────────────────
 
     def _render_data_visual(self, turn_line: str, thesis_data: dict,
-                            raw_data: dict, out_path: str) -> str:
+                            raw_data: dict, out_path: str, visual_variant: str = "variant_a") -> str:
         # Extract metrics from thesis or raw data
         headline = thesis_data.get("headline", raw_data.get("title", ""))
         metric_val = self._extract_number(turn_line) or thesis_data.get("hard_metric", "—")
@@ -99,14 +100,15 @@ class ImageDirector:
              "context": context, "badge": "DATA BREAKDOWN",
              "baseline_val": baseline_val, "baseline_sub": baseline_sub,
              "target_val": target_val, "target_sub": target_sub,
-             "source": raw_data.get("source", ""), "date_str": self._date_str()},
+             "source": raw_data.get("source", ""), "date_str": self._date_str(),
+             "variant": visual_variant},
             ASPECT_1x1, out_path
         )
 
     # ── 3. Diagram/Framework ────────────────────────────────────────────
 
     def _render_diagram_framework(self, turn_line: str, thesis_data: dict,
-                                  raw_data: dict, out_path: str) -> str:
+                                  raw_data: dict, out_path: str, visual_variant: str = "variant_a") -> str:
         headline = thesis_data.get("headline", raw_data.get("title", ""))
         takeaway = turn_line
 
@@ -116,7 +118,8 @@ class ImageDirector:
         return self._render_html_template(
             "diagram_framework",
             {"headline": headline, "steps": steps, "takeaway": takeaway,
-             "badge": "FRAMEWORK", "date_str": self._date_str()},
+             "badge": "FRAMEWORK", "date_str": self._date_str(),
+             "variant": visual_variant},
             ASPECT_4x5, out_path
         )
 
@@ -193,7 +196,7 @@ Return valid JSON:
     # ── 5. Before/After Split ────────────────────────────────────────────
 
     def _render_before_after_split(self, turn_line: str, thesis_data: dict,
-                                   raw_data: dict, out_path: str) -> str:
+                                   raw_data: dict, out_path: str, visual_variant: str = "variant_a") -> str:
         headline = thesis_data.get("headline", raw_data.get("title", ""))
 
         # Generate before/after content via Gemini
@@ -209,7 +212,7 @@ Return valid JSON:
              "after_body": ba_data.get("after_body", ""),
              "after_stat": ba_data.get("after_stat", ""),
              "takeaway": turn_line, "badge": "BEFORE → AFTER",
-             "date_str": self._date_str()},
+             "date_str": self._date_str(), "variant": visual_variant},
             ASPECT_1x1, out_path
         )
 

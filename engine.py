@@ -148,6 +148,7 @@ def main():
         thesis_data=thesis_data,
         raw_data=raw_data,
         out_path="state/latest_image.png",
+        visual_variant=config.visual_variant,
     )
     config.image_path = image_path
 

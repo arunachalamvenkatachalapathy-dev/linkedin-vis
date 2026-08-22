@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <style>/* INLINE_STYLES */</style>
 </head>
-<body>
+<body class="{{ variant | default('variant_a') }}">
   <div class="split-canvas">
     <div class="split-header">
       <div class="split-badge">{{ badge or 'BEFORE → AFTER' }}</div>
