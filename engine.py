@@ -147,14 +147,16 @@ def main():
         turn_line=config.turn_line,
         thesis_data=thesis_data,
         raw_data=raw_data,
-        out_path="state/latest_image.png",
+        out_path="state/latest_carousel.pdf" if config.post_format == "carousel" else "state/latest_image.png",
         visual_variant=config.visual_variant,
+        post_format=config.post_format,
+        slides=config.slides,
     )
     config.image_path = image_path
 
     # ── Phase 7: Publishing to LinkedIn ─────────────────────────────────
     log.info("═══ Phase 7: Publishing to LinkedIn ═══")
-    pub_res = publish_to_linkedin(config.post_text, image_path)
+    pub_res = publish_to_linkedin(config.post_text, image_path, post_format=config.post_format)
 
     # ── Phase 8: State & Combination Logging ────────────────────────────
     log.info("═══ Phase 8: State & Combination Logging ═══")

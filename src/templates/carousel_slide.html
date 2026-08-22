@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>/* INLINE_STYLES */</style>
+</head>
+<body class="{{ variant | default('variant_a') }} role-{{ slide.role }}">
+  <div class="slide-canvas">
+    <div class="slide-header">
+      <div class="slide-badge">{{ badge or 'ECOPULSE' }}</div>
+      <div class="slide-counter">{{ slide_index }} / {{ total_slides }}</div>
+    </div>
+    
+    <div class="slide-body">
+      {% if slide.role == 'hook' %}
+        <div class="hook-tag">KEY INSIGHT</div>
+        <div class="slide-title hook-title">{{ slide.text }}</div>
+      {% elif slide.role == 'context' %}
+        <div class="role-tag">THE PROBLEM</div>
+        <div class="slide-title">{{ slide.text }}</div>
+      {% elif slide.role == 'proof' %}
+        <div class="role-tag proof-tag">HARD PROOF</div>
+        <div class="slide-title proof-title">{{ slide.text }}</div>
+      {% elif slide.role == 'cta' %}
+        <div class="role-tag cta-tag">ACTION</div>
+        <div class="slide-title cta-title">{{ slide.text }}</div>
+      {% else %}
+        <div class="role-tag">STEP {{ slide_index - 1 }}</div>
+        <div class="slide-title">{{ slide.text }}</div>
+      {% endif %}
+    </div>
+
+    <div class="slide-footer">
+      <span class="footer-handle">@arunachalamvenv</span>
+      <span class="footer-swipe">Swipe →</span>
+    </div>
+  </div>
+</body>
+</html>

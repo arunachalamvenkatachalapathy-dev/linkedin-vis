@@ -30,12 +30,15 @@ class EditorialEngine:
     def compose_post(self, config: PostConfig, raw_data: dict) -> PostConfig:
         """
         Two-pass post composition:
-          Pass 1 → Draft the full post using selected modules
+          Pass 1 → Draft full post (or carousel slide deck) using selected modules
           Pass 2 → Extract and sharpen the Turn line
-        Returns the updated PostConfig with post_text, proof_fact, turn_line.
+        Returns the updated PostConfig with post_text, proof_fact, turn_line, slides.
         """
         # Pass 1: Draft
-        config = self._pass1_draft(config, raw_data)
+        if config.post_format == "carousel":
+            config = self._pass1_draft_carousel(config, raw_data)
+        else:
+            config = self._pass1_draft(config, raw_data)
 
         # Pass 2: Turn line extraction
         if config.post_text:
@@ -115,6 +118,104 @@ Return ONLY valid JSON:
         # Fallback: minimal structured post
         config.post_text = self._fallback_post(config, raw_data)
         config.proof_fact = title
+        return config
+
+    # ── Pass 1: Carousel Draft Generation ────────────────────────────────
+
+    def _pass1_draft_carousel(self, config: PostConfig, raw_data: dict) -> PostConfig:
+        raw_text = raw_data.get("raw_text", "")
+        title = raw_data.get("title", "")
+        source_name = raw_data.get("source", "")
+
+        hook_desc = HOOK_PATTERNS.get(config.hook_type, "")
+        frame_desc = FRAMING_DESCRIPTIONS.get(config.framing, "")
+        body_desc = BODY_STRUCTURE_DESCRIPTIONS.get(config.body_structure, "")
+        cta_desc = CTA_DESCRIPTIONS.get(config.cta_type, "")
+
+        prompt = f"""You are a top-performing LinkedIn content strategist creating an 8 to 10 SLIDE CAROUSEL (PDF document post) for Arunachalam Venkatachalapathy, an AI Agent & Forward Deployment Engineer in CleanTech / ESG systems.
+
+SOURCE MATERIAL:
+Title: {title}
+Source: {source_name}
+Content:
+{raw_text[:4000]}
+
+INSTRUCTIONS — Create a carousel slide deck (EXACTLY 8 to 10 slides) and a short caption using these selected modules:
+
+HOOK TYPE: {config.hook_type}
+{hook_desc}
+Slide 1 MUST be the hook. Under 12 words. No emoji in hook line.
+
+FRAMING: {config.framing}
+{frame_desc}
+
+BODY STRUCTURE: {config.body_structure} — {body_desc}
+
+CTA TYPE: {config.cta_type}
+{cta_desc}
+Final slide MUST be the CTA.
+
+SLIDE REQUIREMENTS (8 to 10 slides total):
+- Slide 1 (role: "hook"): Hook line (≤12 words)
+- Slide 2 (role: "context"): Problem / context setup (max 40 words)
+- Slide 3..N-2 (role: "point"): Core insights mapped from body structure (one idea per slide, max 45 words per slide)
+- Slide N-1 (role: "proof"): Hardest data point / proof fact given its own dedicated slide (max 30 words)
+- Slide N (role: "cta"): CTA slide
+
+CAPTION:
+Short LinkedIn caption (150-300 characters). First line MUST be the hook. The carousel PDF carries the depth, not the caption.
+
+CLICHÉ FILTER — Do NOT use any of these:
+{', '.join(f'"{c}"' for c in CLICHE_PHRASES[:8])}
+
+Return ONLY valid JSON:
+{{
+  "slides": [
+    {{"role": "hook", "text": "..."}},
+    {{"role": "context", "text": "..."}},
+    {{"role": "point", "text": "..."}},
+    {{"role": "point", "text": "..."}},
+    {{"role": "point", "text": "..."}},
+    {{"role": "point", "text": "..."}},
+    {{"role": "proof", "text": "..."}},
+    {{"role": "cta", "text": "..."}}
+  ],
+  "caption": "short caption under 300 characters",
+  "proof_fact": "the single concrete citable fact"
+}}"""
+
+        try:
+            res = self.llm.generate_text(prompt, temperature=0.65, json_mode=True)
+            if res:
+                parsed = json.loads(res)
+                slides = parsed.get("slides", [])
+                caption = parsed.get("caption", "").strip()
+                proof = parsed.get("proof_fact", "").strip()
+                if slides and len(slides) >= 6:
+                    config.slides = slides
+                    config.post_text = caption
+                    config.proof_fact = proof
+                    log.info(f"Pass 1 carousel draft: {len(slides)} slides, caption len={len(caption)}")
+                    return config
+        except Exception as e:
+            log.warning(f"Pass 1 carousel draft generation failed: {e}")
+
+        return self._fallback_carousel(config, raw_data)
+
+    def _fallback_carousel(self, config: PostConfig, raw_data: dict) -> PostConfig:
+        title = raw_data.get("title", "Engineering Systems")
+        config.slides = [
+            {"role": "hook", "text": f"{title}: The Engineering Fix."},
+            {"role": "context", "text": "Most infrastructure teams optimize for the headline instead of system architecture."},
+            {"role": "point", "text": "1. Identify thermal bottlenecks in AI datacenter compute allocation."},
+            {"role": "point", "text": "2. Track grid carbon intensity at 15-minute telemetry intervals."},
+            {"role": "point", "text": "3. Shift heavy workloads dynamically during clean energy peaks."},
+            {"role": "point", "text": "4. Automate closed-loop evaporative cooling systems for water efficiency."},
+            {"role": "proof", "text": "Measured carbon intensity reduced to 64 gCO2/kWh (60.2% clean power)."},
+            {"role": "cta", "text": "Save this 8-slide framework for your next infrastructure review."}
+        ]
+        config.post_text = f"{title}\n\nSwipe through the 8-slide framework for clean computing systems."
+        config.proof_fact = "64 gCO2/kWh"
         return config
 
     # ── Pass 2: Turn Line Extraction ─────────────────────────────────────

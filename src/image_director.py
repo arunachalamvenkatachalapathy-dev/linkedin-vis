@@ -44,11 +44,18 @@ class ImageDirector:
     def generate_image(self, image_style: str, turn_line: str,
                        thesis_data: dict, raw_data: dict,
                        out_path: str = "state/latest_image.png",
-                       visual_variant: str = "variant_a") -> str:
+                       visual_variant: str = "variant_a",
+                       post_format: str = "single_image",
+                       slides: list = None) -> str:
         """
-        Generate the visual for the selected image_style and visual_variant.
-        The Turn line drives the visual message, not the whole post.
+        Generate the visual for the selected image_style or carousel PDF.
+        The Turn line or slides drive the visual message.
         """
+        if post_format == "carousel" and slides:
+            pdf_path = os.path.splitext(out_path)[0] + ".pdf" if not out_path.endswith(".pdf") else out_path
+            log.info(f"🎨 Generating [CAROUSEL PDF - {visual_variant.upper()}] with {len(slides)} slides...")
+            return self._render_carousel_pdf(slides, thesis_data, pdf_path, visual_variant)
+
         log.info(f"🎨 Generating [{image_style.upper()} - {visual_variant.upper()}] visual for: '{turn_line[:60]}...'")
 
         if image_style == "text_on_card":
@@ -64,6 +71,55 @@ class ImageDirector:
         else:
             log.warning(f"Unknown image style '{image_style}', falling back to text_on_card")
             return self._render_text_on_card(turn_line, thesis_data, out_path, visual_variant)
+
+    # ── 0. Carousel PDF Rendering ────────────────────────────────────────
+
+    def _render_carousel_pdf(self, slides: list, thesis_data: dict,
+                             out_path: str, visual_variant: str = "variant_a") -> str:
+        """
+        Renders an 8-10 slide deck to 1080x1350 PNG images via Playwright,
+        and compiles them into a single multi-page PDF using PIL.
+        """
+        if not slides:
+            return ""
+
+        pdf_path = out_path if out_path.endswith(".pdf") else os.path.splitext(out_path)[0] + ".pdf"
+        temp_dir = Path("state/carousel_slides")
+        os.makedirs(temp_dir, exist_ok=True)
+
+        headline = thesis_data.get("headline", "")
+        badge = self._extract_badge(headline)
+        total_slides = len(slides)
+
+        slide_png_paths = []
+        for idx, slide in enumerate(slides):
+            png_path = str(temp_dir / f"slide_{idx+1}.png")
+            context = {
+                "slide": slide,
+                "slide_index": idx + 1,
+                "total_slides": total_slides,
+                "badge": badge,
+                "variant": visual_variant,
+                "date_str": self._date_str(),
+            }
+            res = self._render_html_template("carousel_slide", context, ASPECT_4x5, png_path)
+            if res and os.path.exists(res):
+                slide_png_paths.append(res)
+
+        if not slide_png_paths:
+            log.error("Failed to render carousel slide PNGs")
+            return ""
+
+        try:
+            from PIL import Image
+            images = [Image.open(p).convert("RGB") for p in slide_png_paths]
+            os.makedirs(os.path.dirname(pdf_path) or '.', exist_ok=True)
+            images[0].save(pdf_path, "PDF", save_all=True, append_images=images[1:])
+            log.info(f"✅ Generated multi-page Carousel PDF: {pdf_path} ({len(images)} pages, {os.path.getsize(pdf_path)} bytes)")
+            return pdf_path
+        except Exception as e:
+            log.error(f"Failed to compile PDF: {e}")
+            return ""
 
     # ── 1. Text-on-Card ──────────────────────────────────────────────────
 

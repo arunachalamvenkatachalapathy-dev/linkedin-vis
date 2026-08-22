@@ -144,7 +144,9 @@ LENGTH_PRESETS = {
     "deep":     {"min_words": 300, "max_words": 450, "best_for": "Data breakdowns, case studies, multi-point frameworks"},
 }
 
-# ── Section 10: Image Style Menu ────────────────────────────────────────────
+# ── Section 10: Image Style & Format Menu ─────────────────────────────────────
+
+POST_FORMATS = ["single_image", "carousel"]
 
 IMAGE_STYLES = [
     "text_on_card",           # Bold single statement or stat, quote card style
@@ -208,6 +210,7 @@ class PostConfig:
     source_type: str = ""
 
     # Selected components (one from each menu)
+    post_format: str = "carousel"  # "carousel" or "single_image"
     hook_type: str = "contrarian"
     framing: str = "data_breakdown"
     body_structure: str = "A"
@@ -219,9 +222,10 @@ class PostConfig:
     # Extracted during generation
     proof_fact: str = ""
     turn_line: str = ""
+    slides: list = field(default_factory=list)  # for carousel format: list of dicts {"role": ..., "text": ...}
 
     # Generated content
-    post_text: str = ""
+    post_text: str = ""  # Caption if carousel, full post if single_image
     image_path: str = ""
 
     def to_dict(self) -> dict:
@@ -229,11 +233,12 @@ class PostConfig:
 
     def combination_key(self) -> str:
         """Returns a string key representing the component combination."""
-        return f"{self.hook_type}|{self.body_structure}|{self.framing}|{self.cta_type}|{self.image_style}|{self.visual_variant}"
+        return f"{self.post_format}|{self.hook_type}|{self.body_structure}|{self.framing}|{self.cta_type}|{self.image_style}|{self.visual_variant}"
 
     def combo_summary(self) -> dict:
         """Returns the fields tracked for variety enforcement."""
         return {
+            "post_format": self.post_format,
             "hook_type": self.hook_type,
             "framing": self.framing,
             "body_structure": self.body_structure,

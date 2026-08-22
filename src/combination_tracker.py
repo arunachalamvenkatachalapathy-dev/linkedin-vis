@@ -16,7 +16,7 @@ from datetime import datetime, timezone, timedelta
 
 from src.post_config import (
     PostConfig, HOOK_TYPES, FRAMINGS, BODY_STRUCTURES, CTA_TYPES,
-    IMAGE_STYLES, VISUAL_VARIANTS, LENGTH_PRESETS,
+    IMAGE_STYLES, VISUAL_VARIANTS, POST_FORMATS, LENGTH_PRESETS,
     SOURCE_FRAMING_HINTS, FRAMING_IMAGE_HINTS, FRAMING_LENGTH_HINTS,
 )
 
@@ -83,6 +83,12 @@ class CombinationTracker:
         """
         config = PostConfig(source_type=source_type)
 
+        # 0. Select post_format (weighted 70% carousel / 30% single_image, avoid back-to-back single_image)
+        if self._is_immediate_repeat("post_format", "single_image"):
+            config.post_format = "carousel"
+        else:
+            config.post_format = random.choices(["carousel", "single_image"], weights=[0.7, 0.3])[0]
+
         # 1. Select framing (source-type heuristic + variety)
         preferred_framings = list(SOURCE_FRAMING_HINTS.get(source_type, SOURCE_FRAMING_HINTS["default"]))
         
@@ -144,7 +150,7 @@ class CombinationTracker:
         config.length_preset = random.choice(preferred_lengths)
 
         log.info(
-            f"📋 Selected components: hook={config.hook_type}, frame={config.framing}, "
+            f"📋 Selected components: format={config.post_format}, hook={config.hook_type}, frame={config.framing}, "
             f"body={config.body_structure}, length={config.length_preset}, "
             f"cta={config.cta_type}, image={config.image_style}, variant={config.visual_variant}"
         )

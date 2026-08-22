@@ -54,7 +54,7 @@ graph TD
 
 ---
 
-## 🛡️ Quality Gate (7 Checks)
+## 🛡️ Quality Gate (8 Checks)
 
 Before publishing, every post is evaluated against:
 
@@ -65,6 +65,7 @@ Before publishing, every post is evaluated against:
 5. **Turn Line** — verifies one quotable standalone sentence exists
 6. **Image-Text Match** — verifies visual style aligns with post content
 7. **Length Bounds** — ensures word count is within 15% of the selected length preset
+8. **Carousel Bounds** — ensures 7–12 slides with ≤55 words per slide (when carousel format is selected)
 
 Failed posts trigger a retry with fresh component selection (max 3 attempts).
 

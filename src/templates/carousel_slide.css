@@ -1,0 +1,158 @@
+/* Carousel Slide — 4:5 Portrait PDF Slide Template with 3 Visual Variants */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Merriweather:wght@400;700;900&family=Oswald:wght@500;700&display=swap');
+
+/* Default (Variant A): Dark Navy / Emerald & Teal Accent */
+body {
+  width: 1080px;
+  height: 1350px;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  background: #0B0F1A;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  --bg-color: #0B0F1A;
+  --text-color: #FFFFFF;
+  --badge-color: #00E5A0;
+  --badge-border: rgba(0, 229, 160, 0.3);
+  --tag-color: #00B4D8;
+  --card-bg: rgba(255, 255, 255, 0.03);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --font-family: 'Inter', sans-serif;
+  --title-size: 42px;
+  --hook-size: 52px;
+}
+
+/* Variant B: Off-White / Forest Green & Gold Accent */
+body.variant_b {
+  background: #F8F9FA;
+  color: #111827;
+  --bg-color: #F8F9FA;
+  --text-color: #111827;
+  --badge-color: #1B4D3E;
+  --badge-border: rgba(27, 77, 62, 0.3);
+  --tag-color: #D97706;
+  --card-bg: #FFFFFF;
+  --card-border: rgba(0, 0, 0, 0.08);
+  --font-family: 'Merriweather', Georgia, serif;
+  --title-size: 38px;
+  --hook-size: 46px;
+}
+
+/* Variant C: Charcoal / Amber & Violet Accent */
+body.variant_c {
+  background: #18181B;
+  color: #FAFAFA;
+  --bg-color: #18181B;
+  --text-color: #FAFAFA;
+  --badge-color: #F59E0B;
+  --badge-border: rgba(245, 158, 11, 0.3);
+  --tag-color: #C084FC;
+  --card-bg: rgba(255, 255, 255, 0.04);
+  --card-border: rgba(255, 255, 255, 0.1);
+  --font-family: 'Oswald', sans-serif;
+  --title-size: 46px;
+  --hook-size: 56px;
+}
+
+.slide-canvas {
+  width: 940px;
+  height: 1210px;
+  padding: 64px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 24px;
+}
+
+.slide-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.slide-badge {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--badge-color);
+  padding: 8px 18px;
+  border: 1.5px solid var(--badge-border);
+  border-radius: 6px;
+}
+
+.slide-counter {
+  font-size: 15px;
+  font-weight: 700;
+  opacity: 0.5;
+  letter-spacing: 1px;
+}
+
+.slide-body {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  justify-content: center;
+  flex: 1;
+}
+
+.role-tag, .hook-tag {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--tag-color);
+}
+
+.proof-tag {
+  color: #F59E0B;
+}
+
+.cta-tag {
+  color: #10B981;
+}
+
+.slide-title {
+  font-family: var(--font-family);
+  font-size: var(--title-size);
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--text-color);
+}
+
+.hook-title {
+  font-size: var(--hook-size);
+  font-weight: 900;
+  line-height: 1.25;
+}
+
+.proof-title {
+  font-size: var(--hook-size);
+  font-weight: 900;
+  color: var(--badge-color);
+}
+
+.slide-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(128, 128, 128, 0.15);
+  padding-top: 24px;
+  font-size: 14px;
+  opacity: 0.6;
+}
+
+.footer-handle {
+  font-weight: 600;
+}
+
+.footer-swipe {
+  font-weight: 700;
+  letter-spacing: 1px;
+}

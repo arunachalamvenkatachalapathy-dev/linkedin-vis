@@ -118,6 +118,14 @@ class ReviewEngine:
             failures.append(f"Post length is out of bounds for preset '{config.length_preset if config else 'standard'}'.")
             suggestions.append("Adjust length in the prompt or choose a different preset.")
 
+        # Gate 8: Carousel bounds check (if format is carousel)
+        if config and config.post_format == "carousel":
+            carousel_ok, carousel_reason = self._check_carousel_bounds(config.slides)
+            scores["carousel_bounds"] = carousel_ok
+            if not carousel_ok:
+                failures.append(f"Carousel structure invalid: {carousel_reason}")
+                suggestions.append("Ensure carousel has 7–12 slides with max 55 words per slide.")
+
         passed = len(failures) == 0
         level = "✅ PASSED" if passed else f"❌ FAILED ({len(failures)} gates)"
         log.info(f"Quality Gate {level}: {scores}")
@@ -279,3 +287,20 @@ class ReviewEngine:
         min_words = int(preset["min_words"] * 0.85)
         max_words = int(preset["max_words"] * 1.15)
         return min_words <= words <= max_words
+
+    def _check_carousel_bounds(self, slides: list) -> tuple:
+        """Gate 8: Verify carousel slide count (7-12) and per-slide word count (<= 55 words)."""
+        if not slides or not isinstance(slides, list):
+            return False, "Carousel has no slides generated."
+
+        slide_count = len(slides)
+        if slide_count < 7 or slide_count > 12:
+            return False, f"Slide count is {slide_count} (must be 7–12 slides)."
+
+        for idx, slide in enumerate(slides, 1):
+            text = slide.get("text", "") if isinstance(slide, dict) else str(slide)
+            word_count = len(text.split())
+            if word_count > 55:
+                return False, f"Slide {idx} word count ({word_count} words) exceeds 55-word mobile readability limit."
+
+        return True, "OK"
