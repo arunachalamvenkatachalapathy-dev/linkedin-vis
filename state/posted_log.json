@@ -306,5 +306,22 @@
     "length_preset": "deep",
     "turn_line": "Stop treating data center cooling as an HVAC problem\u2014it is a thermodynamic challenge that must be solved at the silicon level.",
     "proof_fact": "Power Usage Effectiveness dropped from the industry average of 1.58 down to a measured 1.03"
+  },
+  {
+    "id": "curated_fallback_5_2026_08_22",
+    "source": "Datacenter Thermal Systems Research",
+    "headline": "Direct-to-Chip Liquid Cooling Reduces Datacenter PUE from 1.",
+    "topic": "AI Datacenter Power, Liquid Cooling & PUE Efficiency",
+    "post_id": "urn:li:ugcPost:7496886516217032704",
+    "post_url": "https://www.linkedin.com/feed/update/urn:li:ugcPost:7496886516217032704/",
+    "date": "2026-08-22T11:10:31.141554+00:00",
+    "hook_type": "contrarian",
+    "framing": "narrative",
+    "body_structure": "D",
+    "cta_type": "silent",
+    "image_style": "editorial_illustration",
+    "length_preset": "standard",
+    "turn_line": "The physical layer is where ESG goals are won.",
+    "proof_fact": "Direct-to-chip cooling reduced PUE from 1.58 to 1.03 and eliminated 7.5M liters of water waste."
   }
 ]

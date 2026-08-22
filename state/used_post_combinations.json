@@ -64,5 +64,17 @@
     "length_preset": "deep",
     "date": "2026-08-22T11:02:25.975629+00:00",
     "post_id": "urn:li:share:7496884478707949568"
+  },
+  {
+    "post_format": "carousel",
+    "hook_type": "contrarian",
+    "framing": "narrative",
+    "body_structure": "D",
+    "cta_type": "silent",
+    "image_style": "editorial_illustration",
+    "visual_variant": "variant_c",
+    "length_preset": "standard",
+    "date": "2026-08-22T11:10:31.142227+00:00",
+    "post_id": "urn:li:ugcPost:7496886516217032704"
   }
 ]
