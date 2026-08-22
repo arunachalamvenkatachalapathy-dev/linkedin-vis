@@ -69,7 +69,7 @@ class ResearchEngine:
         self.llm = gemini_client
 
     def get_today_config(self) -> dict:
-        day_idx = datetime.utcnow().weekday()
+        day_idx = 6  # Temporarily forced to Sunday for testing
         config = DAY_SCHEDULE.get(day_idx, DAY_SCHEDULE[0])
         log.info(f"📅 Today is Day {day_idx} ({datetime.utcnow().strftime('%A')}): [{config['pillar']}] -> {config['theme']}")
         return config
@@ -270,7 +270,7 @@ class ResearchEngine:
             5: {"source": "Datacenter Thermal Systems Research", "title": "Direct-to-Chip Liquid Cooling Reduces Datacenter PUE from 1.58 to 1.03", "raw_text": "Direct-to-chip dielectric liquid cooling eliminates CRAC units entirely, reducing Power Usage Effectiveness from industry average 1.58 to measured 1.03. Water consumption drops to zero versus 7.5M liters/year for equivalent evaporative systems. GPU junction temperatures decrease 22C, enabling sustained boost clocks."},
             6: {"source": "Production FDE Tactical Report", "title": "The 3 Non-Negotiable Rules for Deploying Autonomous Agents in Production", "raw_text": "Rule 1: Define what agents must NEVER do before defining what they should do (negative constraints). Rule 2: Every agent action that modifies state requires a deterministic rollback path. Rule 3: Log every tool invocation with input/output for forensic audit. 90% of autonomous demo failures in production trace to missing negative constraints."},
         }
-        day_idx = datetime.utcnow().weekday()
+        day_idx = 6  # Temporarily forced to Sunday for testing
         fb = fallback_topics.get(day_idx, fallback_topics[0])
         fb["id"] = f"curated_fallback_{day_idx}_{datetime.utcnow().strftime('%Y_%m_%d')}"
         fb["pillar"] = config['pillar']
