@@ -64,7 +64,7 @@ class EditorialEngine:
         _is_ai_day = (_niche_day % 2 == 0)  # Mon/Wed/Fri/Sun → AI Engineering
         _persona = (
             "Arunachalam Venkatachalapathy — a Senior AI & Forward Deployment Engineer "
-            "who ships autonomous agent systems, LLM ops pipelines, and production AI infrastructure. "
+            "who architects enterprise sustainability systems, Scope 3 tracking frameworks, and data-driven ESG solutions. "
             "Your voice is that of someone who has debugged these systems at 2 AM, not someone describing them from a whitepaper."
             if _is_ai_day else
             "Arunachalam Venkatachalapathy — a CleanTech & ESG Systems Engineer "
@@ -160,7 +160,7 @@ Return ONLY valid JSON:
         body_desc = BODY_STRUCTURE_DESCRIPTIONS.get(config.body_structure, "")
         cta_desc = CTA_DESCRIPTIONS.get(config.cta_type, "")
 
-        prompt = f"""You are a top-performing LinkedIn content strategist creating an 8 to 10 SLIDE CAROUSEL (PDF document post) for Arunachalam Venkatachalapathy, an AI Agent & Forward Deployment Engineer in CleanTech / ESG systems.
+        prompt = f"""You are a top-performing LinkedIn content strategist creating an 8 to 10 SLIDE CAROUSEL (PDF document post) for Arunachalam Venkatachalapathy, an Sustainability Professional in CleanTech / ESG systems.
 
 SOURCE MATERIAL:
 Title: {title}
@@ -184,11 +184,11 @@ CTA TYPE: {config.cta_type}
 Final slide MUST be the CTA.
 
 SLIDE REQUIREMENTS (8 to 10 slides total) — STORYTELLING ARC:
-- Slide 1 (role: "hook"): Hook line (≤12 words). This is the COVER SLIDE — it must stop the scroll.
+- Slide 1 (role: "hook"): Hook line (≤12 words). This is the COVER SLIDE — it must stop the scroll. Force one of these 4 VIRAL HOOK FRAMEWORKS: (1) Curiosity Gap, (2) Contrarian Take, (3) The 'Mistake' Framework, or (4) The Specific Outcome.
 - Slide 2 (role: "context"): THE TENSION — what most people assume that is WRONG (max 40 words). Frame it as a belief the reader likely holds.
 - Slide 3..N-2 (role: "point"): One concrete, actionable insight per slide (max 45 words). Each must teach something specific, not state the obvious. Use numbers, names, specifics.
 - Slide N-1 (role: "proof"): The HARDEST data point — one number that proves the thesis. Show the exact stat prominently (max 20 words).
-- Slide N (role: "cta"): CTA slide — "Save this for your next [specific situation]" or "Share with your engineering team"
+- Slide N (role: "cta"): CTA slide — MUST ask the audience to "Follow for more insights" or "Follow for more on sustainability."
 
 CAPTION:
 Short LinkedIn caption (150-300 characters). First line MUST be the hook. The carousel PDF carries the depth, not the caption.

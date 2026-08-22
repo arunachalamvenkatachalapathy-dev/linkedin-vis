@@ -109,7 +109,7 @@ class ImageDirector:
                 "carousel_metric": carousel_metric,
                 "author_name": "Arunachalam Venkatachalapathy",
             }
-            res = self._render_html_template("carousel_slide", context, ASPECT_4x5, png_path)
+            res = self._render_html_template("carousel_slide", context, ASPECT_1x1, png_path)
             if res and os.path.exists(res):
                 slide_png_paths.append(res)
 

@@ -88,5 +88,53 @@
     "length_preset": "deep",
     "date": "2026-08-22T11:47:56.567035+00:00",
     "post_id": "urn:li:ugcPost:7496895934157664256"
+  },
+  {
+    "post_format": "single_image",
+    "hook_type": "question_trap",
+    "framing": "framework_howto",
+    "body_structure": "E",
+    "cta_type": "soft_mirror",
+    "image_style": "diagram_framework",
+    "visual_variant": "variant_b",
+    "length_preset": "deep",
+    "date": "2026-08-22T14:29:31.063095+00:00",
+    "post_id": "simulated"
+  },
+  {
+    "post_format": "carousel",
+    "hook_type": "direct_address",
+    "framing": "industry_observation",
+    "body_structure": "A",
+    "cta_type": "save_bait",
+    "image_style": "text_on_card",
+    "visual_variant": "variant_a",
+    "length_preset": "punch",
+    "date": "2026-08-22T15:05:39.956004+00:00",
+    "post_id": "simulated"
+  },
+  {
+    "post_format": "carousel",
+    "hook_type": "curiosity_gap",
+    "framing": "data_breakdown",
+    "body_structure": "D",
+    "cta_type": "specific_ask",
+    "image_style": "data_visual",
+    "visual_variant": "variant_c",
+    "length_preset": "deep",
+    "date": "2026-08-22T15:12:45.105865+00:00",
+    "post_id": "simulated"
+  },
+  {
+    "post_format": "carousel",
+    "hook_type": "question_trap",
+    "framing": "industry_observation",
+    "body_structure": "C",
+    "cta_type": "soft_mirror",
+    "image_style": "text_on_card",
+    "visual_variant": "variant_c",
+    "length_preset": "punch",
+    "date": "2026-08-22T15:18:45.591311+00:00",
+    "post_id": "simulated"
   }
 ]
