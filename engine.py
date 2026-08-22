@@ -126,7 +126,8 @@ def main():
                 log.info("Retrying with fresh component selection...")
 
     if not gate_result or not gate_result.get("passed"):
-        log.warning("Quality gate did not pass after all retries. Proceeding with best available draft.")
+        log.error("❌ Quality gate did not pass after all retries. BLOCKING PUBLISH to prevent degraded output.")
+        sys.exit(1)
 
     # ── Phase 6: Image Direction ────────────────────────────────────────
     log.info("═══ Phase 6: Image Direction ═══")
