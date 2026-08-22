@@ -1,0 +1,163 @@
+/* Before/After Split — Two-panel comparison */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+
+body {
+  width: 1080px;
+  height: 1080px;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  background: #0A0E1A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.split-canvas {
+  width: 940px;
+  padding: 56px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.split-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.split-badge {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #F59E0B;
+  padding: 8px 18px;
+  border: 1.5px solid rgba(245, 158, 11, 0.3);
+  border-radius: 6px;
+}
+
+.split-attr {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.35);
+  font-weight: 600;
+}
+
+.split-headline {
+  font-size: 30px;
+  font-weight: 900;
+  color: #FFFFFF;
+  line-height: 1.2;
+}
+
+.split-panels {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  flex: 1;
+}
+
+.panel {
+  flex: 1;
+  padding: 32px 28px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.panel-before {
+  background: rgba(239, 68, 68, 0.06);
+  border: 1px solid rgba(239, 68, 68, 0.15);
+}
+
+.panel-after {
+  background: rgba(0, 229, 160, 0.06);
+  border: 1px solid rgba(0, 229, 160, 0.15);
+}
+
+.panel-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.panel-before .panel-label {
+  color: #EF4444;
+}
+
+.panel-after .panel-label {
+  color: #00E5A0;
+}
+
+.panel-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.panel-body {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.5;
+  flex: 1;
+}
+
+.panel-stat {
+  font-size: 28px;
+  font-weight: 900;
+  margin-top: auto;
+}
+
+.panel-before .panel-stat {
+  color: #EF4444;
+}
+
+.panel-after .panel-stat {
+  color: #00E5A0;
+}
+
+.panel-divider {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  gap: 8px;
+}
+
+.divider-line {
+  width: 2px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.divider-icon {
+  font-size: 24px;
+  color: rgba(245, 158, 11, 0.6);
+  font-weight: 700;
+}
+
+.split-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-rule {
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.55);
+  max-width: 600px;
+  line-height: 1.4;
+}
+
+.footer-date {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.25);
+}

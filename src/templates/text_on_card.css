@@ -1,0 +1,77 @@
+/* Text-on-Card — Quote card style for Punch/Data posts */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+
+body {
+  width: 1080px;
+  height: 1080px;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  background: #0B0F1A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.card-canvas {
+  width: 900px;
+  min-height: 700px;
+  padding: 80px 72px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 40px;
+  position: relative;
+}
+
+.card-canvas::before {
+  content: '';
+  position: absolute;
+  top: 60px;
+  left: 0;
+  width: 6px;
+  height: calc(100% - 120px);
+  background: linear-gradient(180deg, #00E5A0, #00B4D8);
+  border-radius: 3px;
+}
+
+.card-badge {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #00E5A0;
+  padding: 8px 20px;
+  border: 1.5px solid rgba(0, 229, 160, 0.3);
+  border-radius: 6px;
+  width: fit-content;
+}
+
+.card-quote {
+  font-size: 46px;
+  font-weight: 900;
+  line-height: 1.2;
+  color: #FFFFFF;
+  letter-spacing: -0.5px;
+  max-width: 820px;
+}
+
+.card-attribution {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.45);
+  font-weight: 400;
+}
+
+.attr-name {
+  color: rgba(255, 255, 255, 0.65);
+  font-weight: 600;
+}
+
+.attr-sep {
+  color: rgba(255, 255, 255, 0.25);
+}

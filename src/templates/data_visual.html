@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>/* INLINE_STYLES */</style>
+</head>
+<body>
+  <div class="data-canvas">
+    <div class="data-header">
+      <div class="data-badge">{{ badge or 'DATA BREAKDOWN' }}</div>
+      <div class="data-source">{{ source or '' }}</div>
+    </div>
+    <div class="data-headline">{{ headline or 'Key Metric' }}</div>
+    <div class="data-hero-row">
+      <div class="hero-stat">
+        <div class="hero-number">{{ metric_val or '0' }}</div>
+        <div class="hero-label">{{ metric_label or 'Primary Metric' }}</div>
+      </div>
+    </div>
+    <div class="data-context">{{ context or '' }}</div>
+    <div class="data-comparison">
+      <div class="comp-item baseline">
+        <div class="comp-label">BASELINE</div>
+        <div class="comp-value">{{ baseline_val or '—' }}</div>
+        <div class="comp-sub">{{ baseline_sub or '' }}</div>
+      </div>
+      <div class="comp-arrow">→</div>
+      <div class="comp-item target">
+        <div class="comp-label">MEASURED</div>
+        <div class="comp-value">{{ target_val or '—' }}</div>
+        <div class="comp-sub">{{ target_sub or '' }}</div>
+      </div>
+    </div>
+    <div class="data-footer">
+      <span class="footer-name">@arunachalamvenv</span>
+      <span class="footer-date">{{ date_str or '' }}</span>
+    </div>
+  </div>
+</body>
+</html>

@@ -19,6 +19,7 @@ state/*.jpeg
 state/*.webp
 state/*.txt
 !state/posted_log.json
+!state/used_post_combinations.json
 *.log
 scratch/
 latest_run.log

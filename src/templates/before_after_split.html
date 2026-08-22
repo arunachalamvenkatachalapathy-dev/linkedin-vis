@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>/* INLINE_STYLES */</style>
+</head>
+<body>
+  <div class="split-canvas">
+    <div class="split-header">
+      <div class="split-badge">{{ badge or 'BEFORE → AFTER' }}</div>
+      <div class="split-attr">@arunachalamvenv</div>
+    </div>
+    <div class="split-headline">{{ headline or '' }}</div>
+    <div class="split-panels">
+      <div class="panel panel-before">
+        <div class="panel-label">BEFORE</div>
+        <div class="panel-title">{{ before_title or 'Legacy Approach' }}</div>
+        <div class="panel-body">{{ before_body or '' }}</div>
+        <div class="panel-stat">{{ before_stat or '' }}</div>
+      </div>
+      <div class="panel-divider">
+        <div class="divider-line"></div>
+        <div class="divider-icon">→</div>
+        <div class="divider-line"></div>
+      </div>
+      <div class="panel panel-after">
+        <div class="panel-label">AFTER</div>
+        <div class="panel-title">{{ after_title or 'Modern Solution' }}</div>
+        <div class="panel-body">{{ after_body or '' }}</div>
+        <div class="panel-stat">{{ after_stat or '' }}</div>
+      </div>
+    </div>
+    <div class="split-footer">
+      <div class="footer-rule">{{ takeaway or '' }}</div>
+      <div class="footer-date">{{ date_str or '' }}</div>
+    </div>
+  </div>
+</body>
+</html>
