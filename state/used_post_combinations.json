@@ -18,5 +18,15 @@
     "length_preset": "punch",
     "date": "2026-08-22T03:17:55.358092+00:00",
     "post_id": "urn:li:share:7496767583308787712"
+  },
+  {
+    "hook_type": "curiosity_gap",
+    "framing": "data_breakdown",
+    "body_structure": "E",
+    "cta_type": "value_forward",
+    "image_style": "data_visual",
+    "length_preset": "deep",
+    "date": "2026-08-22T03:32:33.097496+00:00",
+    "post_id": "urn:li:share:7496771264657653760"
   }
 ]

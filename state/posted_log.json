@@ -238,5 +238,22 @@
     "length_preset": "punch",
     "turn_line": "Routing batch compute during clean grid windows reduces Scope 2 emissions by up to 34% without new hardware.",
     "proof_fact": "Reduces Scope 2 emissions by up to 34% during low grid carbon intensity windows (measured at 64 gCO2/kWh)"
+  },
+  {
+    "id": "live_grid_carbon_2026_08_22_03",
+    "source": "National Grid ESO Real-Time Telemetry API",
+    "headline": "Live Grid Carbon Intensity Measured at 64 gCO2/kWh (63.5% Cl",
+    "topic": "AI Datacenter Power, Liquid Cooling & PUE Efficiency",
+    "post_id": "urn:li:share:7496771264657653760",
+    "post_url": "https://www.linkedin.com/feed/update/urn:li:share:7496771264657653760/",
+    "date": "2026-08-22T03:32:33.096837+00:00",
+    "hook_type": "curiosity_gap",
+    "framing": "data_breakdown",
+    "body_structure": "E",
+    "cta_type": "value_forward",
+    "image_style": "data_visual",
+    "length_preset": "deep",
+    "turn_line": "Instead of trying to store clean energy in physical batteries, we can store it in the form of completed compute.",
+    "proof_fact": "National Grid ESO Real-Time Telemetry API measured the live grid carbon intensity at 64 gCO2/kWh."
   }
 ]
