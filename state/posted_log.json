@@ -323,5 +323,25 @@
     "length_preset": "standard",
     "turn_line": "The physical layer is where ESG goals are won.",
     "proof_fact": "Direct-to-chip cooling reduced PUE from 1.58 to 1.03 and eliminated 7.5M liters of water waste."
+  },
+  {
+    "id": "curated_fallback_5_2026_08_22",
+    "source": "Datacenter Thermal Systems Research",
+    "headline": "Direct-to-Chip Liquid Cooling Reduces Datacenter PUE from 1.",
+    "topic": "AI Datacenter Power, Liquid Cooling & PUE Efficiency",
+    "post_id": "urn:li:ugcPost:7496895934157664256",
+    "post_url": "https://www.linkedin.com/feed/update/urn:li:ugcPost:7496895934157664256/",
+    "date": "2026-08-22T11:47:56.566074+00:00",
+    "hook_type": "direct_address",
+    "framing": "data_breakdown",
+    "body_structure": "E",
+    "cta_type": "specific_ask",
+    "image_style": "data_visual",
+    "length_preset": "deep",
+    "turn_line": "We are still cooling next-generation AI hardware with outdated air systems.",
+    "proof_fact": "Power Usage Effectiveness reduced from 1.58 to 1.03",
+    "pillar": "",
+    "source_type": "default",
+    "topic_fingerprint": "chip|cooling|datacenter|direct|generation|hardware|liquid|next"
   }
 ]
