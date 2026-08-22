@@ -40,5 +40,17 @@
     "length_preset": "deep",
     "date": "2026-08-22T04:02:09.355802+00:00",
     "post_id": "urn:li:share:7496778713783603200"
+  },
+  {
+    "post_format": "carousel",
+    "hook_type": "number_shock",
+    "framing": "industry_observation",
+    "body_structure": "B",
+    "cta_type": "silent",
+    "image_style": "text_on_card",
+    "visual_variant": "variant_a",
+    "length_preset": "punch",
+    "date": "2026-08-22T10:32:46.160765+00:00",
+    "post_id": "urn:li:ugcPost:7496877016126849024"
   }
 ]
