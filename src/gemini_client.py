@@ -8,14 +8,15 @@ import requests
 log = logging.getLogger("ecopulse")
 
 TEXT_MODELS = [
-    "gemini-2.0-flash",
-    "gemini-1.5-flash",
-    "gemini-1.5-pro",
+    "gemini-3.5-flash",
+    "gemini-3.7-flash",
+    "gemini-flash-latest"
 ]
 
 IMAGE_MODELS = [
-    "imagen-3.0-generate-002",
-    "gemini-2.0-flash",
+    "gemini-2.5-flash-image",
+    "gemini-3.1-flash-image",
+    "gemini-3-pro-image"
 ]
 
 class GeminiClient:
