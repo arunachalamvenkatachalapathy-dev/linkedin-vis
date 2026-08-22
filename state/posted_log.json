@@ -423,5 +423,25 @@
     "pillar": "",
     "source_type": "default",
     "topic_fingerprint": "agents|autonomous|based|building|environments|exist|language|large"
+  },
+  {
+    "id": "ss_35d992fd33278b601ecf1bb977bcc9ab965d490f",
+    "source": "Semantic Scholar (Peer-Reviewed)",
+    "headline": "ID-RAG: Identity Retrieval-Augmented Generation for Long-Hor",
+    "topic": "Orchestration Patterns, Agent Memory & Tool Call Governance",
+    "post_id": "urn:li:ugcPost:7496955751282655232",
+    "post_url": "https://www.linkedin.com/feed/update/urn:li:ugcPost:7496955751282655232/",
+    "date": "2026-08-22T15:45:38.108973+00:00",
+    "hook_type": "curiosity_gap",
+    "framing": "framework_howto",
+    "body_structure": "E",
+    "cta_type": "save_bait",
+    "image_style": "diagram_framework",
+    "length_preset": "standard",
+    "turn_line": "Relying on standard RAG to keep your AI aligned is how compliance drift quietly begins.",
+    "proof_fact": "ID-RAG maintains 94% persona coherence over long horizons, outperforming standard RAG by over 30%.",
+    "pillar": "",
+    "source_type": "default",
+    "topic_fingerprint": "aligned|augmented|begins|compliance|drift|generation|identity|keep"
   }
 ]

@@ -136,5 +136,17 @@
     "length_preset": "punch",
     "date": "2026-08-22T15:18:45.591311+00:00",
     "post_id": "simulated"
+  },
+  {
+    "post_format": "carousel",
+    "hook_type": "curiosity_gap",
+    "framing": "framework_howto",
+    "body_structure": "E",
+    "cta_type": "save_bait",
+    "image_style": "diagram_framework",
+    "visual_variant": "variant_a",
+    "length_preset": "standard",
+    "date": "2026-08-22T15:45:38.109783+00:00",
+    "post_id": "urn:li:ugcPost:7496955751282655232"
   }
 ]
