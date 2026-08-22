@@ -29,5 +29,16 @@
     "length_preset": "deep",
     "date": "2026-08-22T03:32:33.097496+00:00",
     "post_id": "urn:li:share:7496771264657653760"
+  },
+  {
+    "hook_type": "confession",
+    "framing": "narrative",
+    "body_structure": "C",
+    "cta_type": "soft_mirror",
+    "image_style": "editorial_illustration",
+    "visual_variant": "variant_b",
+    "length_preset": "deep",
+    "date": "2026-08-22T04:02:09.355802+00:00",
+    "post_id": "urn:li:share:7496778713783603200"
   }
 ]

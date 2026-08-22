@@ -255,5 +255,22 @@
     "length_preset": "deep",
     "turn_line": "Instead of trying to store clean energy in physical batteries, we can store it in the form of completed compute.",
     "proof_fact": "National Grid ESO Real-Time Telemetry API measured the live grid carbon intensity at 64 gCO2/kWh."
+  },
+  {
+    "id": "live_grid_carbon_2026_08_22_04",
+    "source": "National Grid ESO Real-Time Telemetry API",
+    "headline": "Live Grid Carbon Intensity Measured at 63 gCO2/kWh (64.3% Cl",
+    "topic": "AI Datacenter Power, Liquid Cooling & PUE Efficiency",
+    "post_id": "urn:li:share:7496778713783603200",
+    "post_url": "https://www.linkedin.com/feed/update/urn:li:share:7496778713783603200/",
+    "date": "2026-08-22T04:02:09.355085+00:00",
+    "hook_type": "confession",
+    "framing": "narrative",
+    "body_structure": "C",
+    "cta_type": "soft_mirror",
+    "image_style": "editorial_illustration",
+    "length_preset": "deep",
+    "turn_line": "We are leaving massive carbon savings on the table simply because we treat electricity as a static resource.",
+    "proof_fact": "National Grid ESO Real-Time Telemetry API measured live grid carbon intensity at 63 gCO2/kWh"
   }
 ]
