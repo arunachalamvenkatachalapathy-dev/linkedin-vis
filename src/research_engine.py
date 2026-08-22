@@ -275,5 +275,10 @@ class ResearchEngine:
         fb["id"] = f"curated_fallback_{day_idx}_{datetime.utcnow().strftime('%Y_%m_%d')}"
         fb["pillar"] = config['pillar']
         fb["theme"] = config['theme']
-        log.info(f"Using curated day-specific fallback: {fb['title']}")
-        return fb
+        
+        if not self.memory.is_any_repetition(fb):
+            log.info(f"Using curated day-specific fallback: {fb['title']}")
+            return fb
+            
+        log.warning("Even the curated fallback is a repetition (already posted). Yielding empty topic.")
+        return None
