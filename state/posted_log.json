@@ -289,5 +289,22 @@
     "length_preset": "punch",
     "turn_line": "We cut Scope 2 emissions by 34% without buying a single piece of new hardware.",
     "proof_fact": "Dynamic carbon-aware workload scheduling reduces Scope 2 emissions by up to 34% without new hardware."
+  },
+  {
+    "id": "curated_fallback_5_2026_08_22",
+    "source": "Datacenter Thermal Systems Research",
+    "headline": "Direct-to-Chip Liquid Cooling Reduces Datacenter PUE from 1.",
+    "topic": "AI Datacenter Power, Liquid Cooling & PUE Efficiency",
+    "post_id": "urn:li:share:7496884478707949568",
+    "post_url": "https://www.linkedin.com/feed/update/urn:li:share:7496884478707949568/",
+    "date": "2026-08-22T11:02:25.974897+00:00",
+    "hook_type": "story_cold_open",
+    "framing": "framework_howto",
+    "body_structure": "A",
+    "cta_type": "value_forward",
+    "image_style": "diagram_framework",
+    "length_preset": "deep",
+    "turn_line": "Stop treating data center cooling as an HVAC problem\u2014it is a thermodynamic challenge that must be solved at the silicon level.",
+    "proof_fact": "Power Usage Effectiveness dropped from the industry average of 1.58 down to a measured 1.03"
   }
 ]

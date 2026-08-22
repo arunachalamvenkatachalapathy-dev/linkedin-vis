@@ -52,5 +52,17 @@
     "length_preset": "punch",
     "date": "2026-08-22T10:32:46.160765+00:00",
     "post_id": "urn:li:ugcPost:7496877016126849024"
+  },
+  {
+    "post_format": "single_image",
+    "hook_type": "story_cold_open",
+    "framing": "framework_howto",
+    "body_structure": "A",
+    "cta_type": "value_forward",
+    "image_style": "diagram_framework",
+    "visual_variant": "variant_b",
+    "length_preset": "deep",
+    "date": "2026-08-22T11:02:25.975629+00:00",
+    "post_id": "urn:li:share:7496884478707949568"
   }
 ]
