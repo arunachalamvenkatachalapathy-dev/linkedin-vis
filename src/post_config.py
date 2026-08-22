@@ -11,7 +11,30 @@ Reference: LinkedIn Viral Post Framework Sections 2–10.
 from dataclasses import dataclass, field, asdict
 from typing import Optional
 
+# ── Section 13: Cliché Blacklist ─────────────────────────────────────────────
 
+CLICHE_PHRASES = [
+    "In today's fast-paced world",
+    "In today's world",
+    "Let that sink in",
+    "Here's the thing",
+    "I'm not going to lie",
+    "Not going to lie",
+    "game-changer",
+    "game changer",
+    "paradigm shift",
+    "synergy",
+    "Repost if you agree",
+    "Tag someone who needs this",
+    "🚀🔥💯",
+    "💯🔥🚀",
+    "Agree?",
+    "Thoughts?",
+    "Let me know in the comments",
+    "I'm excited to share",
+    "I recently",
+    "I wanted to share",
+]
 # ── Section 2: Hook Library ──────────────────────────────────────────────────
 
 HOOK_TYPES = [

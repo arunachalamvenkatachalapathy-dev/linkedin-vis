@@ -15,31 +15,13 @@ from src.post_config import (
     HOOK_PATTERNS, FRAMING_DESCRIPTIONS,
     BODY_STRUCTURE_DESCRIPTIONS, CTA_DESCRIPTIONS,
     LENGTH_PRESETS,
+    CLICHE_PHRASES,
 )
 
 log = logging.getLogger("ecopulse")
 
 
-# ── Cliché blacklist (Section 13) ────────────────────────────────────────────
-
-CLICHE_PHRASES = [
-    "In today's fast-paced world",
-    "Let that sink in",
-    "Here's the thing",
-    "I'm not going to lie",
-    "Not going to lie",
-    "game-changer",
-    "game changer",
-    "paradigm shift",
-    "synergy",
-    "Repost if you agree",
-    "Tag someone who needs this",
-    "🚀🔥💯",
-    "Agree?",
-    "Thoughts?",
-    "Let me know in the comments",
-]
-
+# ── Cliché blacklist imported from post_config ─────────────────────────────
 
 class EditorialEngine:
     def __init__(self, gemini_client):
@@ -163,11 +145,22 @@ Return ONLY valid JSON:
                     config.post_text = improved
                 log.info(f"Pass 2 turn line: '{config.turn_line[:80]}...'")
         except Exception as e:
-            log.warning(f"Pass 2 turn line extraction failed: {e}")
-            # Extract a candidate manually — pick the longest sentence
-            sentences = [s.strip() for s in config.post_text.replace('\n', ' ').split('.') if len(s.strip()) > 30]
+            log.warning(f"Pass 2 turn line extraction failed ({e}) — FALLING BACK to heuristic extraction.")
+            sentences = [s.strip() for s in config.post_text.replace('\n', ' ').split('.') if len(s.strip()) >= 30]
             if sentences:
-                config.turn_line = max(sentences, key=len) + "."
+                contrast_words = ["but", "instead", "actually", "not", "unless"]
+                candidates = []
+                for s in sentences:
+                    lower_words = s.lower().split()
+                    has_contrast = any(w in lower_words for w in contrast_words)
+                    has_number = any(char.isdigit() for char in s)
+                    if has_contrast or has_number:
+                        candidates.append(s)
+                
+                if candidates:
+                    config.turn_line = min(candidates, key=len) + "."
+                else:
+                    config.turn_line = sentences[0] + "."
 
         return config
 

@@ -24,7 +24,7 @@ graph TD
     B -->|Hook, Frame, Body, CTA, Image| C["3. Two-Pass Composition"]
     C -->|Pass 1: Draft + Pass 2: Turn Line| D["4. Hook Engineering"]
     D -->|Type-specific hooks, scored| E["5. Quality Gate"]
-    E -->|6 checks, retry on fail| F["6. Image Direction"]
+    E -->|7 checks, retry on fail| F["6. Image Direction"]
     F -->|5 visual styles, 1:1 or 4:5| G["7. LinkedIn Publisher"]
     G -->|REST API upload| H["8. State Logging"]
     E -.->|❌ Failed| B
@@ -54,7 +54,7 @@ graph TD
 
 ---
 
-## 🛡️ Quality Gate (6 Checks)
+## 🛡️ Quality Gate (7 Checks)
 
 Before publishing, every post is evaluated against:
 
@@ -64,6 +64,7 @@ Before publishing, every post is evaluated against:
 4. **Cliché Filter** — rejects burned-out phrases, emoji-as-bullets, hashtag walls
 5. **Turn Line** — verifies one quotable standalone sentence exists
 6. **Image-Text Match** — verifies visual style aligns with post content
+7. **Length Bounds** — ensures word count is within 15% of the selected length preset
 
 Failed posts trigger a retry with fresh component selection (max 3 attempts).
 
@@ -115,7 +116,7 @@ src/
   combination_tracker.py           # Rolling variety enforcement
   editorial_engine.py              # Two-pass Gemini post composer
   hook_engine.py                   # Type-specific hook generation & scoring
-  review_engine.py                 # Quality gate evaluator (6 checks)
+  review_engine.py                 # Quality gate evaluator (7 checks)
   image_director.py                # Multi-style visual generator
   research_engine.py               # Multi-source research (ArXiv, Dev.to, APIs)
   memory_engine.py                 # State management & duplicate prevention

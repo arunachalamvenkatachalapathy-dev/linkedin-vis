@@ -84,7 +84,15 @@ class CombinationTracker:
         config = PostConfig(source_type=source_type)
 
         # 1. Select framing (source-type heuristic + variety)
-        preferred_framings = SOURCE_FRAMING_HINTS.get(source_type, SOURCE_FRAMING_HINTS["default"])
+        preferred_framings = list(SOURCE_FRAMING_HINTS.get(source_type, SOURCE_FRAMING_HINTS["default"]))
+        
+        # WEEKLY SERIES SLOT (Section 12)
+        # Bias toward `data_breakdown` once per rolling 7 days.
+        cutoff_7d = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()
+        recent_7d = [e for e in self.history if e.get("date", "") >= cutoff_7d]
+        if not any(e.get("framing") == "data_breakdown" for e in recent_7d):
+            preferred_framings.insert(0, "data_breakdown")
+
         config.framing = self._pick_with_constraints(
             preferred_framings + FRAMINGS,
             reject_fn=lambda f: self._framing_over_threshold(f) or self._is_immediate_repeat("framing", f),

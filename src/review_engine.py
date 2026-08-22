@@ -15,30 +15,24 @@ On failure, the orchestrator retries with adjusted parameters.
 
 import re
 import logging
+from src.post_config import CLICHE_PHRASES, LENGTH_PRESETS
 
 log = logging.getLogger("ecopulse")
 
 # Burned-out phrases and patterns (Section 13)
-CLICHE_PATTERNS = [
+CLICHE_PATTERNS = [re.escape(phrase.lower()) for phrase in CLICHE_PHRASES]
+
+# Specific regex additions that need flexibility
+EXTRA_CLICHE_PATTERNS = [
     r"in today'?s fast[- ]paced world",
-    r"let that sink in",
+    r"in today'?s world",
     r"here'?s the thing:?",
     r"i'?m not going to lie",
-    r"not going to lie",
     r"game[- ]?changer",
-    r"paradigm shift",
     r"synerg",
-    r"repost if you agree",
-    r"tag someone who needs this",
-    r"🚀🔥💯",
-    r"💯🔥🚀",
     r"agree\?$",
     r"^thoughts\?$",
     r"i'?m excited to share",
-    r"in today'?s world",
-    r"i recently",
-    r"i wanted to share",
-    r"let me know in the comments",
 ]
 
 # Emoji-as-bullet patterns
@@ -114,8 +108,15 @@ class ReviewEngine:
         img_match = self._check_image_alignment(image_style, turn_line, post_text)
         scores["image_text_match"] = img_match
         if not img_match:
-            failures.append(f"Image style '{image_style}' may not align with the post content.")
-            suggestions.append("Consider a different image_style.")
+            failures.append(f"Image style '{image_style}' does not align with the post content or turn line.")
+            suggestions.append("Consider a different image_style or fix the turn line.")
+
+        # Gate 7: Length bounds check
+        length_ok = self._check_length_bounds(post_text, config.length_preset if config else "standard")
+        scores["length_bounds"] = length_ok
+        if not length_ok:
+            failures.append(f"Post length is out of bounds for preset '{config.length_preset if config else 'standard'}'.")
+            suggestions.append("Adjust length in the prompt or choose a different preset.")
 
         passed = len(failures) == 0
         level = "✅ PASSED" if passed else f"❌ FAILED ({len(failures)} gates)"
@@ -194,9 +195,9 @@ class ReviewEngine:
         """Gate 4: Detect burned-out engagement-bait phrases."""
         found = []
         lower = post_text.lower()
-        for pattern in CLICHE_PATTERNS:
+        for pattern in CLICHE_PATTERNS + EXTRA_CLICHE_PATTERNS:
             if re.search(pattern, lower, re.IGNORECASE | re.MULTILINE):
-                found.append(pattern.replace(r"'?", "'").replace(r"[- ]?", " "))
+                found.append(pattern.replace(r"'?", "'").replace(r"[- ]?", " ").replace("\\", ""))
 
         # Check emoji-as-bullet abuse
         emoji_bullets = EMOJI_BULLET_PATTERN.findall(post_text)
@@ -249,4 +250,32 @@ class ReviewEngine:
             if not has_contrast:
                 return False
 
+        # text_on_card should have a solid turn_line
+        if image_style == "text_on_card":
+            if not turn_line or len(turn_line) < 15:
+                return False
+            generic_turns = ["follow me", "let me know", "agree?", "thoughts?"]
+            if any(g in turn_line.lower() for g in generic_turns):
+                return False
+
+        # diagram_framework should have sequence/numbered steps
+        if image_style == "diagram_framework":
+            has_numbered = bool(re.search(r'\b[1-5][\.\)]\s', post_text))
+            has_sequence = bool(re.search(r'\b(first|then|next|finally|step|steps)\b', post_text, re.IGNORECASE))
+            if not (has_numbered or has_sequence):
+                return False
+
+        # editorial_illustration should have a turn line to generate from
+        if image_style == "editorial_illustration":
+            if not turn_line or len(turn_line.strip()) == 0:
+                return False
+
         return True
+
+    def _check_length_bounds(self, post_text: str, length_preset: str) -> bool:
+        """Gate 7: Verify post word count is within bounds of the length preset (15% tolerance)."""
+        words = len(post_text.split())
+        preset = LENGTH_PRESETS.get(length_preset, LENGTH_PRESETS["standard"])
+        min_words = int(preset["min_words"] * 0.85)
+        max_words = int(preset["max_words"] * 1.15)
+        return min_words <= words <= max_words
