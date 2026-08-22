@@ -87,7 +87,7 @@ class CombinationTracker:
         if self._is_immediate_repeat("post_format", "single_image"):
             config.post_format = "carousel"
         else:
-            config.post_format = random.choices(["carousel", "single_image"], weights=[0.7, 0.3])[0]
+            config.post_format = "carousel"
 
         # 1. Select framing (source-type heuristic + variety)
         preferred_framings = list(SOURCE_FRAMING_HINTS.get(source_type, SOURCE_FRAMING_HINTS["default"]))
