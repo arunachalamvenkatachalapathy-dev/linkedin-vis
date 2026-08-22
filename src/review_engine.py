@@ -111,12 +111,15 @@ class ReviewEngine:
             failures.append(f"Image style '{image_style}' does not align with the post content or turn line.")
             suggestions.append("Consider a different image_style or fix the turn line.")
 
-        # Gate 7: Length bounds check
-        length_ok = self._check_length_bounds(post_text, config.length_preset if config else "standard")
-        scores["length_bounds"] = length_ok
-        if not length_ok:
-            failures.append(f"Post length is out of bounds for preset '{config.length_preset if config else 'standard'}'.")
-            suggestions.append("Adjust length in the prompt or choose a different preset.")
+        # Gate 7: Length bounds check (skip for carousel — caption is intentionally short)
+        if config and config.post_format == "carousel":
+            scores["length_bounds"] = True
+        else:
+            length_ok = self._check_length_bounds(post_text, config.length_preset if config else "standard")
+            scores["length_bounds"] = length_ok
+            if not length_ok:
+                failures.append(f"Post length is out of bounds for preset '{config.length_preset if config else 'standard'}'.")
+                suggestions.append("Adjust length in the prompt or choose a different preset.")
 
         # Gate 8: Carousel bounds check (if format is carousel)
         if config and config.post_format == "carousel":
@@ -162,10 +165,10 @@ class ReviewEngine:
 
         # Bonus: short and punchy
         word_count = len(first_line.split())
-        if word_count <= 12:
-            score += 2
-        elif word_count <= 8:
+        if word_count <= 8:
             score += 3
+        elif word_count <= 12:
+            score += 2
 
         # Penalty: starts with "I" + mundane verb
         if re.match(r'^I\s+(recently|wanted|am|was|have|had|just)\b', first_line, re.IGNORECASE):

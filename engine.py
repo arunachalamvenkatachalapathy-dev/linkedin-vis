@@ -151,6 +151,8 @@ def main():
         visual_variant=config.visual_variant,
         post_format=config.post_format,
         slides=config.slides,
+        carousel_subtitle=getattr(config, 'carousel_subtitle', ''),
+        carousel_metric=getattr(config, 'carousel_metric', ''),
     )
     config.image_path = image_path
 

@@ -223,6 +223,8 @@ class PostConfig:
     proof_fact: str = ""
     turn_line: str = ""
     slides: list = field(default_factory=list)  # for carousel format: list of dicts {"role": ..., "text": ...}
+    carousel_subtitle: str = ""  # Source attribution for cover slide (e.g., "ArXiv · Clean Computing")
+    carousel_metric: str = ""  # Key metric for cover slide (e.g., "95% reduction")
 
     # Generated content
     post_text: str = ""  # Caption if carousel, full post if single_image

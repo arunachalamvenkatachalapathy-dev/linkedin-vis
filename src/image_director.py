@@ -46,7 +46,9 @@ class ImageDirector:
                        out_path: str = "state/latest_image.png",
                        visual_variant: str = "variant_a",
                        post_format: str = "single_image",
-                       slides: list = None) -> str:
+                       slides: list = None,
+                       carousel_subtitle: str = "",
+                       carousel_metric: str = "") -> str:
         """
         Generate the visual for the selected image_style or carousel PDF.
         The Turn line or slides drive the visual message.
@@ -54,7 +56,8 @@ class ImageDirector:
         if post_format == "carousel" and slides:
             pdf_path = os.path.splitext(out_path)[0] + ".pdf" if not out_path.endswith(".pdf") else out_path
             log.info(f"🎨 Generating [CAROUSEL PDF - {visual_variant.upper()}] with {len(slides)} slides...")
-            return self._render_carousel_pdf(slides, thesis_data, pdf_path, visual_variant)
+            return self._render_carousel_pdf(slides, thesis_data, pdf_path, visual_variant,
+                                             carousel_subtitle=carousel_subtitle, carousel_metric=carousel_metric)
 
         log.info(f"🎨 Generating [{image_style.upper()} - {visual_variant.upper()}] visual for: '{turn_line[:60]}...'")
 
@@ -75,7 +78,8 @@ class ImageDirector:
     # ── 0. Carousel PDF Rendering ────────────────────────────────────────
 
     def _render_carousel_pdf(self, slides: list, thesis_data: dict,
-                             out_path: str, visual_variant: str = "variant_a") -> str:
+                             out_path: str, visual_variant: str = "variant_a",
+                             carousel_subtitle: str = "", carousel_metric: str = "") -> str:
         """
         Renders an 8-10 slide deck to 1080x1350 PNG images via Playwright,
         and compiles them into a single multi-page PDF using PIL.
@@ -101,6 +105,9 @@ class ImageDirector:
                 "badge": badge,
                 "variant": visual_variant,
                 "date_str": self._date_str(),
+                "carousel_subtitle": carousel_subtitle,
+                "carousel_metric": carousel_metric,
+                "author_name": "Arunachalam Venkatachalapathy",
             }
             res = self._render_html_template("carousel_slide", context, ASPECT_4x5, png_path)
             if res and os.path.exists(res):

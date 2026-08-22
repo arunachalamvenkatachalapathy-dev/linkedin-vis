@@ -83,6 +83,12 @@ LENGTH: {config.length_preset} ({length_spec['min_words']}–{length_spec['max_w
 CTA TYPE: {config.cta_type}
 {cta_desc}
 
+STORYTELLING RULES (critical for reach):
+- TENSION ARC: Every post must have a setup → tension → resolution structure. Name what the reader ASSUMES, then break that assumption with evidence.
+- SPECIFICITY: Never say "many companies" — say "a Fortune 500 manufacturer" or "a 200-person DevOps team". Concrete details create credibility.
+- MICRO-STORY: For narrative framings, include at least one scene with a specific moment (a time, a place, a reaction). "The dashboard turned red at 2:47 AM" beats "systems sometimes fail."
+- CONTRAST: The strongest posts name what most people do WRONG before showing what works. Start from the reader's current belief.
+
 FORMATTING RULES:
 - Short paragraphs: 1–3 lines max, then a line break. LinkedIn's feed is narrow.
 - No more than one emoji per 100 words, never as bullet replacements (no ☑️➡️📌).
@@ -91,6 +97,7 @@ FORMATTING RULES:
 - Vary paragraph rhythm — don't make every paragraph the same length.
 - No markdown formatting (no **, no #, no bullet points with - or *). Use plain text only.
 - For emphasis, use CAPS sparingly or Unicode bold characters.
+- WHITESPACE: Use generous line breaks. A wall of text kills engagement.
 
 PROOF REQUIREMENT:
 Extract ONE precise, specific, citable fact from the source material (a number, a named source, a dataset, a timeframe). This must appear in the post body. Do not average the source into vague paraphrase.
@@ -155,15 +162,19 @@ CTA TYPE: {config.cta_type}
 {cta_desc}
 Final slide MUST be the CTA.
 
-SLIDE REQUIREMENTS (8 to 10 slides total):
-- Slide 1 (role: "hook"): Hook line (≤12 words)
-- Slide 2 (role: "context"): Problem / context setup (max 40 words)
-- Slide 3..N-2 (role: "point"): Core insights mapped from body structure (one idea per slide, max 45 words per slide)
-- Slide N-1 (role: "proof"): Hardest data point / proof fact given its own dedicated slide (max 30 words)
-- Slide N (role: "cta"): CTA slide
+SLIDE REQUIREMENTS (8 to 10 slides total) — STORYTELLING ARC:
+- Slide 1 (role: "hook"): Hook line (≤12 words). This is the COVER SLIDE — it must stop the scroll.
+- Slide 2 (role: "context"): THE TENSION — what most people assume that is WRONG (max 40 words). Frame it as a belief the reader likely holds.
+- Slide 3..N-2 (role: "point"): One concrete, actionable insight per slide (max 45 words). Each must teach something specific, not state the obvious. Use numbers, names, specifics.
+- Slide N-1 (role: "proof"): The HARDEST data point — one number that proves the thesis. Show the exact stat prominently (max 20 words).
+- Slide N (role: "cta"): CTA slide — "Save this for your next [specific situation]" or "Share with your engineering team"
 
 CAPTION:
 Short LinkedIn caption (150-300 characters). First line MUST be the hook. The carousel PDF carries the depth, not the caption.
+
+ADDITIONAL CONTEXT FIELDS:
+- "subtitle": A short source attribution line for the cover slide (e.g., "ArXiv Research · Clean Computing" or "Live Grid Telemetry · ESG Systems"). Max 6 words.
+- "metric_preview": The single most impactful number from the source (e.g., "95% reduction", "64 gCO2/kWh", "78% failure rate"). This appears prominently on the cover slide.
 
 CLICHÉ FILTER — Do NOT use any of these:
 {', '.join(f'"{c}"' for c in CLICHE_PHRASES[:8])}
@@ -181,7 +192,9 @@ Return ONLY valid JSON:
     {{"role": "cta", "text": "..."}}
   ],
   "caption": "short caption under 300 characters",
-  "proof_fact": "the single concrete citable fact"
+  "proof_fact": "the single concrete citable fact",
+  "subtitle": "short source line for cover slide",
+  "metric_preview": "the key number for the cover slide"
 }}"""
 
         try:
@@ -191,10 +204,14 @@ Return ONLY valid JSON:
                 slides = parsed.get("slides", [])
                 caption = parsed.get("caption", "").strip()
                 proof = parsed.get("proof_fact", "").strip()
+                subtitle = parsed.get("subtitle", "").strip()
+                metric_preview = parsed.get("metric_preview", "").strip()
                 if slides and len(slides) >= 6:
                     config.slides = slides
                     config.post_text = caption
                     config.proof_fact = proof
+                    config.carousel_subtitle = subtitle
+                    config.carousel_metric = metric_preview
                     log.info(f"Pass 1 carousel draft: {len(slides)} slides, caption len={len(caption)}")
                     return config
         except Exception as e:
@@ -216,6 +233,8 @@ Return ONLY valid JSON:
         ]
         config.post_text = f"{title}\n\nSwipe through the 8-slide framework for clean computing systems."
         config.proof_fact = "64 gCO2/kWh"
+        config.carousel_subtitle = "Engineering Systems Framework"
+        config.carousel_metric = "64 gCO2/kWh"
         return config
 
     # ── Pass 2: Turn Line Extraction ─────────────────────────────────────

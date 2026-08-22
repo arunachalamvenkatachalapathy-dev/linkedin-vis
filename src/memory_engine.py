@@ -64,3 +64,16 @@ class MemoryEngine:
             if (entry.get("headline") or "").strip().lower() == clean_id:
                 return True
         return False
+
+    def is_headline_similar(self, headline: str, window: int = 5) -> bool:
+        """Fuzzy check: if the first 30 chars of this headline match any recent post, it's too similar."""
+        if not headline or len(headline) < 15:
+            return False
+        prefix = headline.strip().lower()[:30]
+        recent = self.history[-window:] if len(self.history) >= window else self.history
+        for entry in recent:
+            existing = (entry.get("headline") or "").strip().lower()
+            if existing[:30] == prefix:
+                log.info(f"Headline similarity detected: '{headline[:40]}' matches recent post '{existing[:40]}'")
+                return True
+        return False
