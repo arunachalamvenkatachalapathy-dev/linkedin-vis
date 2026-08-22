@@ -215,7 +215,7 @@ class ResearchEngine:
         # 1. Check Real-Time Telemetry Sources first on designated CleanTech days
         if source_type == "realtime_grid":
             item = self.fetch_realtime_grid_telemetry()
-            if item and not self.memory.is_duplicate(item.get('id', '')):
+            if item and not self.memory.is_any_repetition(item, source_type="realtime_grid"):
                 item['pillar'] = config['pillar']
                 item['theme'] = config['theme']
                 log.info(f"✅ Selected Real-Time Grid Telemetry: {item['title']}")
@@ -223,7 +223,7 @@ class ResearchEngine:
 
         elif source_type == "realtime_climate":
             item = self.fetch_realtime_climate_telemetry()
-            if item and not self.memory.is_duplicate(item.get('id', '')):
+            if item and not self.memory.is_any_repetition(item, source_type="realtime_climate"):
                 item['pillar'] = config['pillar']
                 item['theme'] = config['theme']
                 log.info(f"✅ Selected Real-Time Climate Telemetry: {item['title']}")
@@ -241,7 +241,7 @@ class ResearchEngine:
                 candidates = self.fetch_devto(config["devto_tag"])
 
             for item in candidates:
-                if not self.memory.is_duplicate(item.get('id', '')) and not self.memory.is_headline_similar(item.get('title', '')):
+                if not self.memory.is_any_repetition(item):
                     abstract = item.get('abstract', '')
                     if 'devto_' in item.get('id', ''):
                         art_id = item['id'].replace('devto_', '')
