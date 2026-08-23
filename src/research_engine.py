@@ -355,6 +355,14 @@ DAY_SCHEDULE_21 = [
         "theme": "Cost Curves, Clean Energy Investment Flows & Grid Parity Timelines",
         "source_cascade": [
             {"source_id": "owid", "chart_slug": "solar-pv-prices", "queries": [""]},
+            {"source_id": "openalex", "queries": [
+                "solar PV cost decline grid parity levelised cost electricity",
+                "renewable energy investment clean energy transition economics",
+            ]},
+            {"source_id": "semantic_scholar", "queries": [
+                "solar energy cost learning curve grid parity",
+                "clean energy investment flows renewable capital markets",
+            ]},
             {"source_id": "nrel",       "lat": 26.85, "lon": 75.79, "queries": [""]},
             {"source_id": "nasa_power", "lat": 26.85, "lon": 75.79, "queries": [""]},
             {"source_id": "arxiv_physics_soc", "queries": [
@@ -635,7 +643,7 @@ class ResearchEngine:
             req = urllib.request.Request(
                 url, headers={"User-Agent": "EcoPulseLive/8.0 (contact@ecopulse.org)"}
             )
-            with urllib.request.urlopen(req, timeout=20) as resp:
+            with urllib.request.urlopen(req, timeout=30) as resp:
                 data = resp.read()
             root = ET.fromstring(data)
             ns = {"atom": "http://www.w3.org/2005/Atom"}
@@ -1124,19 +1132,17 @@ class ResearchEngine:
         """NASA POWER satellite solar & meteorological data — no key required."""
         log.info(f"[NASA POWER] lat={lat}, lon={lon}")
         try:
-            from datetime import timedelta
-            end = datetime.utcnow()
-            start = end - timedelta(days=30)
-            s = start.strftime("%Y%m%d")
-            e = end.strftime("%Y%m%d")
+            # Use a fixed multi-year range to avoid 422 errors from same-month start=end
+            current_year = datetime.utcnow().year
+            start_year = current_year - 2
             url = (
-                f"https://power.larc.nasa.gov/api/temporal/monthly/point"
+                f"https://power.larc.nasa.gov/api/temporal/climatology/point"
                 f"?parameters=ALLSKY_SFC_SW_DWN&community=RE"
                 f"&longitude={lon}&latitude={lat}"
-                f"&start={s[:6]}&end={e[:6]}&format=JSON"
+                f"&start={start_year}&end={current_year}&format=JSON"
             )
             req = urllib.request.Request(url, headers={"User-Agent": "EcoPulseLive/8.0"})
-            with urllib.request.urlopen(req, timeout=20) as r:
+            with urllib.request.urlopen(req, timeout=25) as r:
                 data = json.loads(r.read().decode("utf-8"))
             props = data.get("properties", {}).get("parameter", {})
             ghi_data = props.get("ALLSKY_SFC_SW_DWN", {})
@@ -1144,9 +1150,9 @@ class ResearchEngine:
                 return {}
             ann = ghi_data.get("ANN", None)
             if ann is None:
-                # take latest monthly value
-                vals = {k: v for k, v in ghi_data.items() if k != "ANN" and v > 0}
-                ann = list(vals.values())[-1] if vals else 0
+                # take the mean of all monthly values
+                vals = [v for k, v in ghi_data.items() if k != "ANN" and v and v > 0]
+                ann = round(sum(vals) / len(vals), 2) if vals else 0
             location_label = f"lat={lat}, lon={lon}"
             return {
                 "source": "NASA POWER Satellite Solar Resource Data",
