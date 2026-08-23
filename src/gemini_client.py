@@ -28,7 +28,7 @@ class GeminiClient:
         if not self.api_key:
             log.warning("GEMINI_API_KEY is not set. LLM API calls will fail.")
 
-    def generate_text(self, prompt: str, temperature: float = 0.6, json_mode: bool = False, max_retries: int = 5) -> str:
+    def generate_text(self, prompt: str, temperature: float = 0.6, json_mode: bool = False, max_retries: int = 8) -> str:
         if not self.api_key:
             log.error("Cannot generate text: GEMINI_API_KEY is missing.")
             return ""
@@ -51,6 +51,8 @@ class GeminiClient:
                 try:
                     resp = requests.post(url, headers=headers, json=payload, timeout=30)
                     if resp.status_code == 200:
+                        # Throttle to max 15 requests per minute (free tier limit)
+                        time.sleep(4)
                         data = resp.json()
                         candidates = data.get("candidates", [])
                         if candidates and "content" in candidates[0]:
