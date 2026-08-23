@@ -483,5 +483,25 @@
     "pillar": "",
     "source_type": "default",
     "topic_fingerprint": "bottleneck|data|dataset|global|grid|hardware|latest|owid"
+  },
+  {
+    "id": "oa_W4366780296",
+    "source": "OpenAlex Scholarly Graph (CC0)",
+    "headline": "Conceptualizing the Circular Economy (Revisited): An Analysi",
+    "topic": "Cost Curves, Clean Energy Investment Flows & Grid Parity Timelines",
+    "post_id": "urn:li:ugcPost:7497139381422575616",
+    "post_url": "https://www.linkedin.com/feed/update/urn:li:ugcPost:7497139381422575616/",
+    "date": "2026-08-23T03:55:18.929100+00:00",
+    "hook_type": "confession",
+    "framing": "industry_observation",
+    "body_structure": "E",
+    "cta_type": "soft_mirror",
+    "image_style": "text_on_card",
+    "length_preset": "punch",
+    "turn_line": "We cannot build a circular economy if we cannot even agree on what it means.",
+    "proof_fact": "221 distinct circular economy definitions analyzed",
+    "pillar": "",
+    "source_type": "default",
+    "topic_fingerprint": "agree|analysi|build|cannot|circular|conceptualizing|economy|even"
   }
 ]
