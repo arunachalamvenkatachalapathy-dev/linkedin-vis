@@ -185,7 +185,7 @@ IMAGE_STYLES = [
     "before_after_split",     # Two-panel visual contrast
 ]
 
-VISUAL_VARIANTS = ["variant_a", "variant_b", "variant_c"]
+VISUAL_VARIANTS = ["variant_a", "variant_c"]
 
 IMAGE_STYLE_DESCRIPTIONS = {
     "text_on_card":           "Bold single statement or stat, high contrast, minimal — treat as a 'quote card'. Best for punch/data posts using the Turn line itself.",

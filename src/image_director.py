@@ -108,7 +108,6 @@ class ImageDirector:
                 "carousel_subtitle": carousel_subtitle,
                 "carousel_metric": carousel_metric,
                 "author_name": "Arunachalam Venkatachalapathy",
-                "base_dir": str(TEMPLATES_DIR.absolute()).replace('\\', '/').lstrip('/'),
             }
             res = self._render_html_template("carousel_slide", context, ASPECT_1x1, png_path)
             if res and os.path.exists(res):
@@ -326,8 +325,13 @@ Return valid JSON:
                               aspect: dict, out_path: str) -> str:
         try:
             from playwright.sync_api import sync_playwright
+            import base64
 
             html_path = TEMPLATES_DIR / f"{template_name}.html"
+            profile_path = TEMPLATES_DIR / "profile.jpg"
+            if profile_path.exists():
+                with open(profile_path, "rb") as img_f:
+                    context["profile_image_src"] = "data:image/jpeg;base64," + base64.b64encode(img_f.read()).decode('utf-8')
             css_path = TEMPLATES_DIR / f"{template_name}.css"
 
             with open(html_path, "r", encoding="utf-8") as f:
