@@ -160,5 +160,17 @@
     "length_preset": "standard",
     "date": "2026-08-22T15:59:28.132838+00:00",
     "post_id": "urn:li:ugcPost:7496959232601305088"
+  },
+  {
+    "post_format": "carousel",
+    "hook_type": "story_cold_open",
+    "framing": "data_breakdown",
+    "body_structure": "A",
+    "cta_type": "specific_ask",
+    "image_style": "data_visual",
+    "visual_variant": "variant_b",
+    "length_preset": "standard",
+    "date": "2026-08-23T01:33:02.443795+00:00",
+    "post_id": "urn:li:ugcPost:7497103577035788289"
   }
 ]

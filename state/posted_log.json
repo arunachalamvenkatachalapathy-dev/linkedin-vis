@@ -463,5 +463,25 @@
     "pillar": "",
     "source_type": "default",
     "topic_fingerprint": "agents|aren|augmented|automating|generation|greenwashing|identity|long"
+  },
+  {
+    "id": "owid_solar-pv-prices_2026_08_23",
+    "source": "Our World in Data (Oxford/Gates Foundation \u2014 CC0)",
+    "headline": "OWID Dataset: Solar Pv Prices \u2014 Latest Global Data",
+    "topic": "Cost Curves, Clean Energy Investment Flows & Grid Parity Timelines",
+    "post_id": "urn:li:ugcPost:7497103577035788289",
+    "post_url": "https://www.linkedin.com/feed/update/urn:li:ugcPost:7497103577035788289/",
+    "date": "2026-08-23T01:33:02.443030+00:00",
+    "hook_type": "story_cold_open",
+    "framing": "data_breakdown",
+    "body_structure": "A",
+    "cta_type": "specific_ask",
+    "image_style": "data_visual",
+    "length_preset": "standard",
+    "turn_line": "The real bottleneck isn't the hardware\u2014it's the grid and permitting.",
+    "proof_fact": "Global solar PV module cost dropped to $0.258 per watt in 2024 according to Our World in Data.",
+    "pillar": "",
+    "source_type": "default",
+    "topic_fingerprint": "bottleneck|data|dataset|global|grid|hardware|latest|owid"
   }
 ]
