@@ -108,6 +108,7 @@ class ImageDirector:
                 "carousel_subtitle": carousel_subtitle,
                 "carousel_metric": carousel_metric,
                 "author_name": "Arunachalam Venkatachalapathy",
+                "base_dir": str(TEMPLATES_DIR.absolute()).replace('\\', '/').lstrip('/'),
             }
             res = self._render_html_template("carousel_slide", context, ASPECT_1x1, png_path)
             if res and os.path.exists(res):
