@@ -1,0 +1,204 @@
+engine.py:17:1: F401 'os' imported but unused
+engine.py:30:1: E402 module level import not at top of file
+engine.py:31:1: E402 module level import not at top of file
+engine.py:32:1: E402 module level import not at top of file
+engine.py:33:1: E402 module level import not at top of file
+engine.py:34:1: E402 module level import not at top of file
+engine.py:35:1: E402 module level import not at top of file
+engine.py:36:1: E402 module level import not at top of file
+engine.py:37:1: E402 module level import not at top of file
+engine.py:38:1: E402 module level import not at top of file
+src/combination_tracker.py:17:1: F401 'src.post_config.POST_FORMATS' imported but unused
+src/combination_tracker.py:17:1: F401 'src.post_config.LENGTH_PRESETS' imported but unused
+src/combination_tracker.py:94:1: W293 blank line contains whitespace
+src/editorial_engine.py:300:1: W293 blank line contains whitespace
+src/gemini_client.py:3:1: F401 'json' imported but unused
+src/gemini_client.py:22:1: E302 expected 2 blank lines, found 1
+src/gemini_client.py:25:58: W504 line break after binary operator
+src/gemini_client.py:25:60: W291 trailing whitespace
+src/gemini_client.py:40:1: W293 blank line contains whitespace
+src/gemini_client.py:63:1: W293 blank line contains whitespace
+src/gemini_client.py:70:1: W293 blank line contains whitespace
+src/hook_engine.py:92:19: E226 missing whitespace around arithmetic operator
+src/image_director.py:32:20: E241 multiple spaces after ':'
+src/image_director.py:33:19: E241 multiple spaces after ':'
+src/image_director.py:34:25: E241 multiple spaces after ':'
+src/image_director.py:36:26: E241 multiple spaces after ':'
+src/image_director.py:100:51: E226 missing whitespace around arithmetic operator
+src/memory_engine.py:14:1: F401 're' imported but unused
+src/memory_engine.py:90:18: E231 missing whitespace after ','
+src/memory_engine.py:90:22: E231 missing whitespace after ','
+src/memory_engine.py:90:27: E231 missing whitespace after ','
+src/memory_engine.py:90:33: E231 missing whitespace after ','
+src/memory_engine.py:90:38: E231 missing whitespace after ','
+src/memory_engine.py:90:43: E231 missing whitespace after ','
+src/memory_engine.py:90:48: E231 missing whitespace after ','
+src/memory_engine.py:90:53: E231 missing whitespace after ','
+src/memory_engine.py:90:59: E231 missing whitespace after ','
+src/memory_engine.py:90:64: E231 missing whitespace after ','
+src/memory_engine.py:90:70: E231 missing whitespace after ','
+src/memory_engine.py:90:75: E231 missing whitespace after ','
+src/memory_engine.py:91:19: E231 missing whitespace after ','
+src/memory_engine.py:91:26: E231 missing whitespace after ','
+src/memory_engine.py:91:33: E231 missing whitespace after ','
+src/memory_engine.py:91:40: E231 missing whitespace after ','
+src/memory_engine.py:91:45: E231 missing whitespace after ','
+src/memory_engine.py:91:51: E231 missing whitespace after ','
+src/memory_engine.py:91:58: E231 missing whitespace after ','
+src/memory_engine.py:91:66: E231 missing whitespace after ','
+src/memory_engine.py:91:72: E231 missing whitespace after ','
+src/memory_engine.py:92:19: E231 missing whitespace after ','
+src/memory_engine.py:92:26: E231 missing whitespace after ','
+src/memory_engine.py:92:31: E231 missing whitespace after ','
+src/memory_engine.py:92:36: E231 missing whitespace after ','
+src/memory_engine.py:92:41: E231 missing whitespace after ','
+src/memory_engine.py:92:46: E231 missing whitespace after ','
+src/memory_engine.py:92:52: E231 missing whitespace after ','
+src/memory_engine.py:92:58: E231 missing whitespace after ','
+src/memory_engine.py:92:64: E231 missing whitespace after ','
+src/memory_engine.py:92:69: E231 missing whitespace after ','
+src/memory_engine.py:92:74: E231 missing whitespace after ','
+src/memory_engine.py:93:19: E231 missing whitespace after ','
+src/memory_engine.py:93:26: E231 missing whitespace after ','
+src/memory_engine.py:93:33: E231 missing whitespace after ','
+src/memory_engine.py:93:41: E231 missing whitespace after ','
+src/memory_engine.py:93:48: E231 missing whitespace after ','
+src/memory_engine.py:93:54: E231 missing whitespace after ','
+src/memory_engine.py:93:61: E231 missing whitespace after ','
+src/memory_engine.py:93:67: E231 missing whitespace after ','
+src/memory_engine.py:93:73: E231 missing whitespace after ','
+src/post_config.py:12:1: F401 'typing.Optional' imported but unused
+src/post_config.py:81:18: E241 multiple spaces after ':'
+src/post_config.py:82:18: E241 multiple spaces after ':'
+src/post_config.py:83:20: E241 multiple spaces after ':'
+src/post_config.py:84:22: E241 multiple spaces after ':'
+src/post_config.py:85:23: E241 multiple spaces after ':'
+src/post_config.py:86:21: E241 multiple spaces after ':'
+src/post_config.py:87:25: E241 multiple spaces after ':'
+src/post_config.py:88:21: E241 multiple spaces after ':'
+src/post_config.py:104:17: E241 multiple spaces after ':'
+src/post_config.py:105:28: E241 multiple spaces after ':'
+src/post_config.py:106:22: E241 multiple spaces after ':'
+src/post_config.py:107:17: E241 multiple spaces after ':'
+src/post_config.py:108:23: E241 multiple spaces after ':'
+src/post_config.py:109:18: E241 multiple spaces after ':'
+src/post_config.py:110:18: E241 multiple spaces after ':'
+src/post_config.py:161:19: E241 multiple spaces after ':'
+src/post_config.py:162:20: E241 multiple spaces after ':'
+src/post_config.py:164:14: E241 multiple spaces after ':'
+src/post_config.py:165:17: E241 multiple spaces after ':'
+src/post_config.py:171:13: E241 multiple spaces after ':'
+src/post_config.py:171:34: E241 multiple spaces after ','
+src/post_config.py:171:52: E241 multiple spaces after ','
+src/post_config.py:173:12: E241 multiple spaces after ':'
+src/post_config.py:191:20: E241 multiple spaces after ':'
+src/post_config.py:192:19: E241 multiple spaces after ':'
+src/post_config.py:193:25: E241 multiple spaces after ':'
+src/post_config.py:194:30: E241 multiple spaces after ':'
+src/post_config.py:195:26: E241 multiple spaces after ':'
+src/post_config.py:201:13: E241 multiple spaces after ':'
+src/post_config.py:202:13: E241 multiple spaces after ':'
+src/post_config.py:203:21: E241 multiple spaces after ':'
+src/post_config.py:204:24: E241 multiple spaces after ':'
+src/post_config.py:205:10: E241 multiple spaces after ':'
+src/post_config.py:206:15: E241 multiple spaces after ':'
+src/post_config.py:211:17: E241 multiple spaces after ':'
+src/post_config.py:212:28: E241 multiple spaces after ':'
+src/post_config.py:213:22: E241 multiple spaces after ':'
+src/post_config.py:214:17: E241 multiple spaces after ':'
+src/post_config.py:215:23: E241 multiple spaces after ':'
+src/post_config.py:216:18: E241 multiple spaces after ':'
+src/post_config.py:217:18: E241 multiple spaces after ':'
+src/post_config.py:222:17: E241 multiple spaces after ':'
+src/post_config.py:223:28: E241 multiple spaces after ':'
+src/post_config.py:224:22: E241 multiple spaces after ':'
+src/post_config.py:225:17: E241 multiple spaces after ':'
+src/post_config.py:226:23: E241 multiple spaces after ':'
+src/post_config.py:227:18: E241 multiple spaces after ':'
+src/post_config.py:228:18: E241 multiple spaces after ':'
+src/publisher.py:10:1: E302 expected 2 blank lines, found 1
+src/publisher.py:21:1: E302 expected 2 blank lines, found 1
+src/publisher.py:47:1: E302 expected 2 blank lines, found 1
+src/publisher.py:73:1: E302 expected 2 blank lines, found 1
+src/publisher.py:101:1: E302 expected 2 blank lines, found 1
+src/research_engine.py:76:37: E241 multiple spaces after ','
+src/research_engine.py:77:37: E241 multiple spaces after ','
+src/research_engine.py:124:34: E241 multiple spaces after ','
+src/research_engine.py:130:40: E241 multiple spaces after ','
+src/research_engine.py:193:34: E241 multiple spaces after ','
+src/research_engine.py:292:37: E241 multiple spaces after ','
+src/research_engine.py:294:37: E241 multiple spaces after ','
+src/research_engine.py:366:34: E241 multiple spaces after ','
+src/research_engine.py:473:32: E241 multiple spaces after ':'
+src/research_engine.py:473:32: E272 multiple spaces before keyword
+src/research_engine.py:474:27: E241 multiple spaces after ':'
+src/research_engine.py:474:27: E272 multiple spaces before keyword
+src/research_engine.py:475:27: E241 multiple spaces after ':'
+src/research_engine.py:475:27: E272 multiple spaces before keyword
+src/research_engine.py:476:27: E241 multiple spaces after ':'
+src/research_engine.py:476:27: E272 multiple spaces before keyword
+src/research_engine.py:477:27: E241 multiple spaces after ':'
+src/research_engine.py:477:27: E272 multiple spaces before keyword
+src/research_engine.py:478:27: E241 multiple spaces after ':'
+src/research_engine.py:478:27: E272 multiple spaces before keyword
+src/research_engine.py:479:26: E241 multiple spaces after ':'
+src/research_engine.py:479:26: E272 multiple spaces before keyword
+src/research_engine.py:480:22: E241 multiple spaces after ':'
+src/research_engine.py:480:22: E272 multiple spaces before keyword
+src/research_engine.py:481:24: E241 multiple spaces after ':'
+src/research_engine.py:481:24: E272 multiple spaces before keyword
+src/research_engine.py:482:21: E241 multiple spaces after ':'
+src/research_engine.py:482:21: E272 multiple spaces before keyword
+src/research_engine.py:483:31: E241 multiple spaces after ':'
+src/research_engine.py:483:31: E272 multiple spaces before keyword
+src/research_engine.py:484:32: E241 multiple spaces after ':'
+src/research_engine.py:484:32: E272 multiple spaces before keyword
+src/research_engine.py:485:24: E241 multiple spaces after ':'
+src/research_engine.py:485:24: E272 multiple spaces before keyword
+src/research_engine.py:487:29: E241 multiple spaces after ':'
+src/research_engine.py:487:29: E272 multiple spaces before keyword
+src/research_engine.py:489:33: E241 multiple spaces after ':'
+src/research_engine.py:489:33: E272 multiple spaces before keyword
+src/research_engine.py:490:33: E241 multiple spaces after ':'
+src/research_engine.py:490:33: E272 multiple spaces before keyword
+src/research_engine.py:491:23: E241 multiple spaces after ':'
+src/research_engine.py:491:23: E272 multiple spaces before keyword
+src/research_engine.py:492:23: E241 multiple spaces after ':'
+src/research_engine.py:492:23: E272 multiple spaces before keyword
+src/research_engine.py:493:24: E241 multiple spaces after ':'
+src/research_engine.py:493:24: E272 multiple spaces before keyword
+src/research_engine.py:494:24: E241 multiple spaces after ':'
+src/research_engine.py:494:24: E272 multiple spaces before keyword
+src/research_engine.py:495:39: E126 continuation line over-indented for hanging indent
+src/research_engine.py:497:35: E126 continuation line over-indented for hanging indent
+src/research_engine.py:498:26: E241 multiple spaces after ':'
+src/research_engine.py:498:26: E272 multiple spaces before keyword
+src/research_engine.py:499:39: E126 continuation line over-indented for hanging indent
+src/research_engine.py:501:35: E126 continuation line over-indented for hanging indent
+src/research_engine.py:502:20: E241 multiple spaces after ':'
+src/research_engine.py:502:20: E272 multiple spaces before keyword
+src/research_engine.py:503:39: E126 continuation line over-indented for hanging indent
+src/research_engine.py:505:35: E126 continuation line over-indented for hanging indent
+src/research_engine.py:506:26: E241 multiple spaces after ':'
+src/research_engine.py:506:26: E272 multiple spaces before keyword
+src/research_engine.py:507:39: E126 continuation line over-indented for hanging indent
+src/research_engine.py:509:35: E126 continuation line over-indented for hanging indent
+src/research_engine.py:510:20: E241 multiple spaces after ':'
+src/research_engine.py:510:20: E272 multiple spaces before keyword
+src/research_engine.py:511:39: E126 continuation line over-indented for hanging indent
+src/research_engine.py:512:35: E126 continuation line over-indented for hanging indent
+src/research_engine.py:513:29: E241 multiple spaces after ':'
+src/research_engine.py:513:29: E272 multiple spaces before keyword
+src/research_engine.py:670:9: F841 local variable 'url' is assigned to but never used
+src/research_engine.py:913:20: E221 multiple spaces before operator
+src/research_engine.py:913:80: E241 multiple spaces after ','
+src/research_engine.py:914:21: E221 multiple spaces before operator
+src/research_engine.py:914:81: E241 multiple spaces after ','
+src/research_engine.py:915:21: E221 multiple spaces before operator
+src/research_engine.py:915:81: E241 multiple spaces after ','
+src/research_engine.py:916:22: E221 multiple spaces before operator
+src/research_engine.py:916:82: E241 multiple spaces after ','
+src/research_engine.py:1160:95: F821 undefined name 'e'
+src/research_engine.py:1283:28: E741 ambiguous variable name 'l'
+src/review_engine.py:42:1: E302 expected 2 blank lines, found 1
+src/review_engine.py:159:32: E741 ambiguous variable name 'l'

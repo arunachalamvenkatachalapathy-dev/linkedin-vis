@@ -9,7 +9,6 @@ Reference: LinkedIn Viral Post Framework Sections 2–10.
 """
 
 from dataclasses import dataclass, field, asdict
-from typing import Optional
 
 # ── Section 13: Cliché Blacklist ─────────────────────────────────────────────
 

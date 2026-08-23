@@ -17,7 +17,7 @@ import logging
 import random
 import urllib.request
 import urllib.parse
-import xml.etree.ElementTree as ET
+import defusedxml.ElementTree as ET
 from datetime import datetime, date
 
 log = logging.getLogger("ecopulse")
@@ -544,8 +544,8 @@ class ResearchEngine:
                     body = full.get("body_markdown", abstract)[:4000]
                     if body and len(body) > 80:
                         return body
-            except Exception:
-                pass
+            except Exception as err:
+                log.warning(f"  [Dev.to enrich] error: {err}")
 
         if source_id == "github_trending":
             desc = item.get("description", "")
@@ -1157,7 +1157,7 @@ class ResearchEngine:
             return {
                 "source": "NASA POWER Satellite Solar Resource Data",
                 "title": f"Solar GHI at {location_label}: {ann:.2f} kWh/m²/day (Annual Average)",
-                "id": f"nasa_power_{str(lat).replace('.', '_')}_{str(lon).replace('.', '_')}_{e[:6]}",
+                "id": f"nasa_power_{str(lat).replace('.', '_')}_{str(lon).replace('.', '_')}_{current_year}",
                 "raw_text": (
                     f"NASA POWER satellite data for location ({location_label}): "
                     f"Annual average Global Horizontal Irradiance (GHI) is {ann:.2f} kWh/m²/day. "
@@ -1280,7 +1280,7 @@ class ResearchEngine:
             req = urllib.request.Request(url, headers={"User-Agent": "EcoPulseLive/8.0"})
             with urllib.request.urlopen(req, timeout=20) as r:
                 csv_text = r.read().decode("utf-8")
-            lines = [l for l in csv_text.strip().split("\n") if l.strip()]
+            lines = [line for line in csv_text.strip().split("\n") if line.strip()]
             if len(lines) < 3:
                 return {}
             header = lines[0].split(",")

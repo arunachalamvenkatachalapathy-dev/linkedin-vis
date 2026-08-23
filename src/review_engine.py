@@ -156,7 +156,7 @@ class ReviewEngine:
 
     def _check_hook_strength(self, post_text: str) -> int:
         """Gate 2: Score the opening 1–2 lines for scroll-stop power."""
-        lines = [l.strip() for l in post_text.strip().split('\n') if l.strip()]
+        lines = [line.strip() for line in post_text.strip().split('\n') if line.strip()]
         if not lines:
             return 0
 

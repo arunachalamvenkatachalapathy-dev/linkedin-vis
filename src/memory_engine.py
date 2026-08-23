@@ -11,7 +11,6 @@ Memory Engine - Anti-Repetition System v2.0
 """
 
 import os
-import re
 import json
 import logging
 from datetime import datetime, timezone, timedelta

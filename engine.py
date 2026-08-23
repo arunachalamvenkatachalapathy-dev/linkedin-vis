@@ -14,7 +14,6 @@ EcoPulse LinkedIn Engine — Main Orchestrator (v5.0 Viral Post Framework)
 Quality gate retry: if gate fails, re-run Phases 2–5 with adjusted params (max 3 retries).
 """
 
-import os
 import sys
 import logging
 from dotenv import load_dotenv
