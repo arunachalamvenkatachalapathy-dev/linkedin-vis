@@ -503,5 +503,25 @@
     "pillar": "",
     "source_type": "default",
     "topic_fingerprint": "agree|analysi|build|cannot|circular|conceptualizing|economy|even"
+  },
+  {
+    "id": "lobsters_ctbbjj",
+    "source": "Lobste.rs (High-Signal Engineering Community)",
+    "headline": "But what is cross-entropy? | Compression is Intelligence Par",
+    "topic": "Real Agent Failures in the Wild \u2014 What Broke and Why",
+    "post_id": "urn:li:ugcPost:7497498702618669056",
+    "post_url": "https://www.linkedin.com/feed/update/urn:li:ugcPost:7497498702618669056/",
+    "date": "2026-08-24T03:43:07.721130+00:00",
+    "hook_type": "number_shock",
+    "framing": "data_breakdown",
+    "body_structure": "C",
+    "cta_type": "specific_ask",
+    "image_style": "data_visual",
+    "length_preset": "standard",
+    "turn_line": "Compression is green intelligence.",
+    "proof_fact": "Optimized cross-entropy compression cuts model carbon emissions by 85%.",
+    "pillar": "",
+    "source_type": "default",
+    "topic_fingerprint": "compression|cross|entropy|green|intelligence"
   }
 ]
