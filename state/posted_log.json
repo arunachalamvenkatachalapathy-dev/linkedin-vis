@@ -463,5 +463,25 @@
     "pillar": "",
     "source_type": "default",
     "topic_fingerprint": "actually|chases|dogecoin|heats|hype|infrastructure|loudest|market"
+  },
+  {
+    "id": "newsdata_7c6f388fd22acb9d5498594ee04c063a",
+    "source": "NewsData (Live Breaking News)",
+    "headline": "Toitures arrache\u0301es, routes coupe\u0301es, maisons souffle\u0301es... ",
+    "topic": "Production State Machines, DAG Routing & Deterministic Tool Calling",
+    "post_id": "urn:li:ugcPost:7497891469123411968",
+    "post_url": "https://www.linkedin.com/feed/update/urn:li:ugcPost:7497891469123411968/",
+    "date": "2026-08-25T05:43:50.635295+00:00",
+    "hook_type": "pattern_interrupt",
+    "framing": "data_breakdown",
+    "body_structure": "B",
+    "cta_type": "value_forward",
+    "image_style": "data_visual",
+    "length_preset": "standard",
+    "turn_line": "Static ESG metrics fail the moment climate risk becomes hyper-local.",
+    "proof_fact": "A sudden tornado in Pomas caused severe localized damage despite standard regional orange alerts.",
+    "pillar": "",
+    "source_type": "default",
+    "topic_fingerprint": "arrache|becomes|climate|coupe|fail|hyper|local|maisons"
   }
 ]
