@@ -1,6 +1,37 @@
 [
   {
     "hook_type": "confession",
+    "framing": "data_breakdown",
+    "body_structure": "A",
+    "cta_type": "silent",
+    "image_style": "data_visual",
+    "length_preset": "standard",
+    "date": "2026-08-22T02:42:41.802659+00:00",
+    "post_id": "simulated"
+  },
+  {
+    "hook_type": "story_cold_open",
+    "framing": "industry_observation",
+    "body_structure": "B",
+    "cta_type": "specific_ask",
+    "image_style": "text_on_card",
+    "visual_variant": "variant_a",
+    "length_preset": "punch",
+    "date": "2026-08-22T03:17:55.358092+00:00",
+    "post_id": "urn:li:share:7496767583308787712"
+  },
+  {
+    "hook_type": "curiosity_gap",
+    "framing": "data_breakdown",
+    "body_structure": "E",
+    "cta_type": "value_forward",
+    "image_style": "data_visual",
+    "length_preset": "deep",
+    "date": "2026-08-22T03:32:33.097496+00:00",
+    "post_id": "urn:li:share:7496771264657653760"
+  },
+  {
+    "hook_type": "confession",
     "framing": "narrative",
     "body_structure": "C",
     "cta_type": "soft_mirror",
@@ -120,62 +151,14 @@
   },
   {
     "post_format": "carousel",
-    "hook_type": "pattern_interrupt",
+    "hook_type": "question_trap",
     "framing": "narrative",
-    "body_structure": "E",
+    "body_structure": "A",
     "cta_type": "save_bait",
     "image_style": "editorial_illustration",
-    "visual_variant": "variant_b",
-    "length_preset": "standard",
-    "date": "2026-08-22T15:59:28.132838+00:00",
-    "post_id": "urn:li:ugcPost:7496959232601305088"
-  },
-  {
-    "post_format": "carousel",
-    "hook_type": "story_cold_open",
-    "framing": "data_breakdown",
-    "body_structure": "A",
-    "cta_type": "specific_ask",
-    "image_style": "data_visual",
-    "visual_variant": "variant_b",
-    "length_preset": "standard",
-    "date": "2026-08-23T01:33:02.443795+00:00",
-    "post_id": "urn:li:ugcPost:7497103577035788289"
-  },
-  {
-    "post_format": "carousel",
-    "hook_type": "confession",
-    "framing": "industry_observation",
-    "body_structure": "E",
-    "cta_type": "soft_mirror",
-    "image_style": "text_on_card",
-    "visual_variant": "variant_a",
-    "length_preset": "punch",
-    "date": "2026-08-23T03:55:18.929861+00:00",
-    "post_id": "urn:li:ugcPost:7497139381422575616"
-  },
-  {
-    "post_format": "carousel",
-    "hook_type": "number_shock",
-    "framing": "data_breakdown",
-    "body_structure": "C",
-    "cta_type": "specific_ask",
-    "image_style": "data_visual",
-    "visual_variant": "variant_a",
-    "length_preset": "standard",
-    "date": "2026-08-24T03:43:07.721912+00:00",
-    "post_id": "urn:li:ugcPost:7497498702618669056"
-  },
-  {
-    "post_format": "carousel",
-    "hook_type": "confession",
-    "framing": "industry_observation",
-    "body_structure": "C",
-    "cta_type": "soft_mirror",
-    "image_style": "text_on_card",
-    "visual_variant": "variant_a",
-    "length_preset": "standard",
-    "date": "2026-08-25T05:31:52.754922+00:00",
-    "post_id": "urn:li:ugcPost:7497888458066128896"
+    "visual_variant": "variant_c",
+    "length_preset": "deep",
+    "date": "2026-08-25T05:29:54.915999+00:00",
+    "post_id": "simulated"
   }
 ]

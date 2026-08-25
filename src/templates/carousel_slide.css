@@ -1,7 +1,7 @@
 /* Carousel Slide — 1:1 Square PDF Slide Template */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+
 
 /* ═══════════════════════════════════════════════════
    VARIANT A (Default): Brutalist Dark — Pure Black / Electric Red
@@ -23,9 +23,9 @@ body {
   --tag-color: #FF6B6B;
   --card-bg: rgba(255, 255, 255, 0.022);
   --card-border: rgba(239, 68, 68, 0.14);
-  --font-family: 'Inter', sans-serif;
-  --title-size: 44px;
-  --hook-size: 58px;
+  --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --title-size: 52px;
+  --hook-size: 72px;
 }
 
 /* ═══════════════════════════════════════════════════
@@ -39,8 +39,8 @@ body.variant_c {
   --tag-color: #FF6B6B;
   --card-bg: rgba(255, 255, 255, 0.03);
   --card-border: rgba(255, 255, 255, 0.08);
-  --title-size: 46px;
-  --hook-size: 60px;
+  --title-size: 54px;
+  --hook-size: 76px;
 }
 
 /* ═══════════════════════════════════════════════════
@@ -131,12 +131,12 @@ body.variant_c {
 
 /* Adaptive font scaling based on text length */
 .medium-text {
-  font-size: 36px !important;
+  font-size: 46px !important;
   line-height: 1.4;
 }
 
 .small-text {
-  font-size: 28px !important;
+  font-size: 38px !important;
   line-height: 1.45;
 }
 

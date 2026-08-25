@@ -183,12 +183,11 @@ CTA TYPE: {config.cta_type}
 {cta_desc}
 Final slide MUST be the CTA.
 
-SLIDE REQUIREMENTS (8 to 10 slides total) — STORYTELLING ARC:
-- Slide 1 (role: "hook"): Hook line (≤12 words). This is the COVER SLIDE — it must stop the scroll. Force one of these 4 VIRAL HOOK FRAMEWORKS: (1) Curiosity Gap, (2) Contrarian Take, (3) The 'Mistake' Framework, or (4) The Specific Outcome.
-- Slide 2 (role: "context"): THE TENSION — what most people assume that is WRONG (max 40 words). Frame it as a belief the reader likely holds.
-- Slide 3..N-2 (role: "point"): One concrete, actionable insight per slide (max 45 words). Each must teach something specific, not state the obvious. Use numbers, names, specifics.
-- Slide N-1 (role: "proof"): The HARDEST data point — one number that proves the thesis. Show the exact stat prominently (max 20 words).
-- Slide N (role: "cta"): CTA slide — MUST ask the audience to "Follow for more insights" or "Follow for more on sustainability."
+SLIDE REQUIREMENTS (8 slides total) — STORYTELLING ARC:
+- Slide 1 (role: "hook"): Hook line (≤12 words). MUST be clear and stop the scroll.
+- Slide 2, 3, 4, 5 (role: "story"): Storytelling based on the content. Guide the reader through the narrative organically without rigid bullet points.
+- Slide 6 (role: "takeaway"): Start revealing the most important takeaway from the source.
+- Slide 7, 8 (role: "freedom"): You have creative freedom for these two slides (could be further insights, conclusion, or a CTA in slide 8). Final slide MUST ask the audience to "Follow for more on sustainability."
 
 CAPTION:
 Short LinkedIn caption (150-300 characters). First line MUST be the hook. The carousel PDF carries the depth, not the caption.
