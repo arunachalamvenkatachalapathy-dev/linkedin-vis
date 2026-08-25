@@ -523,5 +523,25 @@
     "pillar": "",
     "source_type": "default",
     "topic_fingerprint": "compression|cross|entropy|green|intelligence"
+  },
+  {
+    "id": "newsdata_38e8a8f56c1aa28ba5ceaefaf6b107d8",
+    "source": "NewsData (Live Breaking News)",
+    "headline": "Deimos may owe both its enormous south-polar depression and ",
+    "topic": "Production State Machines, DAG Routing & Deterministic Tool Calling",
+    "post_id": "urn:li:ugcPost:7497888458066128896",
+    "post_url": "https://www.linkedin.com/feed/update/urn:li:ugcPost:7497888458066128896/",
+    "date": "2026-08-25T05:31:52.753920+00:00",
+    "hook_type": "confession",
+    "framing": "industry_observation",
+    "body_structure": "C",
+    "cta_type": "soft_mirror",
+    "image_style": "text_on_card",
+    "length_preset": "standard",
+    "turn_line": "The safest systems aren't the most rigid\u2014they are the ones built to bend.",
+    "proof_fact": "A 320-metre oblique impact reshaped Deimos without destroying it due to its porous interior.",
+    "pillar": "",
+    "source_type": "default",
+    "topic_fingerprint": "aren|bend|both|built|deimos|depression|enormous|most"
   }
 ]

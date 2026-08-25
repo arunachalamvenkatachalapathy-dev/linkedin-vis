@@ -1,15 +1,5 @@
 [
   {
-    "hook_type": "curiosity_gap",
-    "framing": "data_breakdown",
-    "body_structure": "E",
-    "cta_type": "value_forward",
-    "image_style": "data_visual",
-    "length_preset": "deep",
-    "date": "2026-08-22T03:32:33.097496+00:00",
-    "post_id": "urn:li:share:7496771264657653760"
-  },
-  {
     "hook_type": "confession",
     "framing": "narrative",
     "body_structure": "C",
@@ -175,5 +165,17 @@
     "length_preset": "standard",
     "date": "2026-08-24T03:43:07.721912+00:00",
     "post_id": "urn:li:ugcPost:7497498702618669056"
+  },
+  {
+    "post_format": "carousel",
+    "hook_type": "confession",
+    "framing": "industry_observation",
+    "body_structure": "C",
+    "cta_type": "soft_mirror",
+    "image_style": "text_on_card",
+    "visual_variant": "variant_a",
+    "length_preset": "standard",
+    "date": "2026-08-25T05:31:52.754922+00:00",
+    "post_id": "urn:li:ugcPost:7497888458066128896"
   }
 ]
