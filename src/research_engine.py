@@ -428,7 +428,7 @@ class ResearchEngine:
             f"🔍 Day {day_idx + 1}/21 [{config['pillar']}]: {config['theme']}"
         )
 
-        for source_spec in config["source_cascade"]:
+        for source_spec in config["source_cascade"] + [{"source_id": "newsdata", "queries": [""]}]:
             source_id = source_spec["source_id"]
             queries = list(source_spec.get("queries", [""]))
             random.shuffle(queries)
@@ -483,6 +483,7 @@ class ResearchEngine:
             "github_trending":    lambda: self.fetch_github_trending(spec.get("topic", "llm")),
             "papers_with_code":   lambda: self.fetch_papers_with_code(query),
             "openalex":           lambda: self.fetch_openalex(query),
+            "newsdata":           lambda: self.fetch_newsdata(query),
             # CleanTech sources
             "arxiv_eess_sy":      lambda: self.fetch_arxiv("eess.SY", query),
             "arxiv_physics_chem": lambda: self.fetch_arxiv("physics.chem-ph", query),
@@ -558,6 +559,41 @@ class ResearchEngine:
             )
 
         return abstract
+
+
+    # ── Source: NewsData.io ───────────────────────────────────────────────────
+
+    def fetch_newsdata(self, query: str) -> list:
+        log.info(f"[NewsData] Fetching latest live news")
+        try:
+            url = (
+                "https://newsdata.io/api/1/latest?"
+                "apikey=pub_8d8ba5055eb94aa8b97a8c90472ba54d"
+                "&country=in,sg,us,de,fr"
+                "&language=en,ta,fr,hi,ja"
+                "&category=environment,technology,science,business,breaking"
+                "&removeduplicate=1"
+            )
+            req = urllib.request.Request(url, headers={"User-Agent": "EcoPulseLive/8.0"})
+            with urllib.request.urlopen(req, timeout=15) as r:
+                data = json.loads(r.read().decode("utf-8"))
+            items = []
+            for article in data.get("results", []):
+                title = article.get("title", "")
+                desc = article.get("description", "") or article.get("content", "") or ""
+                if not title or not desc:
+                    continue
+                items.append({
+                    "source": "NewsData (Live Breaking News)",
+                    "title": title,
+                    "url": article.get("link", ""),
+                    "id": f"newsdata_{article.get('article_id', title[:30].replace(' ', '_'))}",
+                    "abstract": desc,
+                })
+            return items
+        except Exception as e:
+            log.warning(f"  [NewsData] error: {e}")
+            return []
 
     # ── Source 01: Semantic Scholar ───────────────────────────────────────────
 
