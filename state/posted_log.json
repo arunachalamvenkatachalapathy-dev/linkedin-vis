@@ -483,5 +483,25 @@
     "pillar": "",
     "source_type": "default",
     "topic_fingerprint": "arrache|becomes|climate|coupe|fail|hyper|local|maisons"
+  },
+  {
+    "id": "ss_6a58a45ca33b8977d7f688794f385dbde900bb5f",
+    "source": "Semantic Scholar (Peer-Reviewed)",
+    "headline": "An Empirical Evaluation of LLM Function Calling in Enterpris",
+    "topic": "Production State Machines, DAG Routing & Deterministic Tool Calling",
+    "post_id": "urn:li:ugcPost:7497896644328357889",
+    "post_url": "https://www.linkedin.com/feed/update/urn:li:ugcPost:7497896644328357889/",
+    "date": "2026-08-25T06:04:24.469659+00:00",
+    "hook_type": "story_cold_open",
+    "framing": "industry_observation",
+    "body_structure": "E",
+    "cta_type": "silent",
+    "image_style": "text_on_card",
+    "length_preset": "punch",
+    "turn_line": "Replacing deterministic backend logic with LLM function calling can introduce up to a 1,600x latency overhead.",
+    "proof_fact": "LLM function calling incurs a 100x to 1600x latency overhead (200-800 ms) compared to deterministic Java logic (0.2-1.8 ms).",
+    "pillar": "",
+    "source_type": "default",
+    "topic_fingerprint": "backend|calling|deterministic|empirical|enterpris|evaluation|function|introduce"
   }
 ]
