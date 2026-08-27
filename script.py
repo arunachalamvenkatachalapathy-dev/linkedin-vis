@@ -120,12 +120,13 @@ Recently used structures:
 Choose the best-fitting structure for today's story.
 
 Rules:
-- 120-200 words total (not counting tagline or hashtags)
-- First line must work as a scroll-stopping hook tailored to sustainability & engineering leaders
-- Include one specific concrete detail (a metric, emission target, regulatory mandate, or technical specification)
-- End with a genuine, specific question for sustainability directors / engineers
-- Short paragraphs (1-3 lines each), mobile-first
-- Do not invent facts not in the source summary
+- 120-150 words total (strictly enforce high-engagement mobile length)
+- Line 1 (The Hook): A sharp, scroll-stopping bold technical claim under 12 words
+- Lines 2-3 (Context & Telemetry): 1-2 concise lines summarizing the breaking news/metric from the source
+- Lines 4-5 (The Shift): Technical reframe explaining what changes for ESG leaders, engineers, or Scope 3 auditors
+- Line 6 (The Question): A high-stakes, specific technical question to drive comments
+- Direct, analytical, authoritative tone (no fluff, no "game-changer" or "revolutionize")
+- Short paragraphs (1-2 lines each with blank lines between)
 - Generate 3-5 specific LinkedIn hashtags (e.g. #Sustainability #Scope3Emissions #ESG #BRSR #CleanTech)
 
 Output format — EXACTLY this, nothing else:
