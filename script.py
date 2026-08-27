@@ -396,6 +396,39 @@ def fetch_newsapi():
     return items
 
 
+def fetch_exa():
+    api_key = os.environ.get("EXA_API_KEY", "").strip()
+    if not api_key:
+        return []
+    items = []
+    queries = [
+        "technical challenges scope 3 emissions telemetry",
+        "latest AI agent workflows in enterprise",
+        "recent breakthroughs in carbon accounting data"
+    ]
+    url = "https://api.exa.ai/search"
+    headers = {"x-api-key": api_key, "Content-Type": "application/json"}
+    for q in queries:
+        try:
+            payload = {
+                "query": q,
+                "numResults": 3,
+                "useAutoprompt": True
+            }
+            resp = requests.post(url, headers=headers, json=payload, timeout=15)
+            if resp.status_code == 200:
+                for res in resp.json().get("results", []):
+                    items.append({
+                        "title": res.get("title", ""),
+                        "summary": res.get("title", ""),  # Exa API returns title and URL
+                        "link": res.get("url", ""),
+                        "category": "deep_research",
+                        "source": "Exa AI Search"
+                    })
+        except Exception as e:
+            print(f"Exa fetch error for '{q}': {e}")
+    return items
+
 import random
 
 def fetch_all_candidates():
@@ -404,6 +437,7 @@ def fetch_all_candidates():
     hn = fetch_hackernews()
     reddit = fetch_reddit()
     newsapi = fetch_newsapi()
+    exa = fetch_exa()
     
     # Cap each major group so no single platform dominates the candidate pool
     # The scoring pool is MAX_CANDIDATES_TO_SCORE (60)
@@ -411,8 +445,9 @@ def fetch_all_candidates():
     random.shuffle(hn)
     random.shuffle(reddit)
     random.shuffle(newsapi)
+    random.shuffle(exa)
     
-    pool = rss[:20] + hn[:15] + reddit[:15] + newsapi[:10]
+    pool = rss[:15] + exa[:10] + hn[:15] + reddit[:10] + newsapi[:10]
     random.shuffle(pool)
     return pool
 
