@@ -29,10 +29,6 @@ if hasattr(sys.stderr, "reconfigure"):
 import feedparser
 import requests
 from google import genai
-import socket
-
-# Prevent feedparser from hanging indefinitely if an RSS feed server tar-pits the connection
-socket.setdefaulttimeout(10.0)
 
 # ---------------------------------------------------------------------------
 # Content Sources — Sustainability, ESG, Telemetry & AI Agents
@@ -293,7 +289,8 @@ def fetch_rss():
     for category, urls in SOURCES.items():
         for url in urls:
             try:
-                feed = feedparser.parse(url)
+                resp = requests.get(url, timeout=10)
+                feed = feedparser.parse(resp.content)
                 for entry in feed.entries[:6]:
                     items.append({
                         "title": entry.get("title", ""),
