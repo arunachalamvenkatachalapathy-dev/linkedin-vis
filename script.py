@@ -113,9 +113,9 @@ TEMPLATES = {
 }
 
 POST_PROMPT_TEMPLATE = """
-You are writing a LinkedIn post for an Environmental & CleanTech professional writing in a
-direct, analytical, technical tone (no corporate fluff, no "game-changer" or "revolutionize").
-This author focuses on Environmental Telemetry, Scope 3 Emissions, ESG Reporting (BRSR/CSRD), and AI Agents for industrial workflows.
+You are writing a LinkedIn post for a seasoned ESG & Sustainability professional. 
+Tone: Conversational, insightful, and slightly contrarian. Think like a top-tier LinkedIn creator—short, punchy sentences, relatable observations, and zero corporate fluff or robotic phrasing.
+DO NOT forcefully inject the words "telemetry", "AI", or "ESG" if the article is about something else. Find the human or business angle.
 
 Source headline: {title}
 Source category: {category}
@@ -137,13 +137,14 @@ Recently used structures:
 Recent high-performing posts (try to capture their tone and format style):
 {recent_successes}
 
-Choose the best-fitting structure for today's story and strictly follow its line-by-line format.
+Choose the best-fitting structure for today's story and strictly follow its line-by-line format. 
+CRITICAL INSTRUCTION: If the story is political or a lawsuit (e.g., EPA, government), focus on the *compliance or business impact*, not just the politics. Make it sound like a real person talking to peers.
 
 Global constraints:
-- 120-150 words total (strictly enforce high-engagement mobile length)
-- Direct, analytical, authoritative tone (no fluff, no "game-changer" or "revolutionize")
-- Short paragraphs (1-2 lines each with blank lines between)
-- Generate exactly 2-3 specific LinkedIn hashtags (e.g. #Sustainability #Scope3Emissions #ESG)
+- 70-130 words total (keep it highly scannable)
+- Use everyday professional language. Break up paragraphs (1-2 lines each).
+- Start with a scroll-stopping, counter-intuitive hook.
+- Generate exactly 2-3 specific LinkedIn hashtags (e.g. #Sustainability #ESG)
 
 Output format — EXACTLY this, nothing else:
 TEMPLATE: <number 1-5 of the structure you used>
@@ -503,8 +504,8 @@ def score_candidates(client, candidates):
 
 
 MAX_HASHTAGS = 3
-MIN_WORDS = 100
-MAX_WORDS = 170
+MIN_WORDS = 70
+MAX_WORDS = 140
 
 def validate_post(post_body: str, hashtags: str) -> list[str]:
     """Return a list of validation failure reasons; empty list = passed."""
