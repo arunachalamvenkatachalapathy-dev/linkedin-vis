@@ -1,16 +1,15 @@
 """
-Daily LinkedIn content bot — v3.1 (linkedin-vis Edition)
-(multi-source + Gemini candidate scoring + 5 storytelling rotation + tagline + Pillow carousel PDF)
+Daily LinkedIn content bot — v3.2 Pure Text-Only Edition (linkedin-vis)
+(multi-source + Gemini candidate scoring + 5 storytelling rotation + tagline + text-only publishing)
 
 Pipeline:
   Multi-sources (RSS categories + Hacker News + Reddit + NewsAPI)
     -> dedupe + remove already-used links / similar titles
-    -> Gemini scores every remaining candidate (0-100)
+    -> Gemini scores every remaining candidate (0-100) using Environmental/ESG rubric
     -> take the top-scoring candidate
-    -> Gemini writes the post, rotating 5 storytelling templates + avoiding repeat hooks
+    -> Gemini writes the pure text post, rotating 5 storytelling templates + avoiding repeat hooks
     -> tagline & hashtags appended
-    -> Pillow local 1:1 text-card Carousel PDF generated
-    -> PDF uploaded to LinkedIn, post published with PDF attached
+    -> text-only post published directly to LinkedIn REST API
     -> logs the result as a GitHub Issue, updates content_memory.json
 """
 
@@ -20,17 +19,15 @@ import json
 import re
 import time
 import difflib
-import io
 from datetime import date
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 if hasattr(sys.stderr, "reconfigure"):
     sys.stderr.reconfigure(encoding="utf-8")
+
 import feedparser
 import requests
-from requests_oauthlib import OAuth1
-from PIL import Image, ImageDraw, ImageFont
 from google import genai
 
 # ---------------------------------------------------------------------------
@@ -82,16 +79,6 @@ CLICKBAIT_PATTERNS = [
 MAX_CANDIDATES_TO_SCORE = 60
 
 # ---------------------------------------------------------------------------
-# Carousel Settings
-# ---------------------------------------------------------------------------
-USE_CAROUSEL = True
-CAROUSEL_SLIDE_COUNT = 3
-
-CAROUSEL_COLORS = ["#1A1A2E", "#16213E", "#0F3460"]
-CAROUSEL_TEXT_COLOR = "#FFFFFF"
-CAROUSEL_ACCENT_COLOR = "#00E676"  # Environmental Emerald Accent
-
-# ---------------------------------------------------------------------------
 # Sign-off Tagline & Storytelling Templates
 # ---------------------------------------------------------------------------
 TAGLINE = "— Tracking where Sustainability, Telemetry, and AI Agents collide."
@@ -139,7 +126,6 @@ Rules:
 - Short paragraphs (1-3 lines each), mobile-first
 - Do not invent facts not in the source summary
 - Generate 3-5 specific LinkedIn hashtags (e.g. #Sustainability #Scope3Emissions #ESG #BRSR #CleanTech)
-- Write {slide_count} short standalone carousel lines (<12 words each) summarizing key telemetry/insights.
 
 Output format — EXACTLY this, nothing else:
 TEMPLATE: <number 1-5 of the structure you used>
@@ -147,8 +133,6 @@ TEMPLATE: <number 1-5 of the structure you used>
 <the finished post text, no title, no notes, no sign-off, no hashtags>
 ---
 <hashtags, space-separated, each starting with #>
----
-<one slide line per line, exactly {slide_count} lines, nothing else>
 """
 
 SCORING_PROMPT_TEMPLATE = """
@@ -176,7 +160,7 @@ LINKEDIN_VERSION = "202607"
 
 
 # ---------------------------------------------------------------------------
-# Memory
+# Memory Management
 # ---------------------------------------------------------------------------
 def load_memory():
     if os.path.exists(MEMORY_FILE):
@@ -448,7 +432,6 @@ def generate_post(item, memory):
         recent_hooks=recent_hooks_text(memory),
         templates_list=templates_list,
         recent_templates=recent_templates_text(memory),
-        slide_count=CAROUSEL_SLIDE_COUNT,
     )
     raw = None
     if client:
@@ -464,8 +447,7 @@ def generate_post(item, memory):
             f"The shift toward automated telemetry in {item['title'][:60]} is reshaping industrial compliance.\n\n"
             "Translating this technical development into operational requirements reveals key engineering realities.\n\n"
             "What primary metrics is your team using to validate data?\n---\n"
-            "#CleanTech #Sustainability #ESG\n---\n"
-            f"{item['title'][:50]}\nOperational Compliance Telemetry\nSystem Architecture Review"
+            "#CleanTech #Sustainability #ESG"
         )
 
     template_used = None
@@ -476,10 +458,6 @@ def generate_post(item, memory):
     parts = raw.split("---")
     post_body = parts[1].strip() if len(parts) > 1 else raw.strip()
     hashtags = parts[2].strip() if len(parts) > 2 else "#Sustainability #CleanTech #ESG"
-    slide_lines_raw = parts[3].strip() if len(parts) > 3 else ""
-    slide_lines = [l.strip("- ").strip() for l in slide_lines_raw.split("\n") if l.strip()][:CAROUSEL_SLIDE_COUNT]
-    if not slide_lines:
-        slide_lines = [item["title"][:50], "Operational Compliance Telemetry", "System Architecture Review"]
 
     post_text = post_body
     if TAGLINE not in post_text:
@@ -488,87 +466,11 @@ def generate_post(item, memory):
         post_text += f"\n\n{hashtags}"
 
     hook = post_body.split("\n")[0].strip()
-    return post_text, template_used, hook, slide_lines
+    return post_text, template_used, hook
 
 
 # ---------------------------------------------------------------------------
-# Carousel Rendering (Pillow 1:1 Text Cards)
-# ---------------------------------------------------------------------------
-def _load_font(size, bold=False):
-    candidates = [
-        "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf" if bold else
-        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-    ]
-    for path in candidates:
-        try:
-            return ImageFont.truetype(path, size)
-        except Exception:
-            continue
-    return ImageFont.load_default()
-
-
-def _wrap_text(draw, text, font, max_width):
-    words = text.split()
-    lines, current = [], ""
-    for word in words:
-        trial = f"{current} {word}".strip()
-        bbox = draw.textbbox((0, 0), trial, font=font)
-        if bbox[2] - bbox[0] <= max_width or not current:
-            current = trial
-        else:
-            lines.append(current)
-            current = word
-    if current:
-        lines.append(current)
-    return lines
-
-
-def render_text_slide(text, slide_number, total, width=1080, height=1080):
-    bg_color = CAROUSEL_COLORS[(slide_number - 1) % len(CAROUSEL_COLORS)]
-    img = Image.new("RGB", (width, height), color=bg_color)
-    draw = ImageDraw.Draw(img)
-
-    font = _load_font(64, bold=True)
-    max_text_width = int(width * 0.8)
-    lines = _wrap_text(draw, text, font, max_text_width)
-
-    line_height = font.size + 16
-    total_text_height = line_height * len(lines)
-    y = (height - total_text_height) // 2
-
-    for line in lines:
-        bbox = draw.textbbox((0, 0), line, font=font)
-        line_width = bbox[2] - bbox[0]
-        x = (width - line_width) // 2
-        draw.text((x, y), line, font=font, fill=CAROUSEL_TEXT_COLOR)
-        y += line_height
-
-    small_font = _load_font(28)
-    counter_text = f"{slide_number}/{total}"
-    draw.text((40, height - 60), counter_text, font=small_font, fill=CAROUSEL_ACCENT_COLOR)
-    draw.rectangle([(0, height - 8), (width, height)], fill=CAROUSEL_ACCENT_COLOR)
-
-    return img
-
-
-def generate_carousel_pdf(slide_lines):
-    if not slide_lines:
-        return None
-    try:
-        images = [
-            render_text_slide(text, i + 1, len(slide_lines))
-            for i, text in enumerate(slide_lines)
-        ]
-        pdf_buffer = io.BytesIO()
-        images[0].save(pdf_buffer, format="PDF", save_all=True, append_images=images[1:])
-        return pdf_buffer.getvalue()
-    except Exception as e:
-        print(f"Could not assemble carousel PDF: {e}")
-        return None
-
-
-# ---------------------------------------------------------------------------
-# LinkedIn Publishing
+# Pure Text-Only LinkedIn Publishing
 # ---------------------------------------------------------------------------
 def get_person_urn(access_token):
     resp = requests.get(
@@ -580,41 +482,7 @@ def get_person_urn(access_token):
     return f"urn:li:person:{resp.json()['sub']}"
 
 
-def upload_document_to_linkedin(access_token, person_urn, pdf_bytes):
-    headers = {
-        "Authorization": f"Bearer {access_token}",
-        "Content-Type": "application/json",
-        "X-Restli-Protocol-Version": "2.0.0",
-        "LinkedIn-Version": LINKEDIN_VERSION,
-    }
-    try:
-        init_resp = requests.post(
-            "https://api.linkedin.com/rest/documents?action=initializeUpload",
-            headers=headers,
-            json={"initializeUploadRequest": {"owner": person_urn}},
-            timeout=15,
-        )
-        init_resp.raise_for_status()
-        value = init_resp.json()["value"]
-        upload_url = value["uploadUrl"]
-        document_urn = value["document"]
-
-        put_resp = requests.put(
-            upload_url,
-            data=pdf_bytes,
-            headers={"Authorization": f"Bearer {access_token}"},
-            timeout=60,
-        )
-        if put_resp.status_code not in (200, 201):
-            print(f"Document upload PUT failed: {put_resp.status_code}")
-            return None
-        return document_urn
-    except Exception as e:
-        print(f"Document upload failed: {e}")
-        return None
-
-
-def post_to_linkedin(access_token, person_urn, text, document_urn=None, alt_text=""):
+def post_to_linkedin(access_token, person_urn, text):
     headers = {
         "Authorization": f"Bearer {access_token}",
         "Content-Type": "application/json",
@@ -633,8 +501,6 @@ def post_to_linkedin(access_token, person_urn, text, document_urn=None, alt_text
         "lifecycleState": "PUBLISHED",
         "isReshareDisabledByAuthor": False,
     }
-    if document_urn:
-        payload["content"] = {"media": {"altText": alt_text[:200], "id": document_urn}}
 
     resp = requests.post(
         "https://api.linkedin.com/rest/posts", headers=headers, json=payload, timeout=15
@@ -673,25 +539,14 @@ def run():
         item = candidates[0]
         score_note = "Scoring unavailable, used first candidate"
 
-    post_text, template_used, hook, slide_lines = generate_post(item, memory)
-
-    document_urn = None
-    if USE_CAROUSEL:
-        pdf_bytes = generate_carousel_pdf(slide_lines)
-        access_token_media = os.environ.get("LINKEDIN_ACCESS_TOKEN", "").strip()
-        if pdf_bytes and access_token_media:
-            try:
-                person_urn_media = get_person_urn(access_token_media)
-                document_urn = upload_document_to_linkedin(access_token_media, person_urn_media, pdf_bytes)
-            except Exception as exc:
-                print(f"Media upload skipped: {exc}")
+    post_text, template_used, hook = generate_post(item, memory)
 
     access_token = os.environ.get("LINKEDIN_ACCESS_TOKEN", "").strip()
     success, result = False, "DRY_RUN / missing access token"
     if access_token:
         try:
             person_urn = get_person_urn(access_token)
-            success, result = post_to_linkedin(access_token, person_urn, post_text, document_urn=document_urn, alt_text=item["title"])
+            success, result = post_to_linkedin(access_token, person_urn, post_text)
         except Exception as exc:
             result = f"Posting error: {exc}"
 
@@ -705,7 +560,7 @@ def run():
     save_memory(memory)
 
     status_line = (
-        f"✅ Posted successfully (carousel). Post ID: {result}"
+        f"✅ Posted successfully (pure text-only). Post ID: {result}"
         if success
         else f"ℹ️ Preview / Dry-run status: {result}"
     )
