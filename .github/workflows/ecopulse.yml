@@ -2,8 +2,8 @@ name: Daily LinkedIn Draft
 
 on:
   schedule:
-    # Runs at 1:00 PM UTC every day (testing new time window for better engagement).
-    - cron: "0 13 * * *"
+    # Runs at 3:30 AM UTC (9:00 AM IST) Monday through Friday for peak professional engagement.
+    - cron: "30 3 * * 1-5"
   workflow_dispatch: {}  # lets you click "Run workflow" manually to test
 
 permissions:

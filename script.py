@@ -80,36 +80,38 @@ CLICKBAIT_PATTERNS = [
 MAX_CANDIDATES_TO_SCORE = 60
 
 # ---------------------------------------------------------------------------
-# Sign-off Tagline & Storytelling Templates
+# Storytelling Templates
 # ---------------------------------------------------------------------------
-TAGLINE = "— Tracking where Sustainability, Telemetry, and AI Agents collide."
-
 TEMPLATES = {
     1: """TEMPLATE 1: "The Shift"
-   - Line 1 (Hook): A sharp, scroll-stopping bold technical claim under 12 words
-   - Lines 2-3 (Context): 1-2 concise lines summarizing the breaking news/metric from the source
-   - Lines 4-5 (The Shift): Technical reframe explaining what changes for ESG leaders, engineers, or Scope 3 auditors
-   - Line 6 (CTA): A high-stakes, specific technical question to drive comments""",
-    2: """TEMPLATE 2: "Before/After"
-   - Line 1 (Hook): Contrast how Scope 3/ESG reporting used to look vs now (under 12 words)
-   - Lines 2-3 (Before): 1-2 lines on the old, manual, or flawed way of doing things
-   - Lines 4-5 (After): 1-2 lines on the new telemetry/AI-driven reality and one concrete outcome
-   - Line 6 (CTA): A high-stakes, specific technical question to drive comments""",
-    3: """TEMPLATE 3: "Mini case study"
-   - Line 1 (Hook): A specific emission/reduction number or technical metric (under 12 words)
-   - Lines 2-3 (Setup & Event): 1-2 lines on the context and what exactly happened
-   - Lines 4-5 (Lesson): 1-2 lines on the underlying telemetry or engineering lesson
-   - Line 6 (CTA): A high-stakes, specific technical question to drive comments""",
-    4: """TEMPLATE 4: "Contrarian take"
-   - Line 1 (Hook): Challenge a popular ESG/decarbonization myth (under 12 words)
-   - Lines 2-3 (Evidence): 1-2 lines providing 2-3 proof points contradicting the myth
-   - Lines 4-5 (Nuance): 1-2 lines explaining the technical nuance others miss
-   - Line 6 (CTA): Invite debate with a specific technical question""",
-    5: """TEMPLATE 5: "Curated list + POV"
-   - Line 1 (Hook): A bold statement about a trend (under 12 words)
-   - Lines 2-4 (List): 3 punchy, single-line points drawn from the source
-   - Line 5 (POV): Your 1-line synthesis or takeaway
-   - Line 6 (CTA): A high-stakes, specific technical question to drive comments""",
+   - Line 1 (Hook): One bold, counter-intuitive claim about what just changed — under 12 words. Make readers stop scrolling.
+   - Lines 2-3 (Context): 2 short sentences grounding the claim in the news/data. Be specific. No vague language.
+   - Lines 4-5 (The Shift): Explain what this means for the reader — what does it change for them, their team, or their industry?
+   - Line 6 (CTA): Ask a single, specific question that professionals in this space would actually want to answer.""",
+
+    2: """TEMPLATE 2: "Before / After"
+   - Line 1 (Hook): A stark contrast between the old reality and the new one — under 12 words. Make it feel like whiplash.
+   - Lines 2-3 (Before): Describe the old way in 1-2 short sentences. Be relatable — this is what readers currently do.
+   - Lines 4-5 (After): Describe the new reality. Use a single concrete outcome or number if the source has one.
+   - Line 6 (CTA): Invite readers to share where they are in this transition.""",
+
+    3: """TEMPLATE 3: "Mini Case Study"
+   - Line 1 (Hook): Lead with the most striking number or outcome from the source — under 12 words.
+   - Lines 2-3 (Setup): Context on who did this, what problem they were solving, and what they tried.
+   - Lines 4-5 (Lesson): The insight — why this worked, what others can learn, what the broader pattern is.
+   - Line 6 (CTA): A direct question — has anyone else seen this pattern, or tried something similar?""",
+
+    4: """TEMPLATE 4: "Contrarian Take"
+   - Line 1 (Hook): Challenge a widely accepted belief — something most readers in this space assume is true. Under 12 words.
+   - Lines 2-3 (Evidence): 2-3 concrete data points or examples that undercut the conventional wisdom.
+   - Lines 4-5 (Nuance): Explain the subtlety — not "X is wrong" but "X is right in context Y, wrong in context Z."
+   - Line 6 (CTA): Invite respectful pushback with a pointed question. This template thrives on debate.""",
+
+    5: """TEMPLATE 5: "Observation + List"
+   - Line 1 (Hook): A bold one-sentence observation about something you're noticing — under 12 words. First person is fine.
+   - Lines 2-4 (List): 3 short, punchy bullet points — each a single line, each a distinct insight drawn from the source.
+   - Line 5 (POV): Your synthesis in 1-2 sentences — what this all adds up to in your view.
+   - Line 6 (CTA): End with the one question this raises for you.""",
 }
 
 POST_PROMPT_TEMPLATE = """
@@ -159,15 +161,12 @@ TEMPLATE: <number 1-5 of the structure you used>
 
 SCORING_PROMPT_TEMPLATE = """
 You are a content scout for a Sustainability & Environmental Tech leader. Score each candidate
-story below from 0-100 using this rubric tailored to Environmental Engineering, ESG, and AI Workflows:
+story below from 0-100 using this balanced rubric for LinkedIn engagement:
 
-- Environmental & Future Impact (0-30): Does this signal significant progress in carbon emissions reduction, Scope 3 telemetry, or CleanTech transition?
-- Real-world Evidence (0-25): Is this a concrete enterprise result, sensor telemetry deployment, or regulatory compliance metric (BRSR/CSRD)?
-- ESG & Enterprise Relevance (0-20): Does this matter for sustainability officers, ESG reporting teams, or industrial engineers?
-- Novelty (0-15): Is this a fresh technical angle, not something oversaturated everywhere? IMPORTANT: each candidate
-  includes "covered_by_n_sources" — how many different outlets in today's pool are running this same
-  story. A high number (3+) means this is a mainstream story — score novelty LOW unless taking a unique technical angle.
-- Conversation & Community Potential (0-10): Would a thoughtful LinkedIn audience of sustainability professionals and engineers want to discuss this?
+- Virality & Emotion (0-35): Does this trigger a strong reaction (surprise, hope, frustration, debate)? Is it highly relatable or contrarian?
+- Professional Relevance (0-30): Does this impact ESG reporting, sustainability professionals, AI/tech workers, or industrial engineers in their day-to-day?
+- Concrete Evidence (0-20): Is there a real-world result, a clear metric, or a specific case study, rather than just vague promises?
+- Novelty (0-15): Is this a fresh angle? IMPORTANT: each candidate includes "covered_by_n_sources". A high number (3+) means this is mainstream — score novelty LOW unless taking a highly unique angle.
 
 Candidates (JSON array, each with an "id"):
 {candidates_json}
@@ -396,8 +395,25 @@ def fetch_newsapi():
     return items
 
 
+import random
+
 def fetch_all_candidates():
-    return fetch_rss() + fetch_hackernews() + fetch_reddit() + fetch_newsapi()
+    # Fetch all
+    rss = fetch_rss()
+    hn = fetch_hackernews()
+    reddit = fetch_reddit()
+    newsapi = fetch_newsapi()
+    
+    # Cap each major group so no single platform dominates the candidate pool
+    # The scoring pool is MAX_CANDIDATES_TO_SCORE (60)
+    random.shuffle(rss)
+    random.shuffle(hn)
+    random.shuffle(reddit)
+    random.shuffle(newsapi)
+    
+    pool = rss[:20] + hn[:15] + reddit[:15] + newsapi[:10]
+    random.shuffle(pool)
+    return pool
 
 
 # ---------------------------------------------------------------------------
@@ -653,8 +669,6 @@ def generate_post(item, memory):
         hashtags = " ".join(hash_list[:MAX_HASHTAGS])
 
     post_text = post_body
-    if TAGLINE not in post_text:
-        post_text += f"\n\n{TAGLINE}"
     if hashtags and hashtags not in post_text:
         post_text += f"\n\n{hashtags}"
 
