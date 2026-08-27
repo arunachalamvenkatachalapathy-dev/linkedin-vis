@@ -1,31 +1,21 @@
-name: EcoPulse Autonomous LinkedIn Poster
+name: Daily LinkedIn Draft
 
 on:
   schedule:
-    # 8:30 AM IST = 3:00 AM UTC daily
-    - cron: "0 3 * * *"
-  workflow_dispatch:
-    inputs:
-      dry_run:
-        description: "Run without publishing (preview only)"
-        required: false
-        default: "false"
+    # Runs at 7:00 AM UTC every day.
+    - cron: "0 7 * * *"
+  workflow_dispatch: {}  # lets you click "Run workflow" manually to test
 
 permissions:
   contents: write
-
-concurrency:
-  group: ecopulse-bot
-  cancel-in-progress: false
+  issues: write
 
 jobs:
-  run-ecopulse:
+  generate-draft:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
+      - name: Check out repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -33,29 +23,49 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-          python -m playwright install chromium --with-deps
+        run: pip install -r requirements.txt
 
-      - name: Run EcoPulse Pipeline
+      - name: Generate draft post
+        id: generate
         env:
-          LINKEDIN_ACCESS_TOKEN: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
-          LINKEDIN_PERSON_URN: ${{ secrets.LINKEDIN_PERSON_URN }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-          ECOPULSE_DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
-        run: python engine.py
-
-      - name: Commit updated state
-        if: always()
+          LINKEDIN_ACCESS_TOKEN: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
+          NEWSAPI_KEY: ${{ secrets.NEWSAPI_KEY }}
         run: |
-          git config user.name "ecopulse-bot"
-          git config user.email "actions@github.com"
-          git add state/posted_log.json state/used_post_combinations.json
-          if ! git diff --cached --quiet; then
-            git commit -m "chore: update posted state [skip ci]"
-            git pull --rebase --autostash origin master
-            git push origin master
-          else
-            echo "State is clean; no changes to commit."
+          python script.py > output.txt
+          cat output.txt
+
+      - name: Parse output
+        id: parse
+        run: |
+          TITLE=$(grep "ISSUE_TITLE:" output.txt | sed 's/ISSUE_TITLE: //')
+          if [ -z "$TITLE" ]; then
+            TITLE="FAILED — script produced no output (check Generate draft post step logs)"
           fi
+          echo "title=$TITLE" >> "$GITHUB_OUTPUT"
+          awk '/ISSUE_BODY_START/{flag=1;next}/ISSUE_BODY_END/{flag=0}flag' output.txt > body.txt
+          if [ ! -s body.txt ]; then
+            echo "The script crashed before printing any output. Check the 'Generate draft post' step logs above for the real error (often a missing package in requirements.txt)." > body.txt
+          fi
+
+      - name: Create GitHub Issue with the draft
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('body.txt', 'utf8');
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: "${{ steps.parse.outputs.title }}",
+              body: body,
+              labels: ["linkedin-draft"]
+            });
+
+      - name: Commit updated memory file
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add content_memory.json
+          git diff --cached --quiet || git commit -m "Update content memory"
+          git push

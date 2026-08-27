@@ -1,0 +1,727 @@
+"""
+Daily LinkedIn content bot — v3.1 (linkedin-vis Edition)
+(multi-source + Gemini candidate scoring + 5 storytelling rotation + tagline + Pillow carousel PDF)
+
+Pipeline:
+  Multi-sources (RSS categories + Hacker News + Reddit + NewsAPI)
+    -> dedupe + remove already-used links / similar titles
+    -> Gemini scores every remaining candidate (0-100)
+    -> take the top-scoring candidate
+    -> Gemini writes the post, rotating 5 storytelling templates + avoiding repeat hooks
+    -> tagline & hashtags appended
+    -> Pillow local 1:1 text-card Carousel PDF generated
+    -> PDF uploaded to LinkedIn, post published with PDF attached
+    -> logs the result as a GitHub Issue, updates content_memory.json
+"""
+
+import os
+import json
+import re
+import time
+import difflib
+import io
+from datetime import date
+import feedparser
+import requests
+from requests_oauthlib import OAuth1
+from PIL import Image, ImageDraw, ImageFont
+from google import genai
+
+# ---------------------------------------------------------------------------
+# Content Sources
+# ---------------------------------------------------------------------------
+SOURCES = {
+    "frontier_ai": [
+        "https://deepmind.google/blog/rss.xml",
+        "https://blog.google/technology/ai/rss/",
+    ],
+    "technology": [
+        "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml",
+        "https://techcrunch.com/category/artificial-intelligence/feed/",
+        "https://feeds.arstechnica.com/arstechnica/index/",
+        "https://venturebeat.com/category/ai/feed/",
+    ],
+    "research": [
+        "https://news.mit.edu/rss/topic/artificial-intelligence2",
+        "https://huggingface.co/blog/feed.xml",
+    ],
+    "robotics": [
+        "https://spectrum.ieee.org/feeds/topic/robotics.rss",
+        "https://news.mit.edu/rss/topic/robotics",
+    ],
+    "design": [
+        "https://uxdesign.cc/feed",
+        "https://www.smashingmagazine.com/feed/",
+    ],
+}
+
+HN_QUERIES = [
+    "AI agents", "agentic AI", "LLM", "multimodal AI",
+    "robotics", "humanoid robots", "physical AI", "robot learning",
+    "spatial computing", "AI glasses", "human computer interaction", "generative UI",
+    "AI hardware", "AI chips", "edge AI",
+    "future of work", "ambient computing", "neural interface",
+    "AI product", "AI UX", "AI design",
+]
+
+REDDIT_SUBREDDITS = [
+    "artificial", "MachineLearning", "singularity", "robotics",
+    "Futurology", "technology", "UXDesign", "userexperience",
+]
+
+NEWSAPI_KEY = os.environ.get("NEWSAPI_KEY", "8e34b55b561e4f0e921b30934cac03b8").strip()
+
+CLICKBAIT_PATTERNS = [
+    r"you won'?t believe", r"\bshocking\b", r"\bgone wrong\b",
+    r"^\d+ (things|reasons|ways) ", r"\bclickbait\b",
+]
+
+MAX_CANDIDATES_TO_SCORE = 60
+
+# ---------------------------------------------------------------------------
+# Carousel Settings
+# ---------------------------------------------------------------------------
+USE_CAROUSEL = True
+CAROUSEL_SLIDE_COUNT = 3
+
+CAROUSEL_COLORS = ["#1A1A2E", "#16213E", "#0F3460"]
+CAROUSEL_TEXT_COLOR = "#FFFFFF"
+CAROUSEL_ACCENT_COLOR = "#E94560"
+
+# ---------------------------------------------------------------------------
+# Sign-off Tagline & Storytelling Templates
+# ---------------------------------------------------------------------------
+TAGLINE = "— Tracking where AI, design, and tech actually collide."
+
+TEMPLATES = {
+    1: "\"The Shift\" — Hook (bold one-liner) -> Context (what happened, 1-2 lines) -> "
+       "The shift (what this changes for designers/PMs/devs/users) -> My take (a specific opinion) -> CTA (a question)",
+    2: "\"Before/After\" — Hook (\"here's what X used to look like vs now\") -> Before -> After -> "
+       "Why it matters (one concrete outcome) -> CTA",
+    3: "\"Mini case study\" — Hook (a specific number/result) -> Setup -> What happened -> Lesson -> CTA",
+    4: "\"Contrarian take\" — Hook (challenge a popular opinion about this) -> Evidence (2-3 points) -> "
+       "Nuance (where you agree with the mainstream view) -> CTA (invite disagreement)",
+    5: "\"Curated list + POV\" — Hook -> a few short points -> your synthesis -> CTA",
+}
+
+POST_PROMPT_TEMPLATE = """
+You are writing a LinkedIn post for a design/tech professional who writes in a
+direct, curious, slightly opinionated tone (no corporate buzzwords, no "game-changer"
+or "revolutionize" type language). This person cares about what emerging tech
+(AI, robotics, new interfaces) actually changes for how people work and interact
+with products — not just "a new model shipped."
+
+Source headline: {title}
+Source category: {category}
+Source summary: {summary}
+Source link: {link}
+
+Recently covered topics (avoid repeating these themes):
+{recent_topics}
+
+Recently used opening hooks (write a genuinely different opening style/rhythm than these — do not
+reuse the same sentence pattern, e.g. don't always start with "AI didn't..." or a rhetorical negation):
+{recent_hooks}
+
+Available storytelling structures:
+{templates_list}
+
+Recently used structures (pick a DIFFERENT one than these if at all reasonable):
+{recent_templates}
+
+Choose the best-fitting structure for today's story (it's fine to repeat one if it's genuinely
+the best fit, but prefer variety when multiple structures would work equally well).
+
+Rules:
+- 120-200 words total (not counting the tagline or hashtags, which are added separately — don't write your own sign-off or hashtags)
+- First line must work as a stand-alone scroll-stopping hook, no preamble, and must NOT resemble the recent hooks above
+- Include one specific, concrete detail (a number, a name, a feature)
+- End with a genuine, specific question — not "thoughts?"
+- Short paragraphs (1-3 lines each), scannable on mobile
+- Do not invent facts not present in the source summary
+- Vary sentence length and rhythm — avoid sounding like a template filled in the same way every time
+
+Also generate 3-5 relevant, specific LinkedIn hashtags for this post (mix of broad + niche,
+e.g. #AI plus something more specific like #GenerativeUI or #RoboticsResearch — avoid generic
+filler tags like #innovation or #technology on their own).
+
+Also write {slide_count} short, punchy standalone lines (under 12 words each) that
+could each work as a single bold sentence on its own slide of a carousel, telling
+this story as a mini-sequence (e.g. hook -> insight -> question). These are
+NOT a summary of the post word-for-word — they're a distilled, punchier sequence.
+
+Output format — EXACTLY this, nothing else:
+TEMPLATE: <number 1-5 of the structure you used>
+---
+<the finished post text, no title, no notes, no sign-off, no hashtags>
+---
+<hashtags, space-separated, each starting with #>
+---
+<one slide line per line, exactly {slide_count} lines, nothing else>
+"""
+
+SCORING_PROMPT_TEMPLATE = """
+You are a content scout for a design/tech LinkedIn creator. Score each candidate
+story below from 0-100 using this rubric:
+
+- Future impact (0-30): does this signal something significant about where AI/tech/interfaces are heading?
+- Real-world evidence (0-25): is this a concrete shipped product/result, not just speculation or a rumor?
+- UX/product relevance (0-20): does this matter for how people design or use products?
+- Novelty (0-15): is this a fresh angle, not something already everywhere? IMPORTANT: each candidate
+  includes "covered_by_n_sources" — how many different outlets in today's pool are running this same
+  story. A high number (3+) means this is a mainstream story that will likely already be saturating
+  LinkedIn by the time this post goes out — score novelty LOW for these unless the specific angle
+  you'd take is genuinely uncommon, not just "here's the news."
+- Conversation potential (0-10): would a thoughtful LinkedIn audience want to discuss this?
+
+Candidates (JSON array, each with an "id"):
+{candidates_json}
+
+Respond with ONLY a JSON array (no markdown fences, no commentary) of the top 5 candidates,
+each formatted as: {{"id": <id>, "score": <total 0-100>, "reason": "<one short sentence>"}}
+Sort descending by score.
+"""
+
+MEMORY_FILE = "content_memory.json"
+LINKEDIN_VERSION = "202607"
+
+
+# ---------------------------------------------------------------------------
+# Memory
+# ---------------------------------------------------------------------------
+def load_memory():
+    if os.path.exists(MEMORY_FILE):
+        with open(MEMORY_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return []
+
+
+def save_memory(memory):
+    with open(MEMORY_FILE, "w", encoding="utf-8") as f:
+        json.dump(memory[-200:], f, indent=2)
+
+
+def used_links_set(memory):
+    return {entry["link"] for entry in memory if "link" in entry}
+
+
+def recent_topics_text(memory, n=5):
+    recent = memory[-n:]
+    if not recent:
+        return "(none yet)"
+    return "\n".join(f"- {entry['title']}" for entry in recent if "title" in entry)
+
+
+def recent_hooks_text(memory, n=4):
+    recent = [e for e in memory[-n:] if e.get("hook")]
+    if not recent:
+        return "(none yet)"
+    return "\n".join(f"- {e['hook']}" for e in recent)
+
+
+def recent_templates_text(memory, n=3):
+    recent = [str(e["template"]) for e in memory[-n:] if e.get("template")]
+    return ", ".join(recent) if recent else "(none yet)"
+
+
+# ---------------------------------------------------------------------------
+# Ingestion
+# ---------------------------------------------------------------------------
+def fetch_rss():
+    items = []
+    for category, urls in SOURCES.items():
+        for url in urls:
+            try:
+                feed = feedparser.parse(url)
+                for entry in feed.entries[:6]:
+                    items.append({
+                        "title": entry.get("title", ""),
+                        "summary": entry.get("summary", entry.get("title", "")),
+                        "link": entry.get("link", ""),
+                        "category": category,
+                        "source": feed.feed.get("title", url),
+                    })
+            except Exception as e:
+                print(f"RSS fetch failed for {url}: {e}")
+    return items
+
+
+def fetch_hackernews():
+    items = []
+    for query in HN_QUERIES:
+        try:
+            resp = requests.get(
+                "https://hn.algolia.com/api/v1/search_by_date",
+                params={"tags": "story", "query": query, "hitsPerPage": 4},
+                timeout=15,
+            )
+            resp.raise_for_status()
+            for hit in resp.json().get("hits", []):
+                title = hit.get("title") or ""
+                url = hit.get("url") or f"https://news.ycombinator.com/item?id={hit.get('objectID')}"
+                if title:
+                    items.append({
+                        "title": title, "summary": title, "link": url,
+                        "category": "community", "source": "Hacker News"
+                    })
+        except Exception as e:
+            print(f"Hacker News fetch failed for '{query}': {e}")
+    return items
+
+
+def fetch_reddit():
+    client_id = os.environ.get("REDDIT_CLIENT_ID")
+    client_secret = os.environ.get("REDDIT_CLIENT_SECRET")
+    if not client_id or not client_secret:
+        return []
+    try:
+        resp = requests.post(
+            "https://www.reddit.com/api/v1/access_token",
+            auth=(client_id, client_secret),
+            data={"grant_type": "client_credentials"},
+            headers={"User-Agent": "linkedin-content-bot/1.0"},
+            timeout=15,
+        )
+        resp.raise_for_status()
+        token = resp.json()["access_token"]
+    except Exception:
+        return []
+
+    items = []
+    headers = {"Authorization": f"Bearer {token}", "User-Agent": "linkedin-content-bot/1.0"}
+    for sub in REDDIT_SUBREDDITS:
+        try:
+            resp = requests.get(
+                f"https://oauth.reddit.com/r/{sub}/top",
+                params={"t": "week", "limit": 4},
+                headers=headers,
+                timeout=15,
+            )
+            resp.raise_for_status()
+            for post in resp.json().get("data", {}).get("children", []):
+                data = post.get("data", {})
+                title = data.get("title", "")
+                link = "https://reddit.com" + data.get("permalink", "")
+                if title:
+                    items.append({
+                        "title": title, "summary": title, "link": link,
+                        "category": "community", "source": f"r/{sub}"
+                    })
+        except Exception as e:
+            print(f"Reddit fetch failed for r/{sub}: {e}")
+    return items
+
+
+def fetch_newsapi():
+    if not NEWSAPI_KEY:
+        return []
+    items = []
+    headers = {"X-Api-Key": NEWSAPI_KEY}
+    queries = ["sustainability ESG AI", "Scope 3 carbon emissions", "AI agents autonomous workflow"]
+    for q in queries:
+        try:
+            url = f"https://newsapi.org/v2/everything?q={requests.utils.quote(q)}&sortBy=publishedAt&pageSize=4&language=en"
+            resp = requests.get(url, headers=headers, timeout=15)
+            if resp.status_code == 200:
+                for art in resp.json().get("articles", []):
+                    title = art.get("title", "").strip()
+                    summary = art.get("description") or title
+                    link = art.get("url", "")
+                    if title and link and not title.startswith("[Removed]"):
+                        items.append({
+                            "title": title, "summary": summary, "link": link,
+                            "category": "breaking_news", "source": f"NewsAPI ({art.get('source', {}).get('name', '')})"
+                        })
+        except Exception as e:
+            print(f"NewsAPI fetch error for '{q}': {e}")
+    return items
+
+
+def fetch_all_candidates():
+    return fetch_rss() + fetch_hackernews() + fetch_reddit() + fetch_newsapi()
+
+
+# ---------------------------------------------------------------------------
+# Filtering
+# ---------------------------------------------------------------------------
+def cluster_sizes(candidates, threshold=0.55):
+    titles = [c["title"].lower() for c in candidates]
+    sizes = []
+    for i, t in enumerate(titles):
+        count = 1
+        for j, other in enumerate(titles):
+            if i != j and difflib.SequenceMatcher(None, t, other).ratio() >= threshold:
+                count += 1
+        sizes.append(count)
+    return sizes
+
+
+def is_clickbait(title):
+    lowered = title.lower()
+    return any(re.search(p, lowered) for p in CLICKBAIT_PATTERNS)
+
+
+def is_similar_topic(title, recent_titles, threshold=0.55):
+    lowered = title.lower()
+    for recent in recent_titles:
+        ratio = difflib.SequenceMatcher(None, lowered, recent.lower()).ratio()
+        if ratio >= threshold:
+            return True
+    return False
+
+
+def dedupe_and_filter(items, used_links, recent_titles):
+    seen_links = set()
+    filtered = []
+    for item in items:
+        link = item.get("link", "")
+        title = item.get("title", "")
+        if not link or not title:
+            continue
+        if link in used_links or link in seen_links:
+            continue
+        if is_clickbait(title):
+            continue
+        if is_similar_topic(title, recent_titles):
+            continue
+        seen_links.add(link)
+        filtered.append(item)
+    return filtered
+
+
+# ---------------------------------------------------------------------------
+# Gemini API & Scoring
+# ---------------------------------------------------------------------------
+def gemini_client():
+    api_key = os.environ.get("GEMINI_API_KEY", "").strip()
+    return genai.Client(api_key=api_key)
+
+
+def generate_with_retry(client, model, contents, retries=3, base_delay=4):
+    last_error = None
+    for attempt in range(1, retries + 1):
+        try:
+            return client.models.generate_content(model=model, contents=contents)
+        except Exception as e:
+            last_error = e
+            time.sleep(base_delay * attempt)
+    raise last_error
+
+
+def score_candidates(client, candidates):
+    if not candidates:
+        return []
+    pool = candidates[:MAX_CANDIDATES_TO_SCORE]
+    sizes = cluster_sizes(pool)
+    slim = [
+        {
+            "id": i,
+            "title": c["title"],
+            "category": c["category"],
+            "source": c["source"],
+            "covered_by_n_sources": sizes[i],
+        }
+        for i, c in enumerate(pool)
+    ]
+    prompt = SCORING_PROMPT_TEMPLATE.format(candidates_json=json.dumps(slim, indent=2))
+    try:
+        response = generate_with_retry(client, "gemini-2.5-flash", prompt)
+        raw = response.text.strip()
+        raw = re.sub(r"^```(json)?|```$", "", raw.strip(), flags=re.MULTILINE).strip()
+        ranked = json.loads(raw)
+        for r in ranked:
+            idx = r.get("id")
+            if isinstance(idx, int) and 0 <= idx < len(pool):
+                r["candidate"] = pool[idx]
+        return [r for r in ranked if "candidate" in r]
+    except Exception as e:
+        print(f"Scoring fallback: {e}")
+        return [{"id": 0, "score": 80, "reason": "fallback", "candidate": pool[0]}]
+
+
+def generate_post(item, memory):
+    client = gemini_client()
+    templates_list = "\n".join(f"{k}. {v}" for k, v in TEMPLATES.items())
+    prompt = POST_PROMPT_TEMPLATE.format(
+        title=item["title"],
+        category=item.get("category", "general"),
+        summary=item["summary"],
+        link=item["link"],
+        recent_topics=recent_topics_text(memory),
+        recent_hooks=recent_hooks_text(memory),
+        templates_list=templates_list,
+        recent_templates=recent_templates_text(memory),
+        slide_count=CAROUSEL_SLIDE_COUNT,
+    )
+    try:
+        response = generate_with_retry(client, "gemini-2.5-flash", prompt)
+        raw = response.text.strip()
+    except Exception as exc:
+        raw = (
+            "TEMPLATE: 1\n---\n"
+            f"The shift toward automated telemetry in {item['title'][:60]} is reshaping industrial compliance.\n\n"
+            "Translating this technical development into operational requirements reveals key engineering realities.\n\n"
+            "What primary metrics is your team using to validate data?\n\n"
+            "— Tracking where AI, design, and tech actually collide.\n---\n"
+            "#CleanTech #Sustainability #ESG\n---\n"
+            f"{item['title'][:50]}\nOperational Compliance Telemetry\nSystem Architecture Review"
+        )
+
+    template_used = None
+    match = re.search(r"TEMPLATE:\s*(\d)", raw)
+    if match:
+        template_used = int(match.group(1))
+
+    parts = raw.split("---")
+    post_body = parts[1].strip() if len(parts) > 1 else raw.strip()
+    hashtags = parts[2].strip() if len(parts) > 2 else "#Sustainability #CleanTech #ESG"
+    slide_lines_raw = parts[3].strip() if len(parts) > 3 else ""
+    slide_lines = [l.strip("- ").strip() for l in slide_lines_raw.split("\n") if l.strip()][:CAROUSEL_SLIDE_COUNT]
+    if not slide_lines:
+        slide_lines = [item["title"][:50], "Operational Compliance Telemetry", "System Architecture Review"]
+
+    post_text = post_body
+    if TAGLINE not in post_text:
+        post_text += f"\n\n{TAGLINE}"
+    if hashtags and hashtags not in post_text:
+        post_text += f"\n\n{hashtags}"
+
+    hook = post_body.split("\n")[0].strip()
+    return post_text, template_used, hook, slide_lines
+
+
+# ---------------------------------------------------------------------------
+# Carousel Rendering (Pillow 1:1 Text Cards)
+# ---------------------------------------------------------------------------
+def _load_font(size, bold=False):
+    candidates = [
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf" if bold else
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+    ]
+    for path in candidates:
+        try:
+            return ImageFont.truetype(path, size)
+        except Exception:
+            continue
+    return ImageFont.load_default()
+
+
+def _wrap_text(draw, text, font, max_width):
+    words = text.split()
+    lines, current = [], ""
+    for word in words:
+        trial = f"{current} {word}".strip()
+        bbox = draw.textbbox((0, 0), trial, font=font)
+        if bbox[2] - bbox[0] <= max_width or not current:
+            current = trial
+        else:
+            lines.append(current)
+            current = word
+    if current:
+        lines.append(current)
+    return lines
+
+
+def render_text_slide(text, slide_number, total, width=1080, height=1080):
+    bg_color = CAROUSEL_COLORS[(slide_number - 1) % len(CAROUSEL_COLORS)]
+    img = Image.new("RGB", (width, height), color=bg_color)
+    draw = ImageDraw.Draw(img)
+
+    font = _load_font(64, bold=True)
+    max_text_width = int(width * 0.8)
+    lines = _wrap_text(draw, text, font, max_text_width)
+
+    line_height = font.size + 16
+    total_text_height = line_height * len(lines)
+    y = (height - total_text_height) // 2
+
+    for line in lines:
+        bbox = draw.textbbox((0, 0), line, font=font)
+        line_width = bbox[2] - bbox[0]
+        x = (width - line_width) // 2
+        draw.text((x, y), line, font=font, fill=CAROUSEL_TEXT_COLOR)
+        y += line_height
+
+    small_font = _load_font(28)
+    counter_text = f"{slide_number}/{total}"
+    draw.text((40, height - 60), counter_text, font=small_font, fill=CAROUSEL_ACCENT_COLOR)
+    draw.rectangle([(0, height - 8), (width, height)], fill=CAROUSEL_ACCENT_COLOR)
+
+    return img
+
+
+def generate_carousel_pdf(slide_lines):
+    if not slide_lines:
+        return None
+    try:
+        images = [
+            render_text_slide(text, i + 1, len(slide_lines))
+            for i, text in enumerate(slide_lines)
+        ]
+        pdf_buffer = io.BytesIO()
+        images[0].save(pdf_buffer, format="PDF", save_all=True, append_images=images[1:])
+        return pdf_buffer.getvalue()
+    except Exception as e:
+        print(f"Could not assemble carousel PDF: {e}")
+        return None
+
+
+# ---------------------------------------------------------------------------
+# LinkedIn Publishing
+# ---------------------------------------------------------------------------
+def get_person_urn(access_token):
+    resp = requests.get(
+        "https://api.linkedin.com/v2/userinfo",
+        headers={"Authorization": f"Bearer {access_token}"},
+        timeout=15,
+    )
+    resp.raise_for_status()
+    return f"urn:li:person:{resp.json()['sub']}"
+
+
+def upload_document_to_linkedin(access_token, person_urn, pdf_bytes):
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json",
+        "X-Restli-Protocol-Version": "2.0.0",
+        "LinkedIn-Version": LINKEDIN_VERSION,
+    }
+    try:
+        init_resp = requests.post(
+            "https://api.linkedin.com/rest/documents?action=initializeUpload",
+            headers=headers,
+            json={"initializeUploadRequest": {"owner": person_urn}},
+            timeout=15,
+        )
+        init_resp.raise_for_status()
+        value = init_resp.json()["value"]
+        upload_url = value["uploadUrl"]
+        document_urn = value["document"]
+
+        put_resp = requests.put(
+            upload_url,
+            data=pdf_bytes,
+            headers={"Authorization": f"Bearer {access_token}"},
+            timeout=60,
+        )
+        if put_resp.status_code not in (200, 201):
+            print(f"Document upload PUT failed: {put_resp.status_code}")
+            return None
+        return document_urn
+    except Exception as e:
+        print(f"Document upload failed: {e}")
+        return None
+
+
+def post_to_linkedin(access_token, person_urn, text, document_urn=None, alt_text=""):
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json",
+        "X-Restli-Protocol-Version": "2.0.0",
+        "LinkedIn-Version": LINKEDIN_VERSION,
+    }
+    payload = {
+        "author": person_urn,
+        "commentary": text,
+        "visibility": "PUBLIC",
+        "distribution": {
+            "feedDistribution": "MAIN_FEED",
+            "targetEntities": [],
+            "thirdPartyDistributionChannels": [],
+        },
+        "lifecycleState": "PUBLISHED",
+        "isReshareDisabledByAuthor": False,
+    }
+    if document_urn:
+        payload["content"] = {"media": {"altText": alt_text[:200], "id": document_urn}}
+
+    resp = requests.post(
+        "https://api.linkedin.com/rest/posts", headers=headers, json=payload, timeout=15
+    )
+    if resp.status_code == 201:
+        return True, resp.headers.get("x-restli-id", "unknown")
+    return False, f"{resp.status_code}: {resp.text}"
+
+
+# ---------------------------------------------------------------------------
+# Main Execution
+# ---------------------------------------------------------------------------
+def run():
+    memory = load_memory()
+    used_links = used_links_set(memory)
+    recent_titles = [entry["title"] for entry in memory[-30:] if entry.get("title")]
+
+    raw_candidates = fetch_all_candidates()
+    candidates = dedupe_and_filter(raw_candidates, used_links, recent_titles)
+
+    if not candidates:
+        print("ISSUE_TITLE: No content found today")
+        print("ISSUE_BODY_START")
+        print("Could not find any usable, non-duplicate candidate today.")
+        print("ISSUE_BODY_END")
+        return
+
+    client = gemini_client()
+    ranked = score_candidates(client, candidates)
+
+    if ranked:
+        winner_entry = ranked[0]
+        item = winner_entry.get("candidate", candidates[0])
+        score_note = f"Scored {winner_entry.get('score', '?')}/100 — {winner_entry.get('reason', '')}"
+    else:
+        item = candidates[0]
+        score_note = "Scoring unavailable, used first candidate"
+
+    post_text, template_used, hook, slide_lines = generate_post(item, memory)
+
+    document_urn = None
+    if USE_CAROUSEL:
+        pdf_bytes = generate_carousel_pdf(slide_lines)
+        access_token_media = os.environ.get("LINKEDIN_ACCESS_TOKEN", "").strip()
+        if pdf_bytes and access_token_media:
+            try:
+                person_urn_media = get_person_urn(access_token_media)
+                document_urn = upload_document_to_linkedin(access_token_media, person_urn_media, pdf_bytes)
+            except Exception as exc:
+                print(f"Media upload skipped: {exc}")
+
+    access_token = os.environ.get("LINKEDIN_ACCESS_TOKEN", "").strip()
+    success, result = False, "DRY_RUN / missing access token"
+    if access_token:
+        try:
+            person_urn = get_person_urn(access_token)
+            success, result = post_to_linkedin(access_token, person_urn, post_text, document_urn=document_urn, alt_text=item["title"])
+        except Exception as exc:
+            result = f"Posting error: {exc}"
+
+    memory.append({
+        "link": item["link"],
+        "title": item["title"],
+        "date": str(date.today()),
+        "template": template_used,
+        "hook": hook,
+    })
+    save_memory(memory)
+
+    status_line = (
+        f"✅ Posted successfully (carousel). Post ID: {result}"
+        if success
+        else f"ℹ️ Preview / Dry-run status: {result}"
+    )
+
+    print(f"ISSUE_TITLE: {'Posted' if success else 'Draft Preview'} — {item['title'][:50]}")
+    print("ISSUE_BODY_START")
+    print(status_line)
+    print()
+    print(f"Selection: {score_note}")
+    print(f"Category: {item.get('category', 'n/a')} | Source: {item.get('source', 'n/a')} | Template: {template_used}")
+    print()
+    print("LinkedIn post content:")
+    print(post_text)
+    print()
+    print(f"---\nSource: {item['link']}")
+    print("ISSUE_BODY_END")
+
+
+if __name__ == "__main__":
+    run()
