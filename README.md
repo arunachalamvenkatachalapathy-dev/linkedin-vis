@@ -1,3 +1,7 @@
+# EcoPulse LinkedIn Engine (v3.2)
+
+> **Note:** `script.py` is the canonical production pipeline for this repository. It runs natively via GitHub Actions.
+
 # EcoPulse LinkedIn Engine v5.0 — Viral Post Framework 🚀
 
 Autonomous **config-driven** pipeline that researches topics, selects modular post components, composes high-converting LinkedIn posts through a two-pass Gemini pipeline, generates matched visuals, and publishes — with built-in quality gates and variety enforcement.

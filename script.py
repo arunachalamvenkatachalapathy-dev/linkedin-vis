@@ -70,7 +70,7 @@ REDDIT_SUBREDDITS = [
     "artificial", "technology", "Futurology",
 ]
 
-NEWSAPI_KEY = os.environ.get("NEWSAPI_KEY", "8e34b55b561e4f0e921b30934cac03b8").strip()
+NEWSAPI_KEY = os.environ.get("NEWSAPI_KEY", "").strip()
 
 CLICKBAIT_PATTERNS = [
     r"you won'?t believe", r"\bshocking\b", r"\bgone wrong\b",
@@ -85,14 +85,31 @@ MAX_CANDIDATES_TO_SCORE = 60
 TAGLINE = "— Tracking where Sustainability, Telemetry, and AI Agents collide."
 
 TEMPLATES = {
-    1: "\"The Shift\" — Hook (bold one-liner) -> Context (what happened in 1-2 lines) -> "
-       "The shift (what this changes for sustainability leaders/engineers) -> Technical Take -> CTA (a question)",
-    2: "\"Before/After\" — Hook (\"here's how Scope 3/ESG reporting used to look vs now\") -> Before -> After -> "
-       "Why it matters (one concrete outcome) -> CTA",
-    3: "\"Mini case study\" — Hook (a specific emission/reduction number) -> Setup -> What happened -> Telemetry Lesson -> CTA",
-    4: "\"Contrarian take\" — Hook (challenge a popular ESG/decarbonization myth) -> Evidence (2-3 proof points) -> "
-       "Technical Nuance -> CTA (invite debate)",
-    5: "\"Curated list + POV\" — Hook -> 3-5 punchy points -> your synthesis -> CTA",
+    1: """TEMPLATE 1: "The Shift"
+   - Line 1 (Hook): A sharp, scroll-stopping bold technical claim under 12 words
+   - Lines 2-3 (Context): 1-2 concise lines summarizing the breaking news/metric from the source
+   - Lines 4-5 (The Shift): Technical reframe explaining what changes for ESG leaders, engineers, or Scope 3 auditors
+   - Line 6 (CTA): A high-stakes, specific technical question to drive comments""",
+    2: """TEMPLATE 2: "Before/After"
+   - Line 1 (Hook): Contrast how Scope 3/ESG reporting used to look vs now (under 12 words)
+   - Lines 2-3 (Before): 1-2 lines on the old, manual, or flawed way of doing things
+   - Lines 4-5 (After): 1-2 lines on the new telemetry/AI-driven reality and one concrete outcome
+   - Line 6 (CTA): A high-stakes, specific technical question to drive comments""",
+    3: """TEMPLATE 3: "Mini case study"
+   - Line 1 (Hook): A specific emission/reduction number or technical metric (under 12 words)
+   - Lines 2-3 (Setup & Event): 1-2 lines on the context and what exactly happened
+   - Lines 4-5 (Lesson): 1-2 lines on the underlying telemetry or engineering lesson
+   - Line 6 (CTA): A high-stakes, specific technical question to drive comments""",
+    4: """TEMPLATE 4: "Contrarian take"
+   - Line 1 (Hook): Challenge a popular ESG/decarbonization myth (under 12 words)
+   - Lines 2-3 (Evidence): 1-2 lines providing 2-3 proof points contradicting the myth
+   - Lines 4-5 (Nuance): 1-2 lines explaining the technical nuance others miss
+   - Line 6 (CTA): Invite debate with a specific technical question""",
+    5: """TEMPLATE 5: "Curated list + POV"
+   - Line 1 (Hook): A bold statement about a trend (under 12 words)
+   - Lines 2-4 (List): 3 punchy, single-line points drawn from the source
+   - Line 5 (POV): Your 1-line synthesis or takeaway
+   - Line 6 (CTA): A high-stakes, specific technical question to drive comments""",
 }
 
 POST_PROMPT_TEMPLATE = """
@@ -117,17 +134,13 @@ Available storytelling structures:
 Recently used structures:
 {recent_templates}
 
-Choose the best-fitting structure for today's story.
+Choose the best-fitting structure for today's story and strictly follow its line-by-line format.
 
-Rules:
+Global constraints:
 - 120-150 words total (strictly enforce high-engagement mobile length)
-- Line 1 (The Hook): A sharp, scroll-stopping bold technical claim under 12 words
-- Lines 2-3 (Context & Telemetry): 1-2 concise lines summarizing the breaking news/metric from the source
-- Lines 4-5 (The Shift): Technical reframe explaining what changes for ESG leaders, engineers, or Scope 3 auditors
-- Line 6 (The Question): A high-stakes, specific technical question to drive comments
 - Direct, analytical, authoritative tone (no fluff, no "game-changer" or "revolutionize")
 - Short paragraphs (1-2 lines each with blank lines between)
-- Generate 3-5 specific LinkedIn hashtags (e.g. #Sustainability #Scope3Emissions #ESG #BRSR #CleanTech)
+- Generate exactly 2-3 specific LinkedIn hashtags (e.g. #Sustainability #Scope3Emissions #ESG)
 
 Output format — EXACTLY this, nothing else:
 TEMPLATE: <number 1-5 of the structure you used>
@@ -289,6 +302,7 @@ def fetch_reddit():
 
 def fetch_newsapi():
     if not NEWSAPI_KEY:
+        print("NEWSAPI_KEY not set — skipping NewsAPI source")
         return []
     items = []
     headers = {"X-Api-Key": NEWSAPI_KEY}
@@ -336,29 +350,81 @@ def is_clickbait(title):
     return any(re.search(p, lowered) for p in CLICKBAIT_PATTERNS)
 
 
+import math
+
+def compute_embedding(client, text, retries=3):
+    for attempt in range(1, retries + 1):
+        try:
+            resp = client.models.embed_content(
+                model="text-embedding-004",
+                contents=text,
+            )
+            return resp.embeddings[0].values
+        except Exception as e:
+            if attempt == retries:
+                print(f"Embedding error: {e}")
+                return None
+            time.sleep(2 * attempt)
+    return None
+
+def cosine_similarity(v1, v2):
+    if not v1 or not v2: return 0.0
+    dot = sum(a * b for a, b in zip(v1, v2))
+    norm_a = math.sqrt(sum(a * a for a in v1))
+    norm_b = math.sqrt(sum(b * b for b in v2))
+    if norm_a == 0 or norm_b == 0: return 0.0
+    return dot / (norm_a * norm_b)
+
 def is_similar_topic(title, recent_titles, threshold=0.55):
     lowered = title.lower()
     for recent in recent_titles:
-        ratio = difflib.SequenceMatcher(None, lowered, recent.lower()).ratio()
-        if ratio >= threshold:
+        if difflib.SequenceMatcher(None, lowered, recent.lower()).ratio() >= threshold:
             return True
     return False
 
+def is_semantically_similar(client, title, summary, recent_embeddings, threshold=0.82):
+    if not client:
+        return False, None
+    text = f"{title}\n{summary}"
+    emb = compute_embedding(client, text)
+    if not emb:
+        return False, None
+    for recent_emb in recent_embeddings:
+        if cosine_similarity(emb, recent_emb) >= threshold:
+            return True, emb
+    return False, emb
 
-def dedupe_and_filter(items, used_links, recent_titles):
+def dedupe_and_filter(items, memory):
+    used_links = {entry["link"] for entry in memory if "link" in entry}
+    recent_titles = [entry["title"] for entry in memory[-30:] if entry.get("title")]
+    
+    # Load recent embeddings
+    recent_embeddings = [entry["embedding"] for entry in memory[-15:] if entry.get("embedding")]
+    
+    client = gemini_client()
+    
     seen_links = set()
     filtered = []
     for item in items:
         link = item.get("link", "")
         title = item.get("title", "")
+        summary = item.get("summary", "")
         if not link or not title:
             continue
         if link in used_links or link in seen_links:
             continue
         if is_clickbait(title):
             continue
+        # Cheap difflib pass
         if is_similar_topic(title, recent_titles):
             continue
+        
+        # Semantic pass
+        is_sim, emb = is_semantically_similar(client, title, summary, recent_embeddings)
+        if is_sim:
+            continue
+            
+        item["embedding"] = emb  # Store for this run
         seen_links.add(link)
         filtered.append(item)
     return filtered
@@ -425,10 +491,27 @@ def score_candidates(client, candidates):
     return [{"id": 0, "score": 85, "reason": "first candidate (scoring fallback)", "candidate": pool[0]}]
 
 
+MAX_HASHTAGS = 3
+MIN_WORDS = 100
+MAX_WORDS = 170
+
+def validate_post(post_body: str, hashtags: str) -> list[str]:
+    """Return a list of validation failure reasons; empty list = passed."""
+    failures = []
+    word_count = len(post_body.split())
+    if not (MIN_WORDS <= word_count <= MAX_WORDS):
+        failures.append(f"word count {word_count} outside [{MIN_WORDS}, {MAX_WORDS}]")
+    hashtag_count = len(re.findall(r"#\w+", hashtags))
+    if hashtag_count > MAX_HASHTAGS:
+        failures.append(f"hashtag wall: {hashtag_count} hashtags (max {MAX_HASHTAGS})")
+    if hashtag_count == 0:
+        failures.append("no hashtags found")
+    return failures
+
 def generate_post(item, memory):
     client = gemini_client()
     templates_list = "\n".join(f"{k}. {v}" for k, v in TEMPLATES.items())
-    prompt = POST_PROMPT_TEMPLATE.format(
+    base_prompt = POST_PROMPT_TEMPLATE.format(
         title=item["title"],
         category=item.get("category", "general"),
         summary=item["summary"],
@@ -438,16 +521,37 @@ def generate_post(item, memory):
         templates_list=templates_list,
         recent_templates=recent_templates_text(memory),
     )
+    
     raw = None
     if client:
-        for m_name in ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]:
-            try:
-                response = generate_with_retry(client, m_name, prompt)
-                if response and response.text:
-                    raw = response.text.strip()
-                    break
-            except Exception as exc:
-                print(f"Post generation error for model {m_name}: {exc}")
+        prompt = base_prompt
+        for attempt in range(1, 4):  # Max 3 attempts
+            for m_name in ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]:
+                try:
+                    response = generate_with_retry(client, m_name, prompt)
+                    if response and response.text:
+                        raw = response.text.strip()
+                        parts = raw.split("---")
+                        if len(parts) < 3:
+                            print(f"Warning: Malformed output on attempt {attempt}")
+                            raw = None
+                            continue
+                        
+                        post_body = parts[1].strip()
+                        hashtags = parts[2].strip()
+                        failures = validate_post(post_body, hashtags)
+                        
+                        if not failures:
+                            break  # Passed validation
+                        
+                        print(f"Validation failed on attempt {attempt}: {', '.join(failures)}")
+                        prompt = base_prompt + f"\n\nYOUR PREVIOUS ATTEMPT FAILED VALIDATION: {', '.join(failures)}. Please fix these errors and ensure exactly 2-3 hashtags and 120-150 words."
+                        raw = None
+                        break  # Break inner loop to retry outer loop
+                except Exception as exc:
+                    print(f"Post generation error for model {m_name}: {exc}")
+            if raw:
+                break # We found a valid raw
 
     if not raw:
         # Dynamic, multi-paragraph high-authority post constructed according to your friend's Template 1 ("The Shift")
@@ -462,7 +566,7 @@ def generate_post(item, memory):
             "The shift isn't just adopting new software. It's moving from annual estimation spreadsheets to continuous, automated sensor verification across Scope 3 data pipelines.\n\n"
             "When regulatory frameworks like CSRD and BRSR demand audited metrics, unverified third-party data becomes an operational risk.\n\n"
             "What primary verification mechanism is your team using to validate vendor environmental data?\n---\n"
-            "#Sustainability #Scope3Emissions #ESG #CleanTech #EnvironmentalTelemetry"
+            "#Sustainability #Scope3Emissions #ESG"
         )
 
     template_used = None
@@ -473,6 +577,11 @@ def generate_post(item, memory):
     parts = raw.split("---")
     post_body = parts[1].strip() if len(parts) > 1 else raw.strip()
     hashtags = parts[2].strip() if len(parts) > 2 else "#Sustainability #CleanTech #ESG"
+    
+    # Enforce hashtag truncation just in case
+    hash_list = re.findall(r"(#\w+)", hashtags)
+    if len(hash_list) > MAX_HASHTAGS:
+        hashtags = " ".join(hash_list[:MAX_HASHTAGS])
 
     post_text = post_body
     if TAGLINE not in post_text:
@@ -487,6 +596,23 @@ def generate_post(item, memory):
 # ---------------------------------------------------------------------------
 # Pure Text-Only LinkedIn & Reddit Publishing
 # ---------------------------------------------------------------------------
+import time
+
+def with_retry(fn, *args, retries=3, base_delay=5, retryable_statuses=(429, 500, 502, 503, 504), **kwargs):
+    last_exc = None
+    for attempt in range(1, retries + 1):
+        try:
+            return fn(*args, **kwargs)
+        except requests.exceptions.RequestException as e:
+            status = getattr(e.response, "status_code", None)
+            if status is not None and status not in retryable_statuses:
+                raise  # don't retry on 4xx auth/validation errors, fail fast
+            last_exc = e
+            if attempt < retries:
+                time.sleep(base_delay * attempt)
+    raise last_exc
+
+
 def get_person_urn(access_token):
     resp = requests.get(
         "https://api.linkedin.com/v2/userinfo",
@@ -517,8 +643,12 @@ def post_to_linkedin(access_token, person_urn, text):
         "isReshareDisabledByAuthor": False,
     }
 
-    resp = requests.post(
-        "https://api.linkedin.com/rest/posts", headers=headers, json=payload, timeout=15
+    resp = with_retry(
+        requests.post,
+        "https://api.linkedin.com/rest/posts",
+        headers=headers,
+        json=payload,
+        timeout=15
     )
     if resp.status_code == 201:
         return True, resp.headers.get("x-restli-id", "unknown")
@@ -564,7 +694,8 @@ def post_to_reddit(title, text, subreddit="sustainability"):
             "title": title[:290],
             "text": text,
         }
-        resp = requests.post(
+        resp = with_retry(
+            requests.post,
             "https://oauth.reddit.com/api/submit",
             headers=headers,
             data=data,
@@ -586,11 +717,9 @@ def post_to_reddit(title, text, subreddit="sustainability"):
 # ---------------------------------------------------------------------------
 def run():
     memory = load_memory()
-    used_links = used_links_set(memory)
-    recent_titles = [entry["title"] for entry in memory[-30:] if entry.get("title")]
 
     raw_candidates = fetch_all_candidates()
-    candidates = dedupe_and_filter(raw_candidates, used_links, recent_titles)
+    candidates = dedupe_and_filter(raw_candidates, memory)
 
     if not candidates:
         print("ISSUE_TITLE: No content found today")
@@ -629,6 +758,7 @@ def run():
         "date": str(date.today()),
         "template": template_used,
         "hook": hook,
+        "embedding": item.get("embedding")
     })
     save_memory(memory)
 
