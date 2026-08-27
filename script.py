@@ -15,12 +15,18 @@ Pipeline:
 """
 
 import os
+import sys
 import json
 import re
 import time
 import difflib
 import io
 from datetime import date
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8")
 import feedparser
 import requests
 from requests_oauthlib import OAuth1
