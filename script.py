@@ -232,50 +232,54 @@ def update_performance_engine(memory, access_token):
     Constant Improvement Engine:
     Reads the last 15 posts from memory, checks their actual engagement on LinkedIn,
     and dynamically tags the top 33% as 'performed_well' so the AI learns from them.
+    Runs BEFORE post generation every day so the new post learns from real data.
     """
-    if not access_token:
-        return
-
     import urllib.parse
-    recent = memory[-15:]
-    
-    for entry in recent:
-        post_id = entry.get("post_id")
-        if not post_id or not post_id.startswith("urn:li:"):
-            continue
-            
-        safe_urn = urllib.parse.quote(post_id)
-        # Using LinkedIn v2 socialActions endpoint for engagement stats
-        url = f"https://api.linkedin.com/v2/socialActions/{safe_urn}"
-        headers = {
-            "Authorization": f"Bearer {access_token}", 
-            "X-Restli-Protocol-Version": "2.0.0"
-        }
-        
-        try:
-            res = requests.get(url, headers=headers, timeout=10)
-            if res.status_code == 200:
-                data = res.json()
-                likes = data.get("likesSummary", {}).get("totalLikes", 0)
-                comments = data.get("commentsSummary", {}).get("totalFirstLevelComments", 0)
-                # Engagement formula: Comments are worth 2x likes
-                entry["engagement_score"] = likes + (comments * 2)
-        except Exception as e:
-            print(f"Improvement Engine: Failed to fetch stats for {post_id} - {e}")
-            
-    # Rank them
-    scored = [e for e in recent if "engagement_score" in e]
-    if len(scored) >= 3:
-        scored.sort(key=lambda x: x["engagement_score"], reverse=True)
-        # Top 33% threshold
-        top_threshold = scored[len(scored) // 3]["engagement_score"]
-        
-        for e in scored:
-            # Must have at least *some* engagement to be considered a success
-            if e["engagement_score"] >= top_threshold and e["engagement_score"] > 0:
-                e["performed_well"] = True
-            else:
-                e["performed_well"] = False
+
+    # Work on the actual memory entries (last 15), not a copy
+    recent_indices = list(range(max(0, len(memory) - 15), len(memory)))
+
+    if access_token:
+        for idx in recent_indices:
+            entry = memory[idx]
+            post_id = entry.get("post_id")
+            if not post_id or not post_id.startswith("urn:li:"):
+                continue
+
+            # URN must be double-encoded for the socialActions path parameter
+            safe_urn = urllib.parse.quote(post_id, safe="")
+            url = f"https://api.linkedin.com/v2/socialActions/{safe_urn}"
+            headers = {
+                "Authorization": f"Bearer {access_token}",
+                "X-Restli-Protocol-Version": "2.0.0",
+            }
+            try:
+                res = requests.get(url, headers=headers, timeout=10)
+                if res.status_code == 200:
+                    data = res.json()
+                    likes    = data.get("likesSummary",   {}).get("totalLikes", 0)
+                    comments = data.get("commentsSummary", {}).get("totalFirstLevelComments", 0)
+                    # Comments worth 2x — signals real engagement, not passive scrolling
+                    memory[idx]["engagement_score"] = likes + (comments * 2)
+                else:
+                    print(f"Improvement Engine: LinkedIn API {res.status_code} for {post_id}")
+            except Exception as e:
+                print(f"Improvement Engine: Failed to fetch stats for {post_id} - {e}")
+
+    # Rank whatever we have scored (even from prior runs)
+    scored_indices = [i for i in recent_indices if "engagement_score" in memory[i]]
+    if len(scored_indices) >= 3:
+        scored_indices.sort(key=lambda i: memory[i]["engagement_score"], reverse=True)
+        top_n = max(1, len(scored_indices) // 3)  # Top 33%
+        top_threshold = memory[scored_indices[top_n - 1]]["engagement_score"]
+
+        for i in scored_indices:
+            score = memory[i]["engagement_score"]
+            # Must have >0 engagement to earn the "performed_well" flag
+            memory[i]["performed_well"] = (score >= top_threshold and score > 0)
+
+        top_posts = [memory[i]["title"][:60] for i in scored_indices[:top_n]]
+        print(f"Improvement Engine: Tagged {top_n} top post(s) as high-performing: {top_posts}")
 
 
 # ---------------------------------------------------------------------------
@@ -612,7 +616,7 @@ def generate_post(item, memory):
                             break  # Passed validation
                         
                         print(f"Validation failed on attempt {attempt}: {', '.join(failures)}")
-                        prompt = base_prompt + f"\n\nYOUR PREVIOUS ATTEMPT FAILED VALIDATION: {', '.join(failures)}. Please fix these errors and ensure exactly 2-3 hashtags and 120-150 words."
+                        prompt = base_prompt + f"\n\nYOUR PREVIOUS ATTEMPT FAILED VALIDATION: {', '.join(failures)}. Please fix these errors and ensure exactly 2-3 hashtags and between {MIN_WORDS}-{MAX_WORDS} words."
                         raw = None
                         break  # Break inner loop to retry outer loop
                 except Exception as exc:
@@ -621,19 +625,17 @@ def generate_post(item, memory):
                 break # We found a valid raw
 
     if not raw:
-        # Dynamic, multi-paragraph high-authority post constructed according to your friend's Template 1 ("The Shift")
-        summary_raw = item.get("summary") or item.get("title", "")
-        summary_clean = re.sub(r'<[^>]+>', '', summary_raw).strip()
-        summary_snippet = summary_clean[:180].strip()
+        # Fallback post if Gemini is unavailable — matches new conversational tone
         title_clean = re.sub(r'<[^>]+>', '', item['title']).strip()
+        summary_raw = item.get("summary") or item.get("title", "")
+        summary_clean = re.sub(r'<[^>]+>', '', summary_raw).strip()[:120]
         raw = (
             "TEMPLATE: 1\n---\n"
-            f"Most sustainability frameworks treat {title_clean[:55]} as a static compliance requirement.\n\n"
-            f"That boundary just moved. Recent field telemetry indicates that {summary_snippet} — altering how engineering teams validate carbon claims.\n\n"
-            "The shift isn't just adopting new software. It's moving from annual estimation spreadsheets to continuous, automated sensor verification across Scope 3 data pipelines.\n\n"
-            "When regulatory frameworks like CSRD and BRSR demand audited metrics, unverified third-party data becomes an operational risk.\n\n"
-            "What primary verification mechanism is your team using to validate vendor environmental data?\n---\n"
-            "#Sustainability #Scope3Emissions #ESG"
+            f"{title_clean[:80]}.\n\n"
+            f"{summary_clean}\n\n"
+            "The real question isn't whether this matters — it's how fast your organisation is responding.\n\n"
+            "What's your team's current approach here? Would love to hear below.\n---\n"
+            "#Sustainability #ESG"
         )
 
     template_used = None
@@ -663,7 +665,6 @@ def generate_post(item, memory):
 # ---------------------------------------------------------------------------
 # Pure Text-Only LinkedIn & Reddit Publishing
 # ---------------------------------------------------------------------------
-import time
 
 def with_retry(fn, *args, retries=3, base_delay=5, retryable_statuses=(429, 500, 502, 503, 504), **kwargs):
     last_exc = None
@@ -787,10 +788,10 @@ def run():
     memory = load_memory()
     
     access_token = os.environ.get("LINKEDIN_ACCESS_TOKEN", "").strip()
-    
-    # Run the Continuous Improvement Engine to learn from past posts before generating a new one
-    if access_token:
-        update_performance_engine(memory, access_token)
+
+    # Run the Continuous Improvement Engine to learn from past posts before generating a new one.
+    # Even without an access_token it re-ranks posts by cached engagement_score from prior runs.
+    update_performance_engine(memory, access_token)
 
     raw_candidates = fetch_all_candidates()
     candidates = dedupe_and_filter(raw_candidates, memory)
