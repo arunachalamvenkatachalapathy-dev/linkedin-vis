@@ -41,7 +41,7 @@ REDDIT_SUBREDDITS = [
     "environment", "sustainability", "energy", "MachineLearning", "artificial", "technology", "Futurology"
 ]
 
-NEWSAPI_KEY = "8e34b55b561e4f0e921b30934cac03b8"
+NEWSAPI_KEY = os.environ.get("NEWSAPI_KEY", "")
 
 print("--- TESTING ALL SOURCES ONE BY ONE ---")
 
