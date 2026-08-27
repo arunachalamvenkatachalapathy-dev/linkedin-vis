@@ -28,45 +28,42 @@ from PIL import Image, ImageDraw, ImageFont
 from google import genai
 
 # ---------------------------------------------------------------------------
-# Content Sources
+# Content Sources — Sustainability, ESG, Telemetry & AI Agents
 # ---------------------------------------------------------------------------
 SOURCES = {
-    "frontier_ai": [
-        "https://deepmind.google/blog/rss.xml",
-        "https://blog.google/technology/ai/rss/",
+    "sustainability": [
+        "https://climate.nasa.gov/news/rss",
+        "https://www.theguardian.com/environment/rss",
+        "https://e360.yale.edu/feed",
+        "https://www.carbonbrief.org/feed",
     ],
-    "technology": [
-        "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml",
-        "https://techcrunch.com/category/artificial-intelligence/feed/",
-        "https://feeds.arstechnica.com/arstechnica/index/",
-        "https://venturebeat.com/category/ai/feed/",
+    "esg_cleantech": [
+        "https://techcrunch.com/category/climatetech/feed/",
+        "https://canarymedia.com/feed",
+        "https://clean-technica.com/feed/",
     ],
-    "research": [
-        "https://news.mit.edu/rss/topic/artificial-intelligence2",
+    "research_telemetry": [
+        "https://news.mit.edu/rss/topic/environment",
         "https://huggingface.co/blog/feed.xml",
     ],
-    "robotics": [
-        "https://spectrum.ieee.org/feeds/topic/robotics.rss",
-        "https://news.mit.edu/rss/topic/robotics",
-    ],
-    "design": [
-        "https://uxdesign.cc/feed",
-        "https://www.smashingmagazine.com/feed/",
+    "ai_agents": [
+        "https://deepmind.google/blog/rss.xml",
+        "https://blog.google/technology/ai/rss/",
+        "https://venturebeat.com/category/ai/feed/",
     ],
 }
 
 HN_QUERIES = [
-    "AI agents", "agentic AI", "LLM", "multimodal AI",
-    "robotics", "humanoid robots", "physical AI", "robot learning",
-    "spatial computing", "AI glasses", "human computer interaction", "generative UI",
-    "AI hardware", "AI chips", "edge AI",
-    "future of work", "ambient computing", "neural interface",
-    "AI product", "AI UX", "AI design",
+    "sustainability carbon emissions", "Scope 3 emissions telemetry",
+    "ESG reporting BRSR CSRD", "environmental sensors data",
+    "AI agents autonomous workflow", "CleanTech energy grid",
+    "industrial decarbonization", "climate data analytics",
+    "green computing edge AI", "carbon footprint tracking",
 ]
 
 REDDIT_SUBREDDITS = [
-    "artificial", "MachineLearning", "singularity", "robotics",
-    "Futurology", "technology", "UXDesign", "userexperience",
+    "environment", "sustainability", "energy", "MachineLearning",
+    "artificial", "technology", "Futurology",
 ]
 
 NEWSAPI_KEY = os.environ.get("NEWSAPI_KEY", "8e34b55b561e4f0e921b30934cac03b8").strip()
@@ -86,30 +83,28 @@ CAROUSEL_SLIDE_COUNT = 3
 
 CAROUSEL_COLORS = ["#1A1A2E", "#16213E", "#0F3460"]
 CAROUSEL_TEXT_COLOR = "#FFFFFF"
-CAROUSEL_ACCENT_COLOR = "#E94560"
+CAROUSEL_ACCENT_COLOR = "#00E676"  # Environmental Emerald Accent
 
 # ---------------------------------------------------------------------------
 # Sign-off Tagline & Storytelling Templates
 # ---------------------------------------------------------------------------
-TAGLINE = "— Tracking where AI, design, and tech actually collide."
+TAGLINE = "— Tracking where Sustainability, Telemetry, and AI Agents collide."
 
 TEMPLATES = {
-    1: "\"The Shift\" — Hook (bold one-liner) -> Context (what happened, 1-2 lines) -> "
-       "The shift (what this changes for designers/PMs/devs/users) -> My take (a specific opinion) -> CTA (a question)",
-    2: "\"Before/After\" — Hook (\"here's what X used to look like vs now\") -> Before -> After -> "
+    1: "\"The Shift\" — Hook (bold one-liner) -> Context (what happened in 1-2 lines) -> "
+       "The shift (what this changes for sustainability leaders/engineers) -> Technical Take -> CTA (a question)",
+    2: "\"Before/After\" — Hook (\"here's how Scope 3/ESG reporting used to look vs now\") -> Before -> After -> "
        "Why it matters (one concrete outcome) -> CTA",
-    3: "\"Mini case study\" — Hook (a specific number/result) -> Setup -> What happened -> Lesson -> CTA",
-    4: "\"Contrarian take\" — Hook (challenge a popular opinion about this) -> Evidence (2-3 points) -> "
-       "Nuance (where you agree with the mainstream view) -> CTA (invite disagreement)",
-    5: "\"Curated list + POV\" — Hook -> a few short points -> your synthesis -> CTA",
+    3: "\"Mini case study\" — Hook (a specific emission/reduction number) -> Setup -> What happened -> Telemetry Lesson -> CTA",
+    4: "\"Contrarian take\" — Hook (challenge a popular ESG/decarbonization myth) -> Evidence (2-3 proof points) -> "
+       "Technical Nuance -> CTA (invite debate)",
+    5: "\"Curated list + POV\" — Hook -> 3-5 punchy points -> your synthesis -> CTA",
 }
 
 POST_PROMPT_TEMPLATE = """
-You are writing a LinkedIn post for a design/tech professional who writes in a
-direct, curious, slightly opinionated tone (no corporate buzzwords, no "game-changer"
-or "revolutionize" type language). This person cares about what emerging tech
-(AI, robotics, new interfaces) actually changes for how people work and interact
-with products — not just "a new model shipped."
+You are writing a LinkedIn post for an Environmental & CleanTech professional writing in a
+direct, analytical, technical tone (no corporate fluff, no "game-changer" or "revolutionize").
+This author focuses on Environmental Telemetry, Scope 3 Emissions, ESG Reporting (BRSR/CSRD), and AI Agents for industrial workflows.
 
 Source headline: {title}
 Source category: {category}
@@ -119,36 +114,26 @@ Source link: {link}
 Recently covered topics (avoid repeating these themes):
 {recent_topics}
 
-Recently used opening hooks (write a genuinely different opening style/rhythm than these — do not
-reuse the same sentence pattern, e.g. don't always start with "AI didn't..." or a rhetorical negation):
+Recently used opening hooks (write a genuinely different opening style/rhythm than these):
 {recent_hooks}
 
 Available storytelling structures:
 {templates_list}
 
-Recently used structures (pick a DIFFERENT one than these if at all reasonable):
+Recently used structures:
 {recent_templates}
 
-Choose the best-fitting structure for today's story (it's fine to repeat one if it's genuinely
-the best fit, but prefer variety when multiple structures would work equally well).
+Choose the best-fitting structure for today's story.
 
 Rules:
-- 120-200 words total (not counting the tagline or hashtags, which are added separately — don't write your own sign-off or hashtags)
-- First line must work as a stand-alone scroll-stopping hook, no preamble, and must NOT resemble the recent hooks above
-- Include one specific, concrete detail (a number, a name, a feature)
-- End with a genuine, specific question — not "thoughts?"
-- Short paragraphs (1-3 lines each), scannable on mobile
-- Do not invent facts not present in the source summary
-- Vary sentence length and rhythm — avoid sounding like a template filled in the same way every time
-
-Also generate 3-5 relevant, specific LinkedIn hashtags for this post (mix of broad + niche,
-e.g. #AI plus something more specific like #GenerativeUI or #RoboticsResearch — avoid generic
-filler tags like #innovation or #technology on their own).
-
-Also write {slide_count} short, punchy standalone lines (under 12 words each) that
-could each work as a single bold sentence on its own slide of a carousel, telling
-this story as a mini-sequence (e.g. hook -> insight -> question). These are
-NOT a summary of the post word-for-word — they're a distilled, punchier sequence.
+- 120-200 words total (not counting tagline or hashtags)
+- First line must work as a scroll-stopping hook tailored to sustainability & engineering leaders
+- Include one specific concrete detail (a metric, emission target, regulatory mandate, or technical specification)
+- End with a genuine, specific question for sustainability directors / engineers
+- Short paragraphs (1-3 lines each), mobile-first
+- Do not invent facts not in the source summary
+- Generate 3-5 specific LinkedIn hashtags (e.g. #Sustainability #Scope3Emissions #ESG #BRSR #CleanTech)
+- Write {slide_count} short standalone carousel lines (<12 words each) summarizing key telemetry/insights.
 
 Output format — EXACTLY this, nothing else:
 TEMPLATE: <number 1-5 of the structure you used>
@@ -161,18 +146,16 @@ TEMPLATE: <number 1-5 of the structure you used>
 """
 
 SCORING_PROMPT_TEMPLATE = """
-You are a content scout for a design/tech LinkedIn creator. Score each candidate
-story below from 0-100 using this rubric:
+You are a content scout for a Sustainability & Environmental Tech leader. Score each candidate
+story below from 0-100 using this rubric tailored to Environmental Engineering, ESG, and AI Workflows:
 
-- Future impact (0-30): does this signal something significant about where AI/tech/interfaces are heading?
-- Real-world evidence (0-25): is this a concrete shipped product/result, not just speculation or a rumor?
-- UX/product relevance (0-20): does this matter for how people design or use products?
-- Novelty (0-15): is this a fresh angle, not something already everywhere? IMPORTANT: each candidate
+- Environmental & Future Impact (0-30): Does this signal significant progress in carbon emissions reduction, Scope 3 telemetry, or CleanTech transition?
+- Real-world Evidence (0-25): Is this a concrete enterprise result, sensor telemetry deployment, or regulatory compliance metric (BRSR/CSRD)?
+- ESG & Enterprise Relevance (0-20): Does this matter for sustainability officers, ESG reporting teams, or industrial engineers?
+- Novelty (0-15): Is this a fresh technical angle, not something oversaturated everywhere? IMPORTANT: each candidate
   includes "covered_by_n_sources" — how many different outlets in today's pool are running this same
-  story. A high number (3+) means this is a mainstream story that will likely already be saturating
-  LinkedIn by the time this post goes out — score novelty LOW for these unless the specific angle
-  you'd take is genuinely uncommon, not just "here's the news."
-- Conversation potential (0-10): would a thoughtful LinkedIn audience want to discuss this?
+  story. A high number (3+) means this is a mainstream story — score novelty LOW unless taking a unique technical angle.
+- Conversation & Community Potential (0-10): Would a thoughtful LinkedIn audience of sustainability professionals and engineers want to discuss this?
 
 Candidates (JSON array, each with an "id"):
 {candidates_json}
@@ -394,7 +377,12 @@ def dedupe_and_filter(items, used_links, recent_titles):
 # ---------------------------------------------------------------------------
 def gemini_client():
     api_key = os.environ.get("GEMINI_API_KEY", "").strip()
-    return genai.Client(api_key=api_key)
+    if not api_key:
+        return None
+    try:
+        return genai.Client(api_key=api_key)
+    except Exception:
+        return None
 
 
 def generate_with_retry(client, model, contents, retries=3, base_delay=4):
@@ -412,6 +400,9 @@ def score_candidates(client, candidates):
     if not candidates:
         return []
     pool = candidates[:MAX_CANDIDATES_TO_SCORE]
+    if not client:
+        return [{"id": 0, "score": 85, "reason": "first available candidate (local preview)", "candidate": pool[0]}]
+
     sizes = cluster_sizes(pool)
     slim = [
         {
@@ -453,10 +444,15 @@ def generate_post(item, memory):
         recent_templates=recent_templates_text(memory),
         slide_count=CAROUSEL_SLIDE_COUNT,
     )
-    try:
-        response = generate_with_retry(client, "gemini-2.5-flash", prompt)
-        raw = response.text.strip()
-    except Exception as exc:
+    raw = None
+    if client:
+        try:
+            response = generate_with_retry(client, "gemini-2.5-flash", prompt)
+            raw = response.text.strip()
+        except Exception as exc:
+            print(f"Post generation error: {exc}")
+
+    if not raw:
         raw = (
             "TEMPLATE: 1\n---\n"
             f"The shift toward automated telemetry in {item['title'][:60]} is reshaping industrial compliance.\n\n"
