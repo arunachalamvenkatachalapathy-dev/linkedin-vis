@@ -160,11 +160,11 @@ TEMPLATE: <number 1-5 of the structure you used>
 """
 
 SCORING_PROMPT_TEMPLATE = """
-You are a content scout for a Sustainability & Environmental Tech leader. Score each candidate
-story below from 0-100 using this balanced rubric for LinkedIn engagement:
+You are a content scout for a Tech, AI & Sustainability leader. Score each candidate
+story below from 0-100 using this balanced rubric for LinkedIn engagement. You do NOT need to rely only on sustainability; highly trending tech, AI, and business topics are heavily encouraged:
 
-- Virality & Emotion (0-35): Does this trigger a strong reaction (surprise, hope, frustration, debate)? Is it highly relatable or contrarian?
-- Professional Relevance (0-30): Does this impact ESG reporting, sustainability professionals, AI/tech workers, or industrial engineers in their day-to-day?
+- Virality & Emotion (0-35): Does this trigger a strong reaction (surprise, hope, frustration, debate)? Is it a trending topic everyone is talking about?
+- Professional Relevance (0-30): Does this matter to tech workers, founders, AI engineers, or sustainability professionals in their day-to-day?
 - Concrete Evidence (0-20): Is there a real-world result, a clear metric, or a specific case study, rather than just vague promises?
 - Novelty (0-15): Is this a fresh angle? IMPORTANT: each candidate includes "covered_by_n_sources". A high number (3+) means this is mainstream — score novelty LOW unless taking a highly unique angle.
 
@@ -404,6 +404,7 @@ def fetch_exa():
     queries = [
         "technical challenges scope 3 emissions telemetry",
         "latest AI agent workflows in enterprise",
+        "biggest trending controversy in tech startups this week",
         "recent breakthroughs in carbon accounting data"
     ]
     url = "https://api.exa.ai/search"
@@ -420,13 +421,50 @@ def fetch_exa():
                 for res in resp.json().get("results", []):
                     items.append({
                         "title": res.get("title", ""),
-                        "summary": res.get("title", ""),  # Exa API returns title and URL
+                        "summary": res.get("title", ""),
                         "link": res.get("url", ""),
                         "category": "deep_research",
                         "source": "Exa AI Search"
                     })
         except Exception as e:
             print(f"Exa fetch error for '{q}': {e}")
+    return items
+
+def fetch_tavily():
+    api_key = os.environ.get("TAVILY_API_KEY", "").strip()
+    if not api_key:
+        return []
+    items = []
+    url = "https://api.tavily.com/search"
+    headers = {"Content-Type": "application/json"}
+    queries = [
+        "latest trending news in artificial intelligence and Nvidia",
+        "biggest business or tech news today",
+        "top stories in climate tech and startups today"
+    ]
+    for q in queries:
+        try:
+            payload = {
+                "api_key": api_key,
+                "query": q,
+                "search_depth": "basic",
+                "include_answer": False,
+                "max_results": 4,
+                "topic": "news",
+                "days": 2
+            }
+            resp = requests.post(url, headers=headers, json=payload, timeout=15)
+            if resp.status_code == 200:
+                for res in resp.json().get("results", []):
+                    items.append({
+                        "title": res.get("title", ""),
+                        "summary": res.get("content", ""),
+                        "link": res.get("url", ""),
+                        "category": "trending_news",
+                        "source": "Tavily AI Search"
+                    })
+        except Exception as e:
+            print(f"Tavily fetch error for '{q}': {e}")
     return items
 
 import random
@@ -438,6 +476,7 @@ def fetch_all_candidates():
     reddit = fetch_reddit()
     newsapi = fetch_newsapi()
     exa = fetch_exa()
+    tavily = fetch_tavily()
     
     # Cap each major group so no single platform dominates the candidate pool
     # The scoring pool is MAX_CANDIDATES_TO_SCORE (60)
@@ -446,8 +485,9 @@ def fetch_all_candidates():
     random.shuffle(reddit)
     random.shuffle(newsapi)
     random.shuffle(exa)
+    random.shuffle(tavily)
     
-    pool = rss[:15] + exa[:10] + hn[:15] + reddit[:10] + newsapi[:10]
+    pool = rss[:10] + exa[:10] + tavily[:10] + hn[:15] + reddit[:5] + newsapi[:10]
     random.shuffle(pool)
     return pool
 
