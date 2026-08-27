@@ -463,8 +463,7 @@ def generate_post(item, memory):
             "TEMPLATE: 1\n---\n"
             f"The shift toward automated telemetry in {item['title'][:60]} is reshaping industrial compliance.\n\n"
             "Translating this technical development into operational requirements reveals key engineering realities.\n\n"
-            "What primary metrics is your team using to validate data?\n\n"
-            "— Tracking where AI, design, and tech actually collide.\n---\n"
+            "What primary metrics is your team using to validate data?\n---\n"
             "#CleanTech #Sustainability #ESG\n---\n"
             f"{item['title'][:50]}\nOperational Compliance Telemetry\nSystem Architecture Review"
         )
