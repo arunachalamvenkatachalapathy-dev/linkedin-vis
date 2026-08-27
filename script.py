@@ -635,33 +635,7 @@ def get_person_urn(access_token):
     return f"urn:li:person:{resp.json()['sub']}"
 
 
-def upload_linkedin_image(access_token, person_urn, image_path):
-    headers = {
-        "Authorization": f"Bearer {access_token}",
-        "Content-Type": "application/json",
-    }
-    register_payload = {
-        "registerUploadRequest": {
-            "recipes": ["urn:li:digitalmediaRecipe:feedshare-image"],
-            "owner": person_urn,
-            "serviceRelationships": [{"relationshipType": "OWNER", "identifier": "urn:li:userGeneratedContent"}]
-        }
-    }
-    resp = requests.post("https://api.linkedin.com/v2/assets?action=registerUpload", headers=headers, json=register_payload, timeout=15)
-    resp.raise_for_status()
-    data = resp.json()
-    upload_url = data["value"]["uploadMechanism"]["com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest"]["uploadUrl"]
-    asset_urn = data["value"]["asset"]
-    
-    with open(image_path, "rb") as f:
-        img_data = f.read()
-    
-    upload_resp = requests.put(upload_url, data=img_data, headers={"Authorization": f"Bearer {access_token}"}, timeout=30)
-    upload_resp.raise_for_status()
-    return asset_urn
-
-
-def post_to_linkedin(access_token, person_urn, text, image_path=None):
+def post_to_linkedin(access_token, person_urn, text):
     headers = {
         "Authorization": f"Bearer {access_token}",
         "Content-Type": "application/json",
@@ -682,17 +656,6 @@ def post_to_linkedin(access_token, person_urn, text, image_path=None):
         "isReshareDisabledByAuthor": False,
     }
     
-    if image_path and os.path.exists(image_path):
-        try:
-            asset_urn = upload_linkedin_image(access_token, person_urn, image_path)
-            payload["content"] = {
-                "media": {
-                    "id": asset_urn
-                }
-            }
-        except Exception as e:
-            print(f"Warning: Image upload failed, falling back to text-only. Error: {e}")
-
     resp = with_retry(
         requests.post,
         "https://api.linkedin.com/rest/posts",
@@ -765,7 +728,7 @@ def post_to_reddit(title, text, subreddit="sustainability"):
 # ---------------------------------------------------------------------------
 # Main Execution
 # ---------------------------------------------------------------------------
-def generate_draft():
+def run():
     memory = load_memory()
 
     raw_candidates = fetch_all_candidates()
@@ -791,105 +754,55 @@ def generate_draft():
 
     post_text, template_used, hook = generate_post(item, memory)
 
-    # Generate Image if we use templates 1-3
-    image_path = None
-    if template_used in (1, 2, 3):
+    access_token = os.environ.get("LINKEDIN_ACCESS_TOKEN", "").strip()
+    success, result = False, "DRY_RUN / missing access token"
+    if access_token:
         try:
-            from image_generator import create_card
-            image_path = create_card(title=item["title"], hook=hook, output_path="card.png")
-        except Exception as e:
-            print(f"Warning: Local image generation failed: {e}")
+            person_urn = get_person_urn(access_token)
+            success, result = post_to_linkedin(access_token, person_urn, post_text)
+        except Exception as exc:
+            result = f"Posting error: {exc}"
 
-    # Save draft state
-    draft = {
-        "item": item,
-        "post_text": post_text,
-        "template_used": template_used,
+    reddit_success, reddit_result = post_to_reddit(item["title"], post_text, subreddit="sustainability")
+
+    memory.append({
+        "link": item["link"],
+        "title": item["title"],
+        "date": str(date.today()),
+        "template": template_used,
         "hook": hook,
-        "score_note": score_note,
-        "image_path": image_path
-    }
-    with open("draft.json", "w", encoding="utf-8") as f:
-        json.dump(draft, f, indent=2)
+        "embedding": item.get("embedding"),
+        "performed_well": False  # Track for feedback loop
+    })
+    save_memory(memory)
 
-    print(f"ISSUE_TITLE: Draft Review — {item['title'][:50]}")
+    status_line = (
+        f"✅ Posted to LinkedIn successfully. Post ID: {result}"
+        if success
+        else f"ℹ️ LinkedIn Preview / Dry-run status: {result}"
+    )
+
+    if reddit_result == "not configured":
+        reddit_status_line = "⏭️ Reddit publishing not configured (skipped)"
+    elif reddit_success:
+        reddit_status_line = f"✅ Posted to Reddit: {reddit_result}"
+    else:
+        reddit_status_line = f"❌ Reddit posting failed: {reddit_result}"
+
+    print(f"ISSUE_TITLE: {'Posted' if success else 'Draft Preview'} — {item['title'][:50]}")
     print("ISSUE_BODY_START")
-    print("⏳ This post is waiting for your approval before going live.")
-    print("To publish: trigger the 'Publish Approved Draft' workflow, or manually run `python script.py --publish`.")
+    print(status_line)
+    print(reddit_status_line)
     print()
     print(f"Selection: {score_note}")
     print(f"Category: {item.get('category', 'n/a')} | Source: {item.get('source', 'n/a')} | Template: {template_used}")
     print()
     print("LinkedIn / Reddit post content:")
     print(post_text)
-    if image_path:
-        print("\n[An image card was generated and will be attached to the LinkedIn post]")
     print()
     print(f"---\nSource: {item['link']}")
     print("ISSUE_BODY_END")
 
 
-def publish_draft():
-    if not os.path.exists("draft.json"):
-        print("Error: No draft.json found to publish.")
-        sys.exit(1)
-        
-    with open("draft.json", "r", encoding="utf-8") as f:
-        draft = json.load(f)
-        
-    item = draft["item"]
-    post_text = draft["post_text"]
-    template_used = draft["template_used"]
-    hook = draft["hook"]
-    image_path = draft.get("image_path")
-    
-    access_token = os.environ.get("LINKEDIN_ACCESS_TOKEN", "").strip()
-    success, result = False, "missing access token"
-    if access_token:
-        try:
-            person_urn = get_person_urn(access_token)
-            success, result = post_to_linkedin(access_token, person_urn, post_text, image_path)
-        except Exception as exc:
-            result = f"Posting error: {exc}"
-
-    reddit_success, reddit_result = post_to_reddit(item["title"], post_text, subreddit="sustainability")
-
-    if success or "missing access token" in result:
-        memory = load_memory()
-        memory.append({
-            "link": item["link"],
-            "title": item["title"],
-            "date": str(date.today()),
-            "template": template_used,
-            "hook": hook,
-            "embedding": item.get("embedding"),
-            "performed_well": False  # Initial state for feedback loop
-        })
-        save_memory(memory)
-        
-        # Cleanup
-        os.remove("draft.json")
-        if image_path and os.path.exists(image_path):
-            os.remove(image_path)
-            
-        print(f"✅ Posted to LinkedIn successfully. Post ID: {result}")
-        if reddit_success:
-            print(f"✅ Posted to Reddit: {reddit_result}")
-        else:
-            print(f"⏭️ Reddit result: {reddit_result}")
-    else:
-        print(f"❌ LinkedIn posting failed: {result}")
-        sys.exit(1)
-
-
-def run():
-    print("Please run with --generate or --publish")
-
-
 if __name__ == "__main__":
-    if "--generate" in sys.argv:
-        generate_draft()
-    elif "--publish" in sys.argv:
-        publish_draft()
-    else:
-        run()
+    run()
