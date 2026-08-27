@@ -29,6 +29,10 @@ if hasattr(sys.stderr, "reconfigure"):
 import feedparser
 import requests
 from google import genai
+import socket
+
+# Prevent feedparser from hanging indefinitely if an RSS feed server tar-pits the connection
+socket.setdefaulttimeout(10.0)
 
 # ---------------------------------------------------------------------------
 # Content Sources — Sustainability, ESG, Telemetry & AI Agents
