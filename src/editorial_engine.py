@@ -255,6 +255,7 @@ Return ONLY valid JSON:
         config.proof_fact = "64 gCO2/kWh"
         config.carousel_subtitle = "Engineering Systems Framework"
         config.carousel_metric = "64 gCO2/kWh"
+        config.turn_line = "Most infrastructure teams optimize for the headline instead of system architecture."
         return config
 
     # ── Pass 2: Turn Line Extraction ─────────────────────────────────────
@@ -286,7 +287,9 @@ Return ONLY valid JSON:
                 log.info(f"Pass 2 turn line: '{config.turn_line[:80]}...'")
         except Exception as e:
             log.warning(f"Pass 2 turn line extraction failed ({e}) — FALLING BACK to heuristic extraction.")
-            sentences = [s.strip() for s in config.post_text.replace('\n', ' ').split('.') if len(s.strip()) >= 30]
+
+        if not config.turn_line:
+            sentences = [s.strip() for s in config.post_text.replace('\n', ' ').split('.') if len(s.strip()) >= 20]
             if sentences:
                 contrast_words = ["but", "instead", "actually", "not", "unless"]
                 candidates = []
@@ -301,6 +304,8 @@ Return ONLY valid JSON:
                     config.turn_line = min(candidates, key=len) + "."
                 else:
                     config.turn_line = sentences[0] + "."
+            else:
+                config.turn_line = "The engineering details matter more than the headline."
 
         return config
 

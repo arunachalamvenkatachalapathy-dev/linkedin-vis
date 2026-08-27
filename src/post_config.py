@@ -115,34 +115,35 @@ BODY_STRUCTURES = ["A", "B", "C", "D", "E"]
 
 BODY_STRUCTURE_DESCRIPTIONS = {
     "A": (
-        "Problem → Insight → Reframe:\n"
-        "1. Name a real, specific pain point (not generic)\n"
-        "2. Explain *why* the obvious fix doesn't work\n"
-        "3. Offer the non-obvious reframe"
+        "The Shift (Problem → Context → The Shift → Reframe):\n"
+        "1. Hook & name a real, specific pain point\n"
+        "2. Context (what happened in 1-2 lines)\n"
+        "3. The Shift (what this changes for engineers/sustainability teams)\n"
+        "4. Non-obvious reframe & technical take"
     ),
     "B": (
-        "Before → After → Bridge:\n"
-        "1. Old state (belief, method, result)\n"
-        "2. New state (belief, method, result)\n"
-        "3. The one change that bridged them"
+        "Before / After (Old State → New State → Why It Matters):\n"
+        "1. Old state (what X used to look like / past assumption)\n"
+        "2. New state (what X looks like now / new telemetry capability)\n"
+        "3. The one concrete change / outcome that bridged them"
     ),
     "C": (
-        "List-with-a-twist:\n"
+        "Curated List + POV (List-with-a-twist):\n"
         "1. Short intro line\n"
-        "2. 3–5 punchy points (one line each, no fluff, use line breaks not bullets)\n"
-        "3. One point that contradicts the pattern of the others"
+        "2. 3–5 punchy points (one line each, no fluff, use line breaks)\n"
+        "3. Synthesis & one point that contradicts the mainstream pattern"
     ),
     "D": (
-        "Story → Lesson → Universal Truth:\n"
+        "Mini Case Study (Anecdote → What Happened → Lesson Learned):\n"
         "1. Specific, concrete anecdote (names, numbers, moment)\n"
-        "2. What it taught\n"
+        "2. What happened & what it taught\n"
         "3. Zoom out to a principle anyone can apply"
     ),
     "E": (
-        "Data Deep-Dive:\n"
-        "1. The number that matters\n"
-        "2. Why it's surprising / what people assume instead\n"
-        "3. What it means for the reader specifically"
+        "Contrarian Take (Data Deep-Dive):\n"
+        "1. Challenge a popular opinion with a stark number\n"
+        "2. Evidence (2-3 proof points showing why people assume wrong)\n"
+        "3. Nuance & what it means for the reader specifically"
     ),
 }
 

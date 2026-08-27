@@ -161,14 +161,14 @@ class ReviewEngine:
             return 0
 
         first_line = lines[0]
-        score = 5  # baseline
+        score = 6  # baseline
 
         # Bonus: short and punchy
         word_count = len(first_line.split())
         if word_count <= 8:
-            score += 3
-        elif word_count <= 12:
             score += 2
+        elif word_count <= 14:
+            score += 1
 
         # Penalty: starts with "I" + mundane verb
         if re.match(r'^I\s+(recently|wanted|am|was|have|had|just)\b', first_line, re.IGNORECASE):

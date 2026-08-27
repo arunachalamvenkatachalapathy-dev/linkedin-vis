@@ -428,7 +428,7 @@ class ResearchEngine:
             f"🔍 Day {day_idx + 1}/21 [{config['pillar']}]: {config['theme']}"
         )
 
-        for source_spec in config["source_cascade"] + [{"source_id": "newsdata", "queries": [""]}]:
+        for source_spec in config["source_cascade"]:
             source_id = source_spec["source_id"]
             queries = list(source_spec.get("queries", [""]))
             random.shuffle(queries)
@@ -457,6 +457,15 @@ class ResearchEngine:
                             f"{item.get('title', '')[:70]}"
                         )
                         return item
+
+        log.info("⚠️ Primary 21 sources exhausted. Triggering 1st Priority NewsAgent Fallback...")
+        try:
+            from src.news_agent import NewsAgent
+            news_fallback = NewsAgent(self.memory).fetch_fallback_news()
+            if news_fallback:
+                return news_fallback
+        except Exception as e:
+            log.warning(f"NewsAgent fallback exception: {e}")
 
         log.warning(
             "⚠️  All cascade sources exhausted for today. No fresh topic found. "
