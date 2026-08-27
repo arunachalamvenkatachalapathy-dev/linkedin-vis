@@ -405,19 +405,22 @@ def score_candidates(client, candidates):
         for i, c in enumerate(pool)
     ]
     prompt = SCORING_PROMPT_TEMPLATE.format(candidates_json=json.dumps(slim, indent=2))
-    try:
-        response = generate_with_retry(client, "gemini-2.5-flash", prompt)
-        raw = response.text.strip()
-        raw = re.sub(r"^```(json)?|```$", "", raw.strip(), flags=re.MULTILINE).strip()
-        ranked = json.loads(raw)
-        for r in ranked:
-            idx = r.get("id")
-            if isinstance(idx, int) and 0 <= idx < len(pool):
-                r["candidate"] = pool[idx]
-        return [r for r in ranked if "candidate" in r]
-    except Exception as e:
-        print(f"Scoring fallback: {e}")
-        return [{"id": 0, "score": 80, "reason": "fallback", "candidate": pool[0]}]
+    for m_name in ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]:
+        try:
+            response = generate_with_retry(client, m_name, prompt)
+            if response and response.text:
+                raw = response.text.strip()
+                raw = re.sub(r"^```(json)?|```$", "", raw.strip(), flags=re.MULTILINE).strip()
+                ranked = json.loads(raw)
+                for r in ranked:
+                    idx = r.get("id")
+                    if isinstance(idx, int) and 0 <= idx < len(pool):
+                        r["candidate"] = pool[idx]
+                return [r for r in ranked if "candidate" in r]
+        except Exception as e:
+            print(f"Scoring fallback for model {m_name}: {e}")
+
+    return [{"id": 0, "score": 85, "reason": "first candidate (scoring fallback)", "candidate": pool[0]}]
 
 
 def generate_post(item, memory):
@@ -435,19 +438,27 @@ def generate_post(item, memory):
     )
     raw = None
     if client:
-        try:
-            response = generate_with_retry(client, "gemini-2.5-flash", prompt)
-            raw = response.text.strip()
-        except Exception as exc:
-            print(f"Post generation error: {exc}")
+        for m_name in ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]:
+            try:
+                response = generate_with_retry(client, m_name, prompt)
+                if response and response.text:
+                    raw = response.text.strip()
+                    break
+            except Exception as exc:
+                print(f"Post generation error for model {m_name}: {exc}")
 
     if not raw:
+        # Dynamic, multi-paragraph high-authority post constructed according to your friend's Template 1 ("The Shift")
+        summary_clean = item.get("summary") or item.get("title", "")
+        summary_snippet = summary_clean[:180].strip()
         raw = (
             "TEMPLATE: 1\n---\n"
-            f"The shift toward automated telemetry in {item['title'][:60]} is reshaping industrial compliance.\n\n"
-            "Translating this technical development into operational requirements reveals key engineering realities.\n\n"
-            "What primary metrics is your team using to validate data?\n---\n"
-            "#CleanTech #Sustainability #ESG"
+            f"Most sustainability frameworks treat {item['title'][:55]} as a static compliance requirement.\n\n"
+            f"That boundary just moved. Recent field telemetry indicates that {summary_snippet}—altering how engineering teams validate carbon claims.\n\n"
+            "The shift isn't just adopting new software. It's moving from annual estimation spreadsheets to continuous, automated sensor verification across Scope 3 data pipelines.\n\n"
+            "When regulatory frameworks like CSRD and BRSR demand audited metrics, unverified third-party data becomes an operational risk.\n\n"
+            "What primary verification mechanism is your team using to validate vendor environmental data?\n---\n"
+            "#Sustainability #Scope3Emissions #ESG #CleanTech #EnvironmentalTelemetry"
         )
 
     template_used = None
