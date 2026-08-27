@@ -449,12 +449,14 @@ def generate_post(item, memory):
 
     if not raw:
         # Dynamic, multi-paragraph high-authority post constructed according to your friend's Template 1 ("The Shift")
-        summary_clean = item.get("summary") or item.get("title", "")
+        summary_raw = item.get("summary") or item.get("title", "")
+        summary_clean = re.sub(r'<[^>]+>', '', summary_raw).strip()
         summary_snippet = summary_clean[:180].strip()
+        title_clean = re.sub(r'<[^>]+>', '', item['title']).strip()
         raw = (
             "TEMPLATE: 1\n---\n"
-            f"Most sustainability frameworks treat {item['title'][:55]} as a static compliance requirement.\n\n"
-            f"That boundary just moved. Recent field telemetry indicates that {summary_snippet}—altering how engineering teams validate carbon claims.\n\n"
+            f"Most sustainability frameworks treat {title_clean[:55]} as a static compliance requirement.\n\n"
+            f"That boundary just moved. Recent field telemetry indicates that {summary_snippet} — altering how engineering teams validate carbon claims.\n\n"
             "The shift isn't just adopting new software. It's moving from annual estimation spreadsheets to continuous, automated sensor verification across Scope 3 data pipelines.\n\n"
             "When regulatory frameworks like CSRD and BRSR demand audited metrics, unverified third-party data becomes an operational risk.\n\n"
             "What primary verification mechanism is your team using to validate vendor environmental data?\n---\n"
