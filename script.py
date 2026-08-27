@@ -485,7 +485,7 @@ def generate_post(item, memory):
 
 
 # ---------------------------------------------------------------------------
-# Pure Text-Only LinkedIn Publishing
+# Pure Text-Only LinkedIn & Reddit Publishing
 # ---------------------------------------------------------------------------
 def get_person_urn(access_token):
     resp = requests.get(
@@ -523,6 +523,62 @@ def post_to_linkedin(access_token, person_urn, text):
     if resp.status_code == 201:
         return True, resp.headers.get("x-restli-id", "unknown")
     return False, f"{resp.status_code}: {resp.text}"
+
+
+def get_reddit_user_token():
+    client_id = os.environ.get("REDDIT_CLIENT_ID")
+    client_secret = os.environ.get("REDDIT_CLIENT_SECRET")
+    username = os.environ.get("REDDIT_USERNAME")
+    password = os.environ.get("REDDIT_PASSWORD")
+    if not all([client_id, client_secret, username, password]):
+        return None
+    try:
+        resp = requests.post(
+            "https://www.reddit.com/api/v1/access_token",
+            auth=(client_id, client_secret),
+            data={
+                "grant_type": "password",
+                "username": username,
+                "password": password,
+            },
+            headers={"User-Agent": "linkedin-content-bot/1.0"},
+            timeout=15,
+        )
+        resp.raise_for_status()
+        return resp.json().get("access_token")
+    except Exception as e:
+        print(f"Reddit user auth failed: {e}")
+        return None
+
+
+def post_to_reddit(title, text, subreddit="sustainability"):
+    token = get_reddit_user_token()
+    if not token:
+        print("Skipping Reddit publishing (REDDIT_USERNAME / REDDIT_PASSWORD not configured)")
+        return False, "not configured"
+    headers = {"Authorization": f"Bearer {token}", "User-Agent": "linkedin-content-bot/1.0"}
+    try:
+        data = {
+            "sr": subreddit,
+            "kind": "self",
+            "title": title[:290],
+            "text": text,
+        }
+        resp = requests.post(
+            "https://oauth.reddit.com/api/submit",
+            headers=headers,
+            data=data,
+            timeout=15,
+        )
+        resp.raise_for_status()
+        res_json = resp.json()
+        if res_json.get("json", {}).get("errors"):
+            errs = res_json["json"]["errors"]
+            return False, f"Reddit API error: {errs}"
+        url = res_json.get("json", {}).get("data", {}).get("url", "success")
+        return True, url
+    except Exception as e:
+        return False, f"Reddit posting error: {e}"
 
 
 # ---------------------------------------------------------------------------
@@ -565,6 +621,8 @@ def run():
         except Exception as exc:
             result = f"Posting error: {exc}"
 
+    reddit_success, reddit_result = post_to_reddit(item["title"], post_text, subreddit="sustainability")
+
     memory.append({
         "link": item["link"],
         "title": item["title"],
@@ -575,19 +633,27 @@ def run():
     save_memory(memory)
 
     status_line = (
-        f"✅ Posted successfully (pure text-only). Post ID: {result}"
+        f"✅ Posted to LinkedIn successfully. Post ID: {result}"
         if success
-        else f"ℹ️ Preview / Dry-run status: {result}"
+        else f"ℹ️ LinkedIn Preview / Dry-run status: {result}"
     )
+
+    if reddit_result == "not configured":
+        reddit_status_line = "⏭️ Reddit publishing not configured (skipped)"
+    elif reddit_success:
+        reddit_status_line = f"✅ Posted to Reddit: {reddit_result}"
+    else:
+        reddit_status_line = f"❌ Reddit posting failed: {reddit_result}"
 
     print(f"ISSUE_TITLE: {'Posted' if success else 'Draft Preview'} — {item['title'][:50]}")
     print("ISSUE_BODY_START")
     print(status_line)
+    print(reddit_status_line)
     print()
     print(f"Selection: {score_note}")
     print(f"Category: {item.get('category', 'n/a')} | Source: {item.get('source', 'n/a')} | Template: {template_used}")
     print()
-    print("LinkedIn post content:")
+    print("LinkedIn / Reddit post content:")
     print(post_text)
     print()
     print(f"---\nSource: {item['link']}")
