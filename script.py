@@ -515,10 +515,12 @@ def is_clickbait(title):
 import math
 
 def compute_embedding(client, text, retries=3):
+    if not client or not text:
+        return None
     for attempt in range(1, retries + 1):
         try:
             resp = client.models.embed_content(
-                model="text-embedding-004",
+                model="gemini-embedding-2",
                 contents=text,
             )
             return resp.embeddings[0].values
@@ -635,7 +637,7 @@ def score_candidates(client, candidates):
         for i, c in enumerate(pool)
     ]
     prompt = SCORING_PROMPT_TEMPLATE.format(candidates_json=json.dumps(slim, indent=2))
-    for m_name in ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]:
+    for m_name in ["gemini-3.6-flash", "gemini-3.6-pro"]:
         try:
             response = generate_with_retry(client, m_name, prompt)
             if response and response.text:
@@ -689,7 +691,7 @@ def generate_post(item, memory):
     if client:
         prompt = base_prompt
         for attempt in range(1, 4):  # Max 3 attempts
-            for m_name in ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]:
+            for m_name in ["gemini-3.6-flash", "gemini-3.6-pro"]:
                 try:
                     response = generate_with_retry(client, m_name, prompt)
                     if response and response.text:
