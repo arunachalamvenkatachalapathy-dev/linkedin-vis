@@ -134,8 +134,11 @@ Available storytelling structures:
 Recently used structures:
 {recent_templates}
 
-Recent high-performing posts (try to capture their tone and format style):
+Recent high-performing posts (these received the highest engagement relative to others):
 {recent_successes}
+
+IMPROVEMENT ENGINE DIRECTIVE:
+Study the hooks, tone, and pacing of the high-performing posts above. Adapt your output to match the rhythm, formatting, and perspective of what is proven to work for this audience. Do not just copy them, but deeply reverse-engineer their success to improve today's post.
 
 Choose the best-fitting structure for today's story and strictly follow its line-by-line format. 
 CRITICAL INSTRUCTION: If the story is political or a lawsuit (e.g., EPA, government), focus on the *compliance or business impact*, not just the politics. Make it sound like a real person talking to peers.
@@ -222,6 +225,57 @@ def recent_successes_text(memory, n=3):
         return "(none marked yet)"
     recent = successes[-n:]
     return "\n\n".join(f"- Title: {e['title']}\n  Hook: {e.get('hook', 'N/A')}\n  Template: {e.get('template', 'N/A')}" for e in recent)
+
+
+def update_performance_engine(memory, access_token):
+    """
+    Constant Improvement Engine:
+    Reads the last 15 posts from memory, checks their actual engagement on LinkedIn,
+    and dynamically tags the top 33% as 'performed_well' so the AI learns from them.
+    """
+    if not access_token:
+        return
+
+    import urllib.parse
+    recent = memory[-15:]
+    
+    for entry in recent:
+        post_id = entry.get("post_id")
+        if not post_id or not post_id.startswith("urn:li:"):
+            continue
+            
+        safe_urn = urllib.parse.quote(post_id)
+        # Using LinkedIn v2 socialActions endpoint for engagement stats
+        url = f"https://api.linkedin.com/v2/socialActions/{safe_urn}"
+        headers = {
+            "Authorization": f"Bearer {access_token}", 
+            "X-Restli-Protocol-Version": "2.0.0"
+        }
+        
+        try:
+            res = requests.get(url, headers=headers, timeout=10)
+            if res.status_code == 200:
+                data = res.json()
+                likes = data.get("likesSummary", {}).get("totalLikes", 0)
+                comments = data.get("commentsSummary", {}).get("totalFirstLevelComments", 0)
+                # Engagement formula: Comments are worth 2x likes
+                entry["engagement_score"] = likes + (comments * 2)
+        except Exception as e:
+            print(f"Improvement Engine: Failed to fetch stats for {post_id} - {e}")
+            
+    # Rank them
+    scored = [e for e in recent if "engagement_score" in e]
+    if len(scored) >= 3:
+        scored.sort(key=lambda x: x["engagement_score"], reverse=True)
+        # Top 33% threshold
+        top_threshold = scored[len(scored) // 3]["engagement_score"]
+        
+        for e in scored:
+            # Must have at least *some* engagement to be considered a success
+            if e["engagement_score"] >= top_threshold and e["engagement_score"] > 0:
+                e["performed_well"] = True
+            else:
+                e["performed_well"] = False
 
 
 # ---------------------------------------------------------------------------
@@ -731,6 +785,12 @@ def post_to_reddit(title, text, subreddit="sustainability"):
 # ---------------------------------------------------------------------------
 def run():
     memory = load_memory()
+    
+    access_token = os.environ.get("LINKEDIN_ACCESS_TOKEN", "").strip()
+    
+    # Run the Continuous Improvement Engine to learn from past posts before generating a new one
+    if access_token:
+        update_performance_engine(memory, access_token)
 
     raw_candidates = fetch_all_candidates()
     candidates = dedupe_and_filter(raw_candidates, memory)
@@ -755,7 +815,6 @@ def run():
 
     post_text, template_used, hook = generate_post(item, memory)
 
-    access_token = os.environ.get("LINKEDIN_ACCESS_TOKEN", "").strip()
     success, result = False, "DRY_RUN / missing access token"
     if access_token:
         try:
@@ -773,7 +832,8 @@ def run():
         "template": template_used,
         "hook": hook,
         "embedding": item.get("embedding"),
-        "performed_well": False  # Track for feedback loop
+        "post_id": result if success else None,
+        "performed_well": False  # Will be dynamically updated next run by the Improvement Engine
     })
     save_memory(memory)
 
