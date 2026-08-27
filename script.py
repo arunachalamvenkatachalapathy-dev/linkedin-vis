@@ -35,19 +35,20 @@ from google import genai
 # ---------------------------------------------------------------------------
 SOURCES = {
     "sustainability": [
-        "https://climate.nasa.gov/news/rss",
         "https://www.theguardian.com/environment/rss",
-        "https://e360.yale.edu/feed",
         "https://www.carbonbrief.org/feed",
+        "https://www.esgtoday.com/feed/",
+        "https://www.wri.org/news/rss.xml",
     ],
     "esg_cleantech": [
-        "https://techcrunch.com/category/climatetech/feed/",
         "https://canarymedia.com/feed",
-        "https://clean-technica.com/feed/",
+        "https://cleantechnica.com/feed/",
+        "https://www.trellis.net/feed/",
     ],
     "research_telemetry": [
         "https://news.mit.edu/rss/topic/environment",
         "https://huggingface.co/blog/feed.xml",
+        "http://export.arxiv.org/rss/cs.AI",
     ],
     "ai_agents": [
         "https://deepmind.google/blog/rss.xml",
