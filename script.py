@@ -83,35 +83,20 @@ MAX_CANDIDATES_TO_SCORE = 60
 # Storytelling Templates
 # ---------------------------------------------------------------------------
 TEMPLATES = {
-    1: """TEMPLATE 1: "The Shift"
-   - Line 1 (Hook): One bold, counter-intuitive claim about what just changed — under 12 words. Make readers stop scrolling.
-   - Lines 2-3 (Context): 2 short sentences grounding the claim in the news/data. Be specific. No vague language.
-   - Lines 4-5 (The Shift): Explain what this means for the reader — what does it change for them, their team, or their industry?
-   - Line 6 (CTA): Ask a single, specific question that professionals in this space would actually want to answer.""",
+    1: """TEMPLATE 1: "The News Context + Analysis"
+   - Head (The Context): Start with a clear introduction stating what just happened in the news. (e.g. "This week, [Company] announced [News], and it fundamentally changes how we think about [Topic].")
+   - Body (The Detail): Provide 2-3 sentences of crucial context explaining *why* this happened and what the core issue is.
+   - Tail (The Takeaway): Conclude with a strong takeaway about what this means for the industry moving forward, ending with a professional question for the audience.""",
 
-    2: """TEMPLATE 2: "Before / After"
-   - Line 1 (Hook): A stark contrast between the old reality and the new one — under 12 words. Make it feel like whiplash.
-   - Lines 2-3 (Before): Describe the old way in 1-2 short sentences. Be relatable — this is what readers currently do.
-   - Lines 4-5 (After): Describe the new reality. Use a single concrete outcome or number if the source has one.
-   - Line 6 (CTA): Invite readers to share where they are in this transition.""",
+    2: """TEMPLATE 2: "The Deep Dive"
+   - Head (The Hook): A professional, thought-provoking statement about a current industry challenge, immediately followed by the specific news story or data point that illustrates it.
+   - Body (The Breakdown): Break down the article's findings into 2-3 clear, readable points. Give the reader actual substance and facts from the article.
+   - Tail (The Conclusion): Summarize the long-term impact of this development. End with a call for thoughts from peers in the space.""",
 
-    3: """TEMPLATE 3: "Mini Case Study"
-   - Line 1 (Hook): Lead with the most striking number or outcome from the source — under 12 words.
-   - Lines 2-3 (Setup): Context on who did this, what problem they were solving, and what they tried.
-   - Lines 4-5 (Lesson): The insight — why this worked, what others can learn, what the broader pattern is.
-   - Line 6 (CTA): A direct question — has anyone else seen this pattern, or tried something similar?""",
-
-    4: """TEMPLATE 4: "Contrarian Take"
-   - Line 1 (Hook): Challenge a widely accepted belief — something most readers in this space assume is true. Under 12 words.
-   - Lines 2-3 (Evidence): 2-3 concrete data points or examples that undercut the conventional wisdom.
-   - Lines 4-5 (Nuance): Explain the subtlety — not "X is wrong" but "X is right in context Y, wrong in context Z."
-   - Line 6 (CTA): Invite respectful pushback with a pointed question. This template thrives on debate.""",
-
-    5: """TEMPLATE 5: "Observation + List"
-   - Line 1 (Hook): A bold one-sentence observation about something you're noticing — under 12 words. First person is fine.
-   - Lines 2-4 (List): 3 short, punchy bullet points — each a single line, each a distinct insight drawn from the source.
-   - Line 5 (POV): Your synthesis in 1-2 sentences — what this all adds up to in your view.
-   - Line 6 (CTA): End with the one question this raises for you.""",
+    3: """TEMPLATE 3: "The Shift in Strategy"
+   - Head (The Shift): Introduce a major shift you are observing in the market, referencing the specific article as proof. (e.g. "We are seeing a massive shift in how organizations handle [Topic]. A recent report on [Article Subject] highlights exactly why.")
+   - Body (The Evidence): Explain the "old way" vs the "new way" based on the article's contents. Provide enough context so someone who hasn't read the article understands the situation.
+   - Tail (The Question): Wrap up with a strategic insight. Ask the network how their organizations are adapting to this specific shift."""
 }
 
 POST_PROMPT_TEMPLATE = """
@@ -146,9 +131,9 @@ Choose the best-fitting structure for today's story and strictly follow its line
 CRITICAL INSTRUCTION: If the story is political or a lawsuit (e.g., EPA, government), focus on the *compliance or business impact*, not just the politics. Make it sound like a real person talking to peers.
 
 Global constraints:
-- 70-130 words total (keep it highly scannable)
+- 130-220 words total (keep it highly scannable, but ensure you give full context to the news story)
 - Use everyday professional language. Break up paragraphs (1-2 lines each).
-- Start with a scroll-stopping, counter-intuitive hook.
+- Make sure every post has a clear 'Head' (Introduction to the news) and 'Tail' (Takeaway and question). Do not start abruptly.
 - Generate exactly 2-3 specific LinkedIn hashtags (e.g. #Sustainability #ESG)
 
 Output format — EXACTLY this, nothing else:
@@ -692,8 +677,8 @@ def score_candidates(client, candidates):
 
 
 MAX_HASHTAGS = 3
-MIN_WORDS = 70
-MAX_WORDS = 140
+MIN_WORDS = 110
+MAX_WORDS = 250
 
 def validate_post(post_body: str, hashtags: str) -> list[str]:
     """Return a list of validation failure reasons; empty list = passed."""
