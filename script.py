@@ -658,7 +658,7 @@ def score_candidates(client, candidates):
         for i, c in enumerate(pool)
     ]
     prompt = SCORING_PROMPT_TEMPLATE.format(candidates_json=json.dumps(slim, indent=2))
-    for m_name in ["gemini-3.6-flash", "gemini-3.6-pro"]:
+    for m_name in ["gemma-4-26b-a4b-it", "gemini-3.6-flash", "gemini-3.6-pro"]:
         try:
             response = generate_with_retry(client, m_name, prompt)
             if response and response.text:
@@ -727,7 +727,7 @@ def generate_post(item, memory):
     if client:
         prompt = base_prompt
         for attempt in range(1, 4):  # Max 3 attempts
-            for m_name in ["gemini-3.6-flash", "gemini-3.6-pro"]:
+            for m_name in ["gemma-4-26b-a4b-it", "gemini-3.6-flash", "gemini-3.6-pro"]:
                 try:
                     response = generate_with_retry(client, m_name, prompt)
                     if response and response.text:
