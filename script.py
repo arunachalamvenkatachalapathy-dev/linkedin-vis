@@ -394,12 +394,17 @@ def fetch_exa():
     ]
     url = "https://api.exa.ai/search"
     headers = {"x-api-key": api_key, "Content-Type": "application/json"}
+    
+    from datetime import datetime, timedelta
+    start_date = (datetime.utcnow() - timedelta(days=3)).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+    
     for q in queries:
         try:
             payload = {
                 "query": q,
                 "numResults": 3,
-                "useAutoprompt": True
+                "useAutoprompt": True,
+                "startPublishedDate": start_date
             }
             resp = requests.post(url, headers=headers, json=payload, timeout=15)
             if resp.status_code == 200:
