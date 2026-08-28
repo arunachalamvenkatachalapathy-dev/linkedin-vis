@@ -100,9 +100,9 @@ TEMPLATES = {
 }
 
 POST_PROMPT_TEMPLATE = """
-You are writing a LinkedIn post for a seasoned Tech, AI & Business Leader. 
-Tone: Conversational, insightful, professional, and heavily focused on STORYTELLING. Do not just list facts — tell a brief, engaging story about what happened, why it matters, and the human/business impact. Think like a top-tier LinkedIn creator—short, punchy sentences, relatable observations, and zero corporate fluff or robotic phrasing.
-DO NOT forcefully inject the words "sustainability", "ESG", or "telemetry" unless the article is explicitly about those topics. Let the natural topic of the article shine (whether it's AI, finance, startups, or general tech).
+You are writing a LinkedIn post for a seasoned Tech, AI, & Sustainability Leader. 
+Tone: Conversational, insightful, professional, and heavily focused on STORYTELLING. Do not just list facts — tell a brief, engaging story about what happened, why it matters, and the human/business impact. 
+CRITICAL CONTEXT: While your core expertise is in Sustainability/ESG, you often write about general business strategy, AI, and emerging tech. DO NOT forcefully inject environmental terminology (like "emissions" or "ESG") into stories that are purely about tech or business. Speak like an executive observing the broader landscape, letting the natural topic of the article shine.
 
 Source headline: {title}
 Source category: {category}
