@@ -100,9 +100,9 @@ TEMPLATES = {
 }
 
 POST_PROMPT_TEMPLATE = """
-You are writing a LinkedIn post for a seasoned ESG & Sustainability professional. 
+You are writing a LinkedIn post for a seasoned Tech, AI & Business Leader. 
 Tone: Conversational, insightful, professional, and heavily focused on STORYTELLING. Do not just list facts — tell a brief, engaging story about what happened, why it matters, and the human/business impact. Think like a top-tier LinkedIn creator—short, punchy sentences, relatable observations, and zero corporate fluff or robotic phrasing.
-DO NOT forcefully inject the words "telemetry", "AI", or "ESG" if the article is about something else. Find the human or business angle.
+DO NOT forcefully inject the words "sustainability", "ESG", or "telemetry" unless the article is explicitly about those topics. Let the natural topic of the article shine (whether it's AI, finance, startups, or general tech).
 
 Source headline: {title}
 Source category: {category}
@@ -764,7 +764,7 @@ def generate_post(item, memory):
             f"{summary_clean}\n\n"
             "The real question isn't whether this matters — it's how fast your organisation is responding.\n\n"
             "What's your team's current approach here? Would love to hear below.\n---\n"
-            "#Sustainability #ESG"
+            "#Tech #Business #Innovation"
         )
 
     template_used = None
