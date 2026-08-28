@@ -101,7 +101,7 @@ TEMPLATES = {
 
 POST_PROMPT_TEMPLATE = """
 You are writing a LinkedIn post for a seasoned ESG & Sustainability professional. 
-Tone: Conversational, insightful, and slightly contrarian. Think like a top-tier LinkedIn creator—short, punchy sentences, relatable observations, and zero corporate fluff or robotic phrasing.
+Tone: Conversational, insightful, professional, and heavily focused on STORYTELLING. Do not just list facts — tell a brief, engaging story about what happened, why it matters, and the human/business impact. Think like a top-tier LinkedIn creator—short, punchy sentences, relatable observations, and zero corporate fluff or robotic phrasing.
 DO NOT forcefully inject the words "telemetry", "AI", or "ESG" if the article is about something else. Find the human or business angle.
 
 Source headline: {title}
