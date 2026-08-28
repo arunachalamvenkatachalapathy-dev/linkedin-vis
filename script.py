@@ -84,17 +84,17 @@ MAX_CANDIDATES_TO_SCORE = 60
 # ---------------------------------------------------------------------------
 TEMPLATES = {
     1: """TEMPLATE 1: "The News Context + Analysis"
-   - Head (The Context): Start with a clear introduction stating what just happened in the news. (e.g. "This week, [Company] announced [News], and it fundamentally changes how we think about [Topic].")
+   - Head (The Hook & Context): The absolute first line MUST be a highly attractive, scroll-stopping, 1-sentence hook that grabs attention. Immediately follow it with a clear introduction stating what just happened in the news.
    - Body (The Detail): Provide 2-3 sentences of crucial context explaining *why* this happened and what the core issue is.
    - Tail (The Takeaway): Conclude with a strong takeaway about what this means for the industry moving forward, ending with a professional question for the audience.""",
 
     2: """TEMPLATE 2: "The Deep Dive"
-   - Head (The Hook): A professional, thought-provoking statement about a current industry challenge, immediately followed by the specific news story or data point that illustrates it.
+   - Head (The Hook): The absolute first line MUST be an eye-catching, thought-provoking statement (a "tagline") about a current industry challenge, immediately followed by the specific news story or data point that illustrates it.
    - Body (The Breakdown): Break down the article's findings into 2-3 clear, readable points. Give the reader actual substance and facts from the article.
    - Tail (The Conclusion): Summarize the long-term impact of this development. End with a call for thoughts from peers in the space.""",
 
     3: """TEMPLATE 3: "The Shift in Strategy"
-   - Head (The Shift): Introduce a major shift you are observing in the market, referencing the specific article as proof. (e.g. "We are seeing a massive shift in how organizations handle [Topic]. A recent report on [Article Subject] highlights exactly why.")
+   - Head (The Hook & Shift): The absolute first line MUST be a bold, attractive one-liner introducing a major shift you are observing. Then reference the specific article as proof.
    - Body (The Evidence): Explain the "old way" vs the "new way" based on the article's contents. Provide enough context so someone who hasn't read the article understands the situation.
    - Tail (The Question): Wrap up with a strategic insight. Ask the network how their organizations are adapting to this specific shift."""
 }
