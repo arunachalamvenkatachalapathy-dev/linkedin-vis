@@ -96,7 +96,12 @@ TEMPLATES = {
     3: """TEMPLATE 3: "The Shift in Strategy"
    - Head (The Hook & Shift): The absolute first line MUST be a bold, attractive one-liner introducing a major shift you are observing. Then reference the specific article as proof.
    - Body (The Evidence): Explain the "old way" vs the "new way" based on the article's contents. Provide enough context so someone who hasn't read the article understands the situation.
-   - Tail (The Question): Wrap up with a strategic insight. Ask the network how their organizations are adapting to this specific shift."""
+   - Tail (The Question): Wrap up with a strategic insight. Ask the network how their organizations are adapting to this specific shift.""",
+
+    4: """TEMPLATE 4: "The Sunday 5-Point Breakdown"
+   - Head (The Hook): The absolute first line MUST be a highly attractive, scroll-stopping 1-sentence tagline about a major trending business or tech topic.
+   - Body (The 5 Points): Break down the core news, insights, or impacts into EXACTLY 5 concise, punchy bullet points. Use emojis for the bullet points.
+   - Tail (The Takeaway): Conclude with a strong professional takeaway and ask a strategic question to the audience."""
 }
 
 POST_PROMPT_TEMPLATE = """
@@ -467,14 +472,14 @@ def fetch_all_candidates():
     pool = []
 
     if day_of_week == "Monday":
-        print("Theme: Deep Research Tech/Business (Source: Exa)")
-        pool = fetch_exa(["latest deep research tech analysis", "long-form business strategy essays"])
+        print("Theme: Climate Tech, ESG, and GHG accounting (Source: Exa)")
+        pool = fetch_exa(["climate tech advancements", "ESG regulations", "GHG carbon accounting latest news"])
     elif day_of_week == "Tuesday":
         print("Theme: Global Headlines (Source: NewsAPI)")
         pool = fetch_newsapi(["business", "technology"])
     elif day_of_week == "Wednesday":
-        print("Theme: Developer & Engineering News (Source: HackerNews)")
-        pool = fetch_hackernews()
+        print("Theme: CSRD, CBAM, BRSR updates (Source: Exa)")
+        pool = fetch_exa(["CSRD directive compliance latest updates", "CBAM carbon border adjustment mechanism news", "BRSR and BRSR core ESG reporting India"])
     elif day_of_week == "Thursday":
         print("Theme: Geographic/Environmental/Data Tech (Source: Exa)")
         pool = fetch_exa(["GIS spatial data breakthroughs", "climate tech and environmental data tracking"])
@@ -715,6 +720,13 @@ def validate_post(post_body: str, hashtags: str) -> list[str]:
 def generate_post(item, memory):
     client = gemini_client()
     templates_list = "\n".join(f"{k}. {v}" for k, v in TEMPLATES.items())
+    
+    from datetime import datetime
+    day_of_week = datetime.utcnow().strftime("%A")
+    forced_template_instruction = ""
+    if day_of_week == "Sunday":
+        forced_template_instruction = "CRITICAL INSTRUCTION: Today is Sunday. You MUST strictly use TEMPLATE 4 (The Sunday 5-Point Breakdown). Do NOT choose any other template. Ensure exactly 5 bullet points."
+    
     base_prompt = POST_PROMPT_TEMPLATE.format(
         title=item["title"],
         category=item.get("category", "general"),
@@ -726,6 +738,9 @@ def generate_post(item, memory):
         recent_templates=recent_templates_text(memory),
         recent_successes=recent_successes_text(memory),
     )
+    
+    if forced_template_instruction:
+        base_prompt += f"\n\n{forced_template_instruction}"
     
     raw = None
     if client:
