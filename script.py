@@ -818,31 +818,24 @@ def get_person_urn(access_token):
     return f"urn:li:person:{resp.json()['sub']}"
 
 
+import urllib.parse
+
 def generate_image(client, item_title):
-    image_models = [
-        "gemini-3-pro-image",
-        "gemini-2.5-flash-image",
-        "gemini-3.1-flash-image"
-    ]
-    prompt = f"A high-quality, professional editorial illustration for a business article titled '{item_title}'. Clean corporate style, no text, minimal, cinematic."
-    
-    for model_name in image_models:
-        try:
-            print(f"Attempting image generation with {model_name}...")
-            result = client.models.generate_content(
-                model=model_name,
-                contents=prompt,
-            )
-            for p in result.candidates[0].content.parts:
-                if p.inline_data:
-                    print(f"Success! Generated image using {model_name}.")
-                    return p.inline_data.data
-        except Exception as e:
-            print(f"Failed with {model_name}: {e}")
-            continue
-    
-    print("All image generation models failed.")
-    return None
+    print(f"Generating FREE image for: {item_title}")
+    try:
+        # Abolished paid Nano Banana/Imagen models! Using a free, unmetered image generation API.
+        prompt = f"A high-quality, professional editorial illustration for a business article titled '{item_title}'. Clean corporate style, no text, minimal, cinematic."
+        encoded_prompt = urllib.parse.quote(prompt)
+        url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=1024&height=1024&nologo=true&seed=42"
+        
+        response = requests.get(url, timeout=30)
+        response.raise_for_status()
+        
+        print("Success! Generated image using free image model.")
+        return response.content
+    except Exception as e:
+        print(f"Free image generation failed: {e}")
+        return None
 
 
 def upload_image_to_linkedin(access_token, person_urn, image_bytes):
