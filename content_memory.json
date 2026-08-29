@@ -8,5 +8,15 @@
     "embedding": null,
     "post_id": null,
     "performed_well": false
+  },
+  {
+    "link": "https://heatmap.news/climate-tech/marathon-fusion-lithium-tritium",
+    "title": "Exclusive: Marathon Fusion Achieves Reactor Fuel Breakthrough - Heatmap News",
+    "date": "2026-08-29",
+    "template": 1,
+    "hook": "Exclusive: Marathon Fusion Achieves Reactor Fuel Breakthrough - Heatmap News.",
+    "embedding": null,
+    "post_id": "urn:li:share:7499365875230208000",
+    "performed_well": false
   }
 ]
