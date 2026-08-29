@@ -142,7 +142,7 @@ Global constraints:
 - Generate exactly 2-3 specific LinkedIn hashtags (e.g. #Sustainability #ESG)
 
 Output format — EXACTLY this, nothing else:
-TEMPLATE: <number 1-5 of the structure you used>
+TEMPLATE: <number 1-4 of the structure you used>
 ---
 <the finished post text, no title, no notes, no sign-off, no hashtags>
 ---
@@ -715,6 +715,13 @@ def validate_post(post_body: str, hashtags: str) -> list[str]:
         failures.append(f"hashtag wall: {hashtag_count} hashtags (max {MAX_HASHTAGS})")
     if hashtag_count == 0:
         failures.append("no hashtags found")
+    # Hook validation — first line must be a short, punchy tagline
+    first_line = post_body.strip().split("\n")[0].strip()
+    weak_openers = ("a recent", "this week", "the world", "in a recent", "according to", "researchers", "new report")
+    if any(first_line.lower().startswith(w) for w in weak_openers):
+        failures.append(f"first line starts with a weak opener ('{first_line[:60]}...'), rewrite as a punchy tagline")
+    if len(first_line.split()) > 20:
+        failures.append(f"first line is too long ({len(first_line.split())} words) to be a tagline hook — make it punchier")
     return failures
 
 def generate_post(item, memory):
@@ -847,68 +854,14 @@ def get_person_urn(access_token):
     return f"urn:li:person:{resp.json()['sub']}"
 
 
-import urllib.parse
-
-def generate_image(client, item_title):
-    print(f"Generating FREE image for: {item_title}")
-    try:
-        # Abolished paid Nano Banana/Imagen models! Using a free, unmetered image generation API.
-        prompt = f"A high-quality, professional editorial illustration for a business article titled '{item_title}'. Clean corporate style, no text, minimal, cinematic."
-        encoded_prompt = urllib.parse.quote(prompt)
-        url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=1024&height=1024&nologo=true&seed=42"
-        
-        response = requests.get(url, timeout=30)
-        response.raise_for_status()
-        
-        print("Success! Generated image using free image model.")
-        return response.content
-    except Exception as e:
-        print(f"Free image generation failed: {e}")
-        return None
-
-
-def upload_image_to_linkedin(access_token, person_urn, image_bytes):
+def post_to_linkedin(access_token, person_urn, text):
+    """Publish a pure text post to LinkedIn. No images."""
     headers = {
         "Authorization": f"Bearer {access_token}",
         "Content-Type": "application/json",
         "X-Restli-Protocol-Version": "2.0.0",
         "LinkedIn-Version": LINKEDIN_VERSION,
     }
-    try:
-        init_resp = requests.post(
-            "https://api.linkedin.com/rest/images?action=initializeUpload",
-            headers=headers,
-            json={"initializeUploadRequest": {"owner": person_urn}},
-            timeout=15,
-        )
-        init_resp.raise_for_status()
-        value = init_resp.json()["value"]
-        upload_url = value["uploadUrl"]
-        image_urn = value["image"]
-
-        put_resp = requests.put(
-            upload_url,
-            data=image_bytes,
-            headers={"Authorization": f"Bearer {access_token}"},
-            timeout=60,
-        )
-        if put_resp.status_code not in (200, 201):
-            print(f"Image upload PUT failed: {put_resp.status_code}")
-            return None
-        return image_urn
-    except Exception as e:
-        print(f"Image upload failed: {e}")
-        return None
-
-
-def post_to_linkedin(access_token, person_urn, text, image_urn=None, alt_text=""):
-    headers = {
-        "Authorization": f"Bearer {access_token}",
-        "Content-Type": "application/json",
-        "X-Restli-Protocol-Version": "2.0.0",
-        "LinkedIn-Version": LINKEDIN_VERSION,
-    }
-    
     payload = {
         "author": person_urn,
         "commentary": text,
@@ -921,9 +874,6 @@ def post_to_linkedin(access_token, person_urn, text, image_urn=None, alt_text=""
         "lifecycleState": "PUBLISHED",
         "isReshareDisabledByAuthor": False,
     }
-    if image_urn:
-        payload["content"] = {"media": {"altText": alt_text[:200], "id": image_urn}}
-    
     resp = with_retry(
         requests.post,
         "https://api.linkedin.com/rest/posts",
@@ -1028,20 +978,12 @@ def run():
 
     post_text, template_used, hook = generate_post(item, memory)
 
-    image_bytes = None
-    image_urn = None
-    
-    print("Generating post image...")
-    image_bytes = generate_image(client, item["title"])
-
     access_token = os.environ.get("LINKEDIN_ACCESS_TOKEN", "").strip()
     success, result = False, "DRY_RUN / missing access token"
     if access_token:
         try:
             person_urn = get_person_urn(access_token)
-            if image_bytes:
-                image_urn = upload_image_to_linkedin(access_token, person_urn, image_bytes)
-            success, result = post_to_linkedin(access_token, person_urn, post_text, image_urn=image_urn, alt_text=item["title"])
+            success, result = post_to_linkedin(access_token, person_urn, post_text)
         except Exception as exc:
             result = f"Posting error: {exc}"
 
