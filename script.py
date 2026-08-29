@@ -820,10 +820,9 @@ def get_person_urn(access_token):
 
 def generate_image(client, item_title):
     image_models = [
-        "gemini-3.0-pro-image",
-        "gemini-2.5-flash-preview-image",
-        "gemini-3.1-flash-image",
-        "imagen-3.0-generate-002"
+        "gemini-3-pro-image",
+        "gemini-2.5-flash-image",
+        "gemini-3.1-flash-image"
     ]
     prompt = f"A high-quality, professional editorial illustration for a business article titled '{item_title}'. Clean corporate style, no text, minimal, cinematic."
     
