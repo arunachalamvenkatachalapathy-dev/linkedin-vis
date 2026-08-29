@@ -355,13 +355,13 @@ def fetch_reddit():
     return items
 
 
-def fetch_newsapi():
+def fetch_newsapi(custom_queries=None):
     if not NEWSAPI_KEY:
         print("NEWSAPI_KEY not set — skipping NewsAPI source")
         return []
     items = []
     headers = {"X-Api-Key": NEWSAPI_KEY}
-    queries = ["sustainability ESG AI", "Scope 3 carbon emissions", "AI agents autonomous workflow"]
+    queries = custom_queries if custom_queries else ["sustainability ESG AI", "Scope 3 carbon emissions", "AI agents autonomous workflow"]
     for q in queries:
         try:
             url = f"https://newsapi.org/v2/everything?q={requests.utils.quote(q)}&sortBy=publishedAt&pageSize=4&language=en"
@@ -381,12 +381,12 @@ def fetch_newsapi():
     return items
 
 
-def fetch_exa():
+def fetch_exa(custom_queries=None):
     api_key = os.environ.get("EXA_API_KEY", "").strip()
     if not api_key:
         return []
     items = []
-    queries = [
+    queries = custom_queries if custom_queries else [
         "technical challenges scope 3 emissions telemetry",
         "latest AI agent workflows in enterprise",
         "biggest trending controversy in tech startups this week",
@@ -420,14 +420,14 @@ def fetch_exa():
             print(f"Exa fetch error for '{q}': {e}")
     return items
 
-def fetch_tavily():
+def fetch_tavily(custom_queries=None):
     api_key = os.environ.get("TAVILY_API_KEY", "").strip()
     if not api_key:
         return []
     items = []
     url = "https://api.tavily.com/search"
     headers = {"Content-Type": "application/json"}
-    queries = [
+    queries = custom_queries if custom_queries else [
         "latest trending news in artificial intelligence and Nvidia",
         "biggest business or tech news today",
         "top stories in climate tech and startups today"
@@ -458,26 +458,40 @@ def fetch_tavily():
     return items
 
 import random
+from datetime import datetime
 
 def fetch_all_candidates():
-    # Fetch all
-    rss = fetch_rss()
-    hn = fetch_hackernews()
-    reddit = fetch_reddit()
-    newsapi = fetch_newsapi()
-    exa = fetch_exa()
-    tavily = fetch_tavily()
+    day_of_week = datetime.utcnow().strftime("%A")
+    print(f"Today is {day_of_week}. Implementing Thematic Schedule.")
     
-    # Cap each major group so no single platform dominates the candidate pool
-    # The scoring pool is MAX_CANDIDATES_TO_SCORE (60)
-    random.shuffle(rss)
-    random.shuffle(hn)
-    random.shuffle(reddit)
-    random.shuffle(newsapi)
-    random.shuffle(exa)
-    random.shuffle(tavily)
-    
-    pool = rss[:10] + exa[:10] + tavily[:10] + hn[:15] + reddit[:5] + newsapi[:10]
+    pool = []
+
+    if day_of_week == "Monday":
+        print("Theme: Deep Research Tech/Business (Source: Exa)")
+        pool = fetch_exa(["latest deep research tech analysis", "long-form business strategy essays"])
+    elif day_of_week == "Tuesday":
+        print("Theme: Global Headlines (Source: NewsAPI)")
+        pool = fetch_newsapi(["business", "technology"])
+    elif day_of_week == "Wednesday":
+        print("Theme: Developer & Engineering News (Source: HackerNews)")
+        pool = fetch_hackernews()
+    elif day_of_week == "Thursday":
+        print("Theme: Geographic/Environmental/Data Tech (Source: Exa)")
+        pool = fetch_exa(["GIS spatial data breakthroughs", "climate tech and environmental data tracking"])
+    elif day_of_week == "Friday":
+        print("Theme: Financial & Stock Market Insights (Source: Tavily)")
+        pool = fetch_tavily(["stock market trends today", "financial market analysis and startup funding"])
+    elif day_of_week == "Saturday":
+        print("Theme: AI News Radar (Source: NewsAPI & Reddit)")
+        pool = fetch_newsapi(["artificial intelligence", "machine learning"]) + fetch_reddit()
+    elif day_of_week == "Sunday":
+        print("Theme: Trending Business (Source: Tavily)")
+        pool = fetch_tavily(["biggest trending business news this weekend", "weekend tech startup news"])
+
+    if len(pool) < 5:
+        print("Primary theme source returned too few articles, falling back to mixed pool.")
+        pool.extend(fetch_rss()[:5] + fetch_hackernews()[:10] + fetch_newsapi()[:10] + fetch_tavily()[:10] + fetch_exa()[:10])
+
     random.shuffle(pool)
     return pool
 
@@ -999,12 +1013,20 @@ def run():
 
     post_text, template_used, hook = generate_post(item, memory)
 
+    image_bytes = None
+    image_urn = None
+    
+    print("Generating post image...")
+    image_bytes = generate_image(client, item["title"])
+
     access_token = os.environ.get("LINKEDIN_ACCESS_TOKEN", "").strip()
     success, result = False, "DRY_RUN / missing access token"
     if access_token:
         try:
             person_urn = get_person_urn(access_token)
-            success, result = post_to_linkedin(access_token, person_urn, post_text)
+            if image_bytes:
+                image_urn = upload_image_to_linkedin(access_token, person_urn, image_bytes)
+            success, result = post_to_linkedin(access_token, person_urn, post_text, image_urn=image_urn, alt_text=item["title"])
         except Exception as exc:
             result = f"Posting error: {exc}"
 
