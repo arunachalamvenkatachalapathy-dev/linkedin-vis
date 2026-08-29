@@ -999,20 +999,12 @@ def run():
 
     post_text, template_used, hook = generate_post(item, memory)
 
-    image_bytes = None
-    image_urn = None
-    
-    print("Generating post image...")
-    image_bytes = generate_image(client, item["title"])
-
     access_token = os.environ.get("LINKEDIN_ACCESS_TOKEN", "").strip()
     success, result = False, "DRY_RUN / missing access token"
     if access_token:
         try:
             person_urn = get_person_urn(access_token)
-            if image_bytes:
-                image_urn = upload_image_to_linkedin(access_token, person_urn, image_bytes)
-            success, result = post_to_linkedin(access_token, person_urn, post_text, image_urn=image_urn, alt_text=item["title"])
+            success, result = post_to_linkedin(access_token, person_urn, post_text)
         except Exception as exc:
             result = f"Posting error: {exc}"
 
