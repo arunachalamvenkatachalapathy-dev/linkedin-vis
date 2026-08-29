@@ -83,23 +83,23 @@ MAX_CANDIDATES_TO_SCORE = 60
 # Storytelling Templates
 # ---------------------------------------------------------------------------
 TEMPLATES = {
-    1: """TEMPLATE 1: "The News Context + Analysis"
-   - Head (The Hook & Context): The absolute first line MUST be a highly attractive, scroll-stopping, 1-sentence hook that grabs attention. Immediately follow it with a clear introduction stating what just happened in the news.
-   - Body (The Detail): Provide 2-3 sentences of crucial context explaining *why* this happened and what the core issue is.
-   - Tail (The Takeaway): Conclude with a strong takeaway about what this means for the industry moving forward, ending with a professional question for the audience.""",
+    1: """TEMPLATE 1: "The PAS Framework" (Problem, Agitate, Solution)
+   - Head (The Hook/Problem): State a painful problem or harsh truth related to the news. (e.g. "It took me 3 years to realize that [Topic] is completely broken.")
+   - Body (Agitate & Solution): Agitate the problem (why it's getting worse, referencing the news as proof). Then, present the solution or shift the article discusses.
+   - Tail (The Takeaway): The "So What" lesson for the industry. Ask a concluding question.""",
 
-    2: """TEMPLATE 2: "The Deep Dive"
-   - Head (The Hook): The absolute first line MUST be an eye-catching, thought-provoking statement (a "tagline") about a current industry challenge, immediately followed by the specific news story or data point that illustrates it.
-   - Body (The Breakdown): Break down the article's findings into 2-3 clear, readable points. Give the reader actual substance and facts from the article.
-   - Tail (The Conclusion): Summarize the long-term impact of this development. End with a call for thoughts from peers in the space.""",
+    2: """TEMPLATE 2: "The SLA Framework" (Story, Lesson, Application)
+   - Head (The Hook): A short, punchy, personal or professional observation about a recent event.
+   - Body (Story & Lesson): The "Story" of what just happened in the news. The "Lesson" we can extract from it based on your executive perspective.
+   - Tail (Application): How professionals should "Apply" this tomorrow. End with a call to action or discussion question.""",
 
-    3: """TEMPLATE 3: "The Shift in Strategy"
-   - Head (The Hook & Shift): The absolute first line MUST be a bold, attractive one-liner introducing a major shift you are observing. Then reference the specific article as proof.
-   - Body (The Evidence): Explain the "old way" vs the "new way" based on the article's contents. Provide enough context so someone who hasn't read the article understands the situation.
-   - Tail (The Question): Wrap up with a strategic insight. Ask the network how their organizations are adapting to this specific shift.""",
+    3: """TEMPLATE 3: "The Contrarian Take"
+   - Head (The Hook): State a common belief that this news article proves wrong. (e.g. "Everyone thinks [Topic] is the future. They are wrong.")
+   - Body (The Evidence): Explain *why* everyone is looking at this the wrong way, using the article data as your proof.
+   - Tail (The Question): A provocative question to the audience challenging them to rethink their strategy.""",
 
     4: """TEMPLATE 4: "The Sunday 5-Point Breakdown"
-   - Head (The Hook): The absolute first line MUST be a highly attractive, scroll-stopping 1-sentence tagline about a major trending business or tech topic.
+   - Head (The Hook): The absolute first line MUST be a highly attractive, scroll-stopping 1-sentence tagline about a major trending business or tech topic. NEVER start with the article title.
    - Body (The 5 Points): Break down the core news, insights, or impacts into EXACTLY 5 concise, punchy bullet points. Use emojis for the bullet points.
    - Tail (The Takeaway): Conclude with a strong professional takeaway and ask a strategic question to the audience."""
 }
@@ -107,6 +107,7 @@ TEMPLATES = {
 POST_PROMPT_TEMPLATE = """
 You are writing a LinkedIn post for a seasoned Tech, AI, & Sustainability Leader. 
 Tone: Conversational, insightful, professional, and heavily focused on STORYTELLING. Do not just list facts — tell a brief, engaging story about what happened, why it matters, and the human/business impact. 
+
 CRITICAL CONTEXT: While your core expertise is in Sustainability/ESG, you often write about general business strategy, AI, and emerging tech. DO NOT forcefully inject environmental terminology (like "emissions" or "ESG") into stories that are purely about tech or business. Speak like an executive observing the broader landscape, letting the natural topic of the article shine.
 
 Source headline: {title}
@@ -129,17 +130,18 @@ Recently used structures:
 Recent high-performing posts (these received the highest engagement relative to others):
 {recent_successes}
 
-IMPROVEMENT ENGINE DIRECTIVE:
+STORYTELLING ENGINE DIRECTIVE:
 Study the hooks, tone, and pacing of the high-performing posts above. Adapt your output to match the rhythm, formatting, and perspective of what is proven to work for this audience. Do not just copy them, but deeply reverse-engineer their success to improve today's post.
 
 Choose the best-fitting structure for today's story and strictly follow its line-by-line format. 
 CRITICAL INSTRUCTION: If the story is political or a lawsuit (e.g., EPA, government), focus on the *compliance or business impact*, not just the politics. Make it sound like a real person talking to peers.
 
-Global constraints:
-- 130-220 words total (keep it highly scannable, but ensure you give full context to the news story)
-- Use everyday professional language. Break up paragraphs (1-2 lines each).
-- Make sure every post has a clear 'Head' (Introduction to the news) and 'Tail' (Takeaway and question). Do not start abruptly.
-- Generate exactly 2-3 specific LinkedIn hashtags (e.g. #Sustainability #ESG)
+GLOBAL CONSTRAINTS (YOU MUST OBEY THESE):
+1. **NO ROBOTIC INTROS:** NEVER start the post with the publisher name (e.g., "Bloomberg", "KFF Health News"), the date, or the raw article headline. The first line MUST be a punchy, relatable human observation (a "tagline" or "hook") under 20 words.
+2. **SHOW, DON'T TELL:** Write like you speak. Use "I", "we", "you". Frame the news as a challenge, a failure, or a major shift in the industry, rather than a robotic update.
+3. **WHITE SPACE:** Break up paragraphs aggressively. 1-2 lines maximum per paragraph. NO walls of text.
+4. **LENGTH:** 130-220 words total.
+5. **HASHTAGS:** Generate exactly 2-3 specific LinkedIn hashtags (e.g. #Sustainability #ESG) at the very end.
 
 Output format — EXACTLY this, nothing else:
 TEMPLATE: <number 1-4 of the structure you used>
@@ -753,7 +755,7 @@ def generate_post(item, memory):
     if client:
         prompt = base_prompt
         for attempt in range(1, 4):  # Max 3 attempts
-            for m_name in ["gemma-4-26b-a4b-it", "gemini-3.6-flash", "gemini-3.6-pro"]:
+            for m_name in ["gemini-3.6-pro", "gemini-3.6-flash", "gemma-4-26b-a4b-it"]:
                 try:
                     response = generate_with_retry(client, m_name, prompt)
                     if response and response.text:
