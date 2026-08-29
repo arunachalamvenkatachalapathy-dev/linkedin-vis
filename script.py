@@ -819,20 +819,31 @@ def get_person_urn(access_token):
 
 
 def generate_image(client, item_title):
-    try:
-        # Prompt based on the article title to create a professional vector or photo illustration
-        prompt = f"A high-quality, professional editorial illustration for a business article titled '{item_title}'. Clean corporate style, no text, minimal, cinematic."
-        result = client.models.generate_content(
-            model='imagen-3.0-generate-002',
-            contents=prompt,
-        )
-        for p in result.candidates[0].content.parts:
-            if p.inline_data:
-                return p.inline_data.data
-        return None
-    except Exception as e:
-        print(f"Image generation failed: {e}")
-        return None
+    image_models = [
+        "gemini-3.0-pro-image",
+        "gemini-2.5-flash-preview-image",
+        "gemini-3.1-flash-image",
+        "imagen-3.0-generate-002"
+    ]
+    prompt = f"A high-quality, professional editorial illustration for a business article titled '{item_title}'. Clean corporate style, no text, minimal, cinematic."
+    
+    for model_name in image_models:
+        try:
+            print(f"Attempting image generation with {model_name}...")
+            result = client.models.generate_content(
+                model=model_name,
+                contents=prompt,
+            )
+            for p in result.candidates[0].content.parts:
+                if p.inline_data:
+                    print(f"Success! Generated image using {model_name}.")
+                    return p.inline_data.data
+        except Exception as e:
+            print(f"Failed with {model_name}: {e}")
+            continue
+    
+    print("All image generation models failed.")
+    return None
 
 
 def upload_image_to_linkedin(access_token, person_urn, image_bytes):
