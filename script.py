@@ -628,27 +628,6 @@ def generate_with_retry(client, model, contents, retries=3, base_delay=4):
             time.sleep(base_delay * attempt)
     raise last_error
 
-def generate_with_groq(prompt):
-    api_key = os.environ.get("GROQ_API_KEY", "").strip()
-    if not api_key:
-        return None
-    url = "https://api.groq.com/openai/v1/chat/completions"
-    headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
-    payload = {
-        "model": "llama-3.1-70b-versatile",
-        "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.7
-    }
-    for attempt in range(1, 4):
-        try:
-            resp = requests.post(url, headers=headers, json=payload, timeout=15)
-            if resp.status_code == 200:
-                return resp.json()["choices"][0]["message"]["content"]
-            time.sleep(2 * attempt)
-        except Exception as e:
-            time.sleep(2 * attempt)
-    return None
-
 
 def score_candidates(client, candidates):
     if not candidates:
@@ -684,20 +663,6 @@ def score_candidates(client, candidates):
         except Exception as e:
             print(f"Scoring fallback for model {m_name}: {e}")
 
-    # Fallback to Groq if Gemini completely fails
-    try:
-        print("Falling back to Groq for scoring...")
-        raw_groq = generate_with_groq(prompt)
-        if raw_groq:
-            raw = re.sub(r"^```(json)?|```$", "", raw_groq.strip(), flags=re.MULTILINE).strip()
-            ranked = json.loads(raw)
-            for r in ranked:
-                idx = r.get("id")
-                if isinstance(idx, int) and 0 <= idx < len(pool):
-                    r["candidate"] = pool[idx]
-            return [r for r in ranked if "candidate" in r]
-    except Exception as e:
-        print(f"Groq scoring fallback error: {e}")
 
     return [{"id": 0, "score": 85, "reason": "first candidate (scoring fallback)", "candidate": pool[0]}]
 
@@ -782,14 +747,6 @@ def generate_post(item, memory):
             if raw:
                 break # We found a valid raw
 
-    if not raw:
-        print("Falling back to Groq for post generation...")
-        try:
-            raw_groq = generate_with_groq(base_prompt)
-            if raw_groq:
-                raw = raw_groq.strip()
-        except Exception as e:
-            print(f"Groq generation fallback error: {e}")
 
     if not raw:
         # Fallback post if Gemini is unavailable — matches new conversational tone
