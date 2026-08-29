@@ -818,7 +818,58 @@ def get_person_urn(access_token):
     return f"urn:li:person:{resp.json()['sub']}"
 
 
-def post_to_linkedin(access_token, person_urn, text):
+def generate_image(client, item_title):
+    try:
+        # Prompt based on the article title to create a professional vector or photo illustration
+        prompt = f"A high-quality, professional editorial illustration for a business article titled '{item_title}'. Clean corporate style, no text, minimal, cinematic."
+        result = client.models.generate_content(
+            model='imagen-3.0-generate-002',
+            contents=prompt,
+        )
+        for p in result.candidates[0].content.parts:
+            if p.inline_data:
+                return p.inline_data.data
+        return None
+    except Exception as e:
+        print(f"Image generation failed: {e}")
+        return None
+
+
+def upload_image_to_linkedin(access_token, person_urn, image_bytes):
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json",
+        "X-Restli-Protocol-Version": "2.0.0",
+        "LinkedIn-Version": LINKEDIN_VERSION,
+    }
+    try:
+        init_resp = requests.post(
+            "https://api.linkedin.com/rest/images?action=initializeUpload",
+            headers=headers,
+            json={"initializeUploadRequest": {"owner": person_urn}},
+            timeout=15,
+        )
+        init_resp.raise_for_status()
+        value = init_resp.json()["value"]
+        upload_url = value["uploadUrl"]
+        image_urn = value["image"]
+
+        put_resp = requests.put(
+            upload_url,
+            data=image_bytes,
+            headers={"Authorization": f"Bearer {access_token}"},
+            timeout=60,
+        )
+        if put_resp.status_code not in (200, 201):
+            print(f"Image upload PUT failed: {put_resp.status_code}")
+            return None
+        return image_urn
+    except Exception as e:
+        print(f"Image upload failed: {e}")
+        return None
+
+
+def post_to_linkedin(access_token, person_urn, text, image_urn=None, alt_text=""):
     headers = {
         "Authorization": f"Bearer {access_token}",
         "Content-Type": "application/json",
@@ -838,6 +889,8 @@ def post_to_linkedin(access_token, person_urn, text):
         "lifecycleState": "PUBLISHED",
         "isReshareDisabledByAuthor": False,
     }
+    if image_urn:
+        payload["content"] = {"media": {"altText": alt_text[:200], "id": image_urn}}
     
     resp = with_retry(
         requests.post,
@@ -943,11 +996,20 @@ def run():
 
     post_text, template_used, hook = generate_post(item, memory)
 
+    image_bytes = None
+    image_urn = None
+    
+    print("Generating post image...")
+    image_bytes = generate_image(client, item["title"])
+
+    access_token = os.environ.get("LINKEDIN_ACCESS_TOKEN", "").strip()
     success, result = False, "DRY_RUN / missing access token"
     if access_token:
         try:
             person_urn = get_person_urn(access_token)
-            success, result = post_to_linkedin(access_token, person_urn, post_text)
+            if image_bytes:
+                image_urn = upload_image_to_linkedin(access_token, person_urn, image_bytes)
+            success, result = post_to_linkedin(access_token, person_urn, post_text, image_urn=image_urn, alt_text=item["title"])
         except Exception as exc:
             result = f"Posting error: {exc}"
 
