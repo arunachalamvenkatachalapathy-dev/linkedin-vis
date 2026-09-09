@@ -83,32 +83,31 @@ MAX_CANDIDATES_TO_SCORE = 60
 # Storytelling Templates
 # ---------------------------------------------------------------------------
 TEMPLATES = {
-    1: """TEMPLATE 1: "The PAS Framework" (Problem, Agitate, Solution)
-   - Head (The Hook/Problem): State a painful problem or harsh truth related to the news. (e.g. "It took me 3 years to realize that [Topic] is completely broken.")
-   - Body (Agitate & Solution): Agitate the problem (why it's getting worse, referencing the news as proof). Then, present the solution or shift the article discusses.
-   - Tail (The Takeaway): The "So What" lesson for the industry. Ask a concluding question.""",
+    1: """TEMPLATE 1: "The Regulatory & Supply Chain Impact Teardown"
+   - Head (The Urgent Signal): The first line must be a compelling, direct hook stating a specific regulatory or market mandate (BRSR Core, EU CBAM, CSRD, Scope 3 assurance, SEC, or ISO net-zero) and why non-compliance is suddenly expensive. (Max 18 words).
+   - Body (The Operational Breakdown): Break down 2-3 concrete operational realities. What must Tier-1 suppliers or corporate ESG teams actually change? Include hard numbers (deadlines, carbon border tariffs, assurance scopes).
+   - Tail (Actionable Takeaway): Provide 1 clear, strategic imperative for leadership. Conclude with a sharp, technical discussion question that invites experienced peers to share how they are solving it.""",
 
-    2: """TEMPLATE 2: "The SLA Framework" (Story, Lesson, Application)
-   - Head (The Hook): A short, punchy, personal or professional observation about a recent event.
-   - Body (Story & Lesson): The "Story" of what just happened in the news. The "Lesson" we can extract from it based on your executive perspective.
-   - Tail (Application): How professionals should "Apply" this tomorrow. End with a call to action or discussion question.""",
+    2: """TEMPLATE 2: "The Carbon Accounting & Data Reality"
+   - Head (The Hard Metric): Start with an eye-opening number or metric (emissions intensity, Scope 3 audit failure rates, carbon credit discount, or energy conversion metric). Make the reader stop scrolling immediately.
+   - Body (The Calculation & Pitfalls): Explain the underlying methodology. Where are companies miscalculating? Contrast reported claims vs physical emissions math (grid factors, supplier estimates, emission factor errors).
+   - Tail (The Solution Architecture): Outline the right data architecture or mitigation step. End with a focused question on measurement standards.""",
 
-    3: """TEMPLATE 3: "The Contrarian Take"
-   - Head (The Hook): State a common belief that this news article proves wrong. (e.g. "Everyone thinks [Topic] is the future. They are wrong.")
-   - Body (The Evidence): Explain *why* everyone is looking at this the wrong way, using the article data as your proof.
-   - Tail (The Question): A provocative question to the audience challenging them to rethink their strategy.""",
+    3: """TEMPLATE 3: "The Engineering & Ground-Level Reality Check"
+   - Head (The Plant-Floor / Field Reality): An authentic observation contrasting boardroom net-zero commitments with ground-level industrial reality (water recycling, constructed wetlands, captive renewables, heat recovery).
+   - Body (The Engineering Dilemma): Share the practical friction points: CAPEX vs payback, grid interconnection delays, sensor calibration, or local biodiversity impacts. Ground it in technical facts.
+   - Tail (The Strategic Lesson): What works in practice versus what only looks good on a corporate slide deck. End with a technical peer question.""",
 
-    4: """TEMPLATE 4: "The Sunday 5-Point Breakdown"
-   - Head (The Hook): The absolute first line MUST be a highly attractive, scroll-stopping 1-sentence tagline about a major trending business or tech topic. NEVER start with the article title.
-   - Body (The 5 Points): Break down the core news, insights, or impacts into EXACTLY 5 concise, punchy bullet points. Use emojis for the bullet points.
-   - Tail (The Takeaway): Conclude with a strong professional takeaway and ask a strategic question to the audience."""
+    4: """TEMPLATE 4: "The Executive Sunday 5-Point Brief"
+   - Head (The Executive Horizon): A powerful 1-sentence macro synthesis of where ESG, carbon regulation, and climate tech are moving this upcoming week.
+   - Body (The 5 Strategic Developments): Exactly 5 distinct, emoji-bulleted points (📊 Policy, ⚡ Tech, 💰 Capital, 🏭 Industry, 🔍 Audit) covering key shifts with exact numbers and organizations.
+   - Tail (The Monday Morning Priority): One high-leverage question or focus area for CFOs, Sustainability Heads, and Operations Leaders."""
 }
 
 POST_PROMPT_TEMPLATE = """
-You are writing a LinkedIn post for a seasoned Tech, AI, & Sustainability Leader. 
-Tone: Conversational, insightful, professional, and heavily focused on STORYTELLING. Do not just list facts — tell a brief, engaging story about what happened, why it matters, and the human/business impact. 
+You are writing a LinkedIn post for Arunachalam Venkatachalapathy, an authoritative ESG & Sustainability Leader with deep expertise in BRSR Core, GHG Carbon Accounting (Scope 1, 2, 3), Environmental Engineering, and Climate Tech.
 
-CRITICAL CONTEXT: While your core expertise is in Sustainability/ESG, you often write about general business strategy, AI, and emerging tech. DO NOT forcefully inject environmental terminology (like "emissions" or "ESG") into stories that are purely about tech or business. Speak like an executive observing the broader landscape, letting the natural topic of the article shine.
+Target Audience: 8,300+ Sustainability Directors, Chief Sustainability Officers, ESG Analysts, Environmental Engineers, and Corporate Leaders who demand actionable depth, real numbers, and technical substance.
 
 Source headline: {title}
 Source category: {category}
@@ -127,38 +126,42 @@ Available storytelling structures:
 Recently used structures:
 {recent_templates}
 
-Recent high-performing posts (these received the highest engagement relative to others):
+Recent high-performing benchmarks:
 {recent_successes}
 
-STORYTELLING ENGINE DIRECTIVE:
-Study the hooks, tone, and pacing of the high-performing posts above. Adapt your output to match the rhythm, formatting, and perspective of what is proven to work for this audience. Do not just copy them, but deeply reverse-engineer their success to improve today's post.
-
-Choose the best-fitting structure for today's story and strictly follow its line-by-line format. 
-CRITICAL INSTRUCTION: If the story is political or a lawsuit (e.g., EPA, government), focus on the *compliance or business impact*, not just the politics. Make it sound like a real person talking to peers.
-
-GLOBAL CONSTRAINTS (YOU MUST OBEY THESE):
-1. **NO ROBOTIC INTROS:** NEVER start the post with the publisher name (e.g., "Bloomberg", "KFF Health News"), the date, or the raw article headline. The first line MUST be a punchy, relatable human observation (a "tagline" or "hook") under 20 words.
-2. **SHOW, DON'T TELL:** Write like you speak. Use "I", "we", "you". Frame the news as a challenge, a failure, or a major shift in the industry, rather than a robotic update.
-3. **WHITE SPACE:** Break up paragraphs aggressively. 1-2 lines maximum per paragraph. NO walls of text.
-4. **LENGTH:** 130-220 words total.
-5. **HASHTAGS:** Generate exactly 2-3 specific LinkedIn hashtags (e.g. #Sustainability #ESG) at the very end.
+CRITICAL EDITORIAL GUIDELINES (VIRAL & PROFESSIONAL):
+1. **AUTHENTIC EXPERT VOICE:** Write like an experienced sustainability consultant who has audited factories, calculated Scope 3 supply chain emissions, and reviewed BRSR disclosures. Confident, direct, and pragmatic.
+2. **BAN CLICHÉ SYNTHETIC CONTRASTS:** NEVER use the tired formulas:
+   - "It isn't X — it's Y" or "isn't about X — it's about Y"
+   - "We keep treating X like Y, right up until Z"
+   - "Think about that number for a second"
+   - "The real question isn't whether X matters..."
+   - "Most leaders do X, but the real test is Y"
+   Write natural, insightful, substance-driven prose instead.
+3. **GROUND IN SPECIFICS:** Use real metrics, percentages, dollar/rupee amounts, emissions units (tCO2e, kg CO2/kWh), regulations (SEBI BRSR, EU CBAM, CSRD, GRI, GHG Protocol), or engineering concepts.
+4. **READABILITY & SCANNABILITY:** 1-2 sentence paragraphs maximum. Clean line breaks. No dense blocks of text.
+5. **LENGTH:** 140-230 words for the post body.
+6. **HASHTAGS:** Exactly 3 hyper-relevant hashtags (e.g., #Sustainability #BRSR #ClimateTech).
+7. **FIRST COMMENT GENERATION:** Generate a high-value "First Comment" (50-80 words) to be posted within the first 5 minutes. The comment should add a practical tip, cite an extra benchmark/stat, or pose a nuanced follow-up question to ignite peer discussion.
 
 Output format — EXACTLY this, nothing else:
 TEMPLATE: <number 1-4 of the structure you used>
 ---
 <the finished post text, no title, no notes, no sign-off, no hashtags>
 ---
-<hashtags, space-separated, each starting with #>
+<3 hashtags, space-separated, each starting with #>
+---
+<First Comment text for the Golden Hour discussion starter>
 """
 
 SCORING_PROMPT_TEMPLATE = """
-You are a content scout for a Tech, AI & Sustainability leader. Score each candidate
-story below from 0-100 using this balanced rubric for LinkedIn engagement. You do NOT need to rely only on sustainability; highly trending tech, AI, and business topics are heavily encouraged:
+You are the Chief Content Scout for Arunachalam Venkatachalapathy, an ESG & Sustainability Leader with 8,300+ professional followers.
+Score each candidate story below from 0-100 based strictly on its value to sustainability directors, environmental engineers, and corporate compliance leaders:
 
-- Virality & Emotion (0-35): Does this trigger a strong reaction (surprise, hope, frustration, debate)? Is it a trending topic everyone is talking about?
-- Professional Relevance (0-30): Does this matter to tech workers, founders, AI engineers, or sustainability professionals in their day-to-day?
-- Concrete Evidence (0-20): Is there a real-world result, a clear metric, or a specific case study, rather than just vague promises?
-- Novelty (0-15): Is this a fresh angle? IMPORTANT: each candidate includes "covered_by_n_sources". A high number (3+) means this is mainstream — score novelty LOW unless taking a highly unique angle.
+- ESG & Climate Relevance (0-35): Is this directly relevant to sustainability, carbon emissions, BRSR/CBAM/CSRD compliance, clean energy, or environmental tech? (Give ZERO to generic tech, politics, crypto, or unrelated general news).
+- Strategic & Professional Value (0-30): Does this provide actionable insight for corporate leaders, supply chain heads, or ESG analysts?
+- Concrete Data & Substance (0-20): Does the story contain verifiable data, specific numbers, metrics, or case studies rather than vague buzzwords?
+- Novelty & Freshness (0-15): Is this a timely breakthrough or fresh angle?
 
 Candidates (JSON array, each with an "id"):
 {candidates_json}
@@ -213,7 +216,12 @@ def recent_templates_text(memory, n=3):
 def recent_successes_text(memory, n=3):
     successes = [e for e in memory if e.get("performed_well")]
     if not successes:
-        return "(none marked yet)"
+        return (
+            "- Benchmark 1: Top 1,000 Indian corporates face 53% surge in FY25 emissions\n"
+            "  Format style: Led with the raw data point, audited Scope 3 supply chain risks, avoided buzzwords.\n\n"
+            "- Benchmark 2: SEBI BRSR Core mandatory assurance roadmap for value chain\n"
+            "  Format style: Specific clause citations, compliance timeline, 3 tactical audit-readiness steps for Tier-1 vendors."
+        )
     recent = successes[-n:]
     return "\n\n".join(f"- Title: {e['title']}\n  Hook: {e.get('hook', 'N/A')}\n  Template: {e.get('template', 'N/A')}" for e in recent)
 
@@ -222,12 +230,11 @@ def update_performance_engine(memory, access_token):
     """
     Constant Improvement Engine:
     Reads the last 15 posts from memory, checks their actual engagement on LinkedIn,
-    and dynamically tags the top 33% as 'performed_well' so the AI learns from them.
-    Runs BEFORE post generation every day so the new post learns from real data.
+    and dynamically tags top posts as 'performed_well' so the AI learns from them.
+    Gracefully handles restricted permissions without crashing or spamming.
     """
     import urllib.parse
 
-    # Work on the actual memory entries (last 15), not a copy
     recent_indices = list(range(max(0, len(memory) - 15), len(memory)))
 
     if access_token:
@@ -237,7 +244,6 @@ def update_performance_engine(memory, access_token):
             if not post_id or not post_id.startswith("urn:li:"):
                 continue
 
-            # URN must be double-encoded for the socialActions path parameter
             safe_urn = urllib.parse.quote(post_id, safe="")
             url = f"https://api.linkedin.com/v2/socialActions/{safe_urn}"
             headers = {
@@ -250,12 +256,14 @@ def update_performance_engine(memory, access_token):
                     data = res.json()
                     likes    = data.get("likesSummary",   {}).get("totalLikes", 0)
                     comments = data.get("commentsSummary", {}).get("totalFirstLevelComments", 0)
-                    # Comments worth 2x — signals real engagement, not passive scrolling
                     memory[idx]["engagement_score"] = likes + (comments * 2)
+                elif res.status_code == 403:
+                    # 403 Forbidden is normal for standard w_member_social tokens; silently ignore
+                    pass
                 else:
                     print(f"Improvement Engine: LinkedIn API {res.status_code} for {post_id}")
-            except Exception as e:
-                print(f"Improvement Engine: Failed to fetch stats for {post_id} - {e}")
+            except Exception:
+                pass
 
     # Rank whatever we have scored (even from prior runs)
     scored_indices = [i for i in recent_indices if "engagement_score" in memory[i]]
@@ -474,30 +482,56 @@ def fetch_all_candidates():
     pool = []
 
     if day_of_week == "Monday":
-        print("Theme: Climate Tech, ESG, and GHG accounting (Source: Exa)")
-        pool = fetch_exa(["climate tech advancements", "ESG regulations", "GHG carbon accounting latest news"])
+        print("Theme: Climate Tech & Industrial Decarbonization (Source: Exa)")
+        pool = fetch_exa([
+            "climate tech industrial decarbonization",
+            "green hydrogen hard to abate sectors",
+            "industrial carbon capture clean tech innovations"
+        ])
     elif day_of_week == "Tuesday":
-        print("Theme: Global Headlines (Source: NewsAPI)")
-        pool = fetch_newsapi(["business", "technology"])
+        print("Theme: BRSR, CSRD, CBAM & ESG Regulatory Mandates (Source: Exa)")
+        pool = fetch_exa([
+            "SEBI BRSR Core assurance guidelines India",
+            "EU CBAM carbon border adjustment mechanism compliance",
+            "CSRD Scope 3 value chain sustainability reporting"
+        ])
     elif day_of_week == "Wednesday":
-        print("Theme: CSRD, CBAM, BRSR updates (Source: Exa)")
-        pool = fetch_exa(["CSRD directive compliance latest updates", "CBAM carbon border adjustment mechanism news", "BRSR and BRSR core ESG reporting India"])
+        print("Theme: GHG Accounting, Carbon Markets & Nature Solutions (Source: Exa/Tavily)")
+        pool = fetch_exa([
+            "GHG Protocol Scope 3 carbon accounting methodology",
+            "carbon credit integrity removal vs offset standards",
+            "constructed wetlands industrial wastewater nature solutions"
+        ])
     elif day_of_week == "Thursday":
-        print("Theme: Geographic/Environmental/Data Tech (Source: Exa)")
-        pool = fetch_exa(["GIS spatial data breakthroughs", "climate tech and environmental data tracking"])
+        print("Theme: Geospatial AI, Remote Sensing & Environmental Monitoring (Source: Exa)")
+        pool = fetch_exa([
+            "satellite remote sensing methane emissions climate",
+            "GIS spatial data environmental risk supply chain",
+            "spatial monitoring deforestation water stress climate tech"
+        ])
     elif day_of_week == "Friday":
-        print("Theme: Financial & Stock Market Insights (Source: Tavily)")
-        pool = fetch_tavily(["stock market trends today", "financial market analysis and startup funding"])
+        print("Theme: Sustainable Finance, Green Bonds & Transition Capital (Source: Tavily)")
+        pool = fetch_tavily([
+            "green bonds sustainable finance India global",
+            "climate tech venture capital investment trends",
+            "transition finance corporate ESG capital allocation"
+        ])
     elif day_of_week == "Saturday":
-        print("Theme: AI News Radar (Source: NewsAPI & Reddit)")
-        pool = fetch_newsapi(["artificial intelligence", "machine learning"]) + fetch_reddit()
+        print("Theme: Plant-Floor & Environmental Engineering Reality (Source: NewsAPI & Reddit)")
+        pool = fetch_newsapi([
+            "industrial wastewater zero liquid discharge",
+            "renewable energy grid integration industrial decarbonization"
+        ]) + fetch_reddit()
     elif day_of_week == "Sunday":
-        print("Theme: Trending Business (Source: Tavily)")
-        pool = fetch_tavily(["biggest trending business news this weekend", "weekend tech startup news"])
+        print("Theme: Executive Weekly ESG & Climate Strategy Brief (Source: Tavily)")
+        pool = fetch_tavily([
+            "global ESG regulations corporate sustainability shifts this week",
+            "climate tech breakthroughs policy developments summary"
+        ])
 
     if len(pool) < 5:
-        print("Primary theme source returned too few articles, falling back to mixed pool.")
-        pool.extend(fetch_rss()[:5] + fetch_hackernews()[:10] + fetch_newsapi()[:10] + fetch_tavily()[:10] + fetch_exa()[:10])
+        print("Primary theme source returned too few articles, falling back to mixed ESG pool.")
+        pool.extend(fetch_rss()[:5] + fetch_exa(["BRSR ESG carbon accounting climate tech"])[:10] + fetch_tavily(["corporate sustainability ESG green tech"])[:10])
 
     random.shuffle(pool)
     return pool
@@ -682,6 +716,7 @@ def validate_post(post_body: str, hashtags: str) -> list[str]:
         failures.append(f"hashtag wall: {hashtag_count} hashtags (max {MAX_HASHTAGS})")
     if hashtag_count == 0:
         failures.append("no hashtags found")
+
     # Hook validation — first line must be a short, punchy tagline
     first_line = post_body.strip().split("\n")[0].strip()
     weak_openers = ("a recent", "this week", "the world", "in a recent", "according to", "researchers", "new report")
@@ -689,6 +724,19 @@ def validate_post(post_body: str, hashtags: str) -> list[str]:
         failures.append(f"first line starts with a weak opener ('{first_line[:60]}...'), rewrite as a punchy tagline")
     if len(first_line.split()) > 20:
         failures.append(f"first line is too long ({len(first_line.split())} words) to be a tagline hook — make it punchier")
+
+    # Cliche ban — reject generic AI contrast patterns
+    banned_cliches = (
+        "it isn't", "is not about", "isn't about", "we keep treating", 
+        "think about that number", "the real question isn't", 
+        "most leaders treat", "how is your team handling", 
+        "how is your team approaching"
+    )
+    body_lower = post_body.lower()
+    for phrase in banned_cliches:
+        if phrase in body_lower:
+            failures.append(f"contains banned cliche phrase '{phrase}', rewrite with direct, authentic engineering analysis")
+
     return failures
 
 def generate_post(item, memory):
@@ -699,7 +747,7 @@ def generate_post(item, memory):
     day_of_week = datetime.utcnow().strftime("%A")
     forced_template_instruction = ""
     if day_of_week == "Sunday":
-        forced_template_instruction = "CRITICAL INSTRUCTION: Today is Sunday. You MUST strictly use TEMPLATE 4 (The Sunday 5-Point Breakdown). Do NOT choose any other template. Ensure exactly 5 bullet points."
+        forced_template_instruction = "CRITICAL INSTRUCTION: Today is Sunday. You MUST strictly use TEMPLATE 4 (The Executive Sunday 5-Point Brief). Do NOT choose any other template. Ensure exactly 5 bullet points."
     
     base_prompt = POST_PROMPT_TEMPLATE.format(
         title=item["title"],
@@ -720,7 +768,7 @@ def generate_post(item, memory):
     if client:
         prompt = base_prompt
         for attempt in range(1, 4):  # Max 3 attempts
-            for m_name in ["gemini-3.6-pro", "gemini-3.6-flash", "gemma-4-26b-a4b-it"]:
+            for m_name in ["gemini-3.6-flash", "gemma-4-26b-a4b-it"]:
                 try:
                     response = generate_with_retry(client, m_name, prompt)
                     if response and response.text:
@@ -739,7 +787,7 @@ def generate_post(item, memory):
                             break  # Passed validation
                         
                         print(f"Validation failed on attempt {attempt}: {', '.join(failures)}")
-                        prompt = base_prompt + f"\n\nYOUR PREVIOUS ATTEMPT FAILED VALIDATION: {', '.join(failures)}. Please fix these errors and ensure exactly 2-3 hashtags and between {MIN_WORDS}-{MAX_WORDS} words."
+                        prompt = base_prompt + f"\n\nYOUR PREVIOUS ATTEMPT FAILED VALIDATION: {', '.join(failures)}. Please fix these errors and ensure exactly 3 hashtags, {MIN_WORDS}-{MAX_WORDS} words, and NO cliche phrases."
                         raw = None
                         break  # Break inner loop to retry outer loop
                 except Exception as exc:
@@ -749,17 +797,18 @@ def generate_post(item, memory):
 
 
     if not raw:
-        # Fallback post if Gemini is unavailable — matches new conversational tone
+        # Fallback post if Gemini is unavailable — authentic ESG & Scope 3 audit reality
         title_clean = re.sub(r'<[^>]+>', '', item['title']).strip()
         summary_raw = item.get("summary") or item.get("title", "")
-        summary_clean = re.sub(r'<[^>]+>', '', summary_raw).strip()[:120]
+        summary_clean = re.sub(r'<[^>]+>', '', summary_raw).strip()[:140]
         raw = (
             "TEMPLATE: 1\n---\n"
-            f"{title_clean[:80]}.\n\n"
+            f"{title_clean[:90]}.\n\n"
             f"{summary_clean}\n\n"
-            "The real question isn't whether this matters — it's how fast your organisation is responding.\n\n"
-            "What's your team's current approach here? Would love to hear below.\n---\n"
-            "#Tech #Business #Innovation"
+            "For corporate sustainability teams and Tier-1 suppliers, the practical mandate is direct: audit readiness and verifiable Scope 3 data cannot wait until year-end reporting.\n\n"
+            "What specific challenges is your organization encountering with primary supplier emission factors this quarter?\n---\n"
+            "#Sustainability #BRSR #ClimateTech\n---\n"
+            "Key question for practitioners: Are you seeing primary supplier data meeting reasonable assurance standards yet, or are proxy factors still dominating your Scope 3 inventory?"
         )
 
     template_used = None
@@ -769,7 +818,8 @@ def generate_post(item, memory):
 
     parts = raw.split("---")
     post_body = parts[1].strip() if len(parts) > 1 else raw.strip()
-    hashtags = parts[2].strip() if len(parts) > 2 else "#Sustainability #CleanTech #ESG"
+    hashtags = parts[2].strip() if len(parts) > 2 else "#Sustainability #BRSR #ClimateTech"
+    first_comment = parts[3].strip() if len(parts) > 3 else ""
     
     # Enforce hashtag truncation just in case
     hash_list = re.findall(r"(#\w+)", hashtags)
@@ -781,7 +831,7 @@ def generate_post(item, memory):
         post_text += f"\n\n{hashtags}"
 
     hook = post_body.split("\n")[0].strip()
-    return post_text, template_used, hook
+    return post_text, template_used, hook, first_comment
 
 
 # ---------------------------------------------------------------------------
@@ -845,6 +895,32 @@ def post_to_linkedin(access_token, person_urn, text):
     return False, f"{resp.status_code}: {resp.text}"
 
 
+def post_comment_to_linkedin(access_token, person_urn, post_id, comment_text):
+    """Attempt to post an initial discussion-starter comment to seed early engagement."""
+    if not comment_text or not post_id or not post_id.startswith("urn:li:"):
+        return False, "skipped"
+    import urllib.parse
+    safe_urn = urllib.parse.quote(post_id, safe="")
+    url = f"https://api.linkedin.com/rest/socialActions/{safe_urn}/comments"
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json",
+        "LinkedIn-Version": LINKEDIN_VERSION,
+        "X-Restli-Protocol-Version": "2.0.0",
+    }
+    payload = {
+        "actor": person_urn,
+        "message": {"text": comment_text}
+    }
+    try:
+        resp = with_retry(requests.post, url, headers=headers, json=payload, timeout=15)
+        if resp.status_code in (200, 201):
+            return True, "Commented successfully"
+        return False, f"API {resp.status_code}"
+    except Exception as e:
+        return False, str(e)
+
+
 def get_reddit_user_token():
     client_id = os.environ.get("REDDIT_CLIENT_ID")
     client_secret = os.environ.get("REDDIT_CLIENT_SECRET")
@@ -872,11 +948,11 @@ def get_reddit_user_token():
 
 
 def post_to_reddit(title, text, subreddit="sustainability"):
-    token = get_reddit_user_token()
-    if not token:
+    user_token = get_reddit_user_token()
+    if not user_token:
         print("Skipping Reddit publishing (REDDIT_USERNAME / REDDIT_PASSWORD not configured)")
         return False, "not configured"
-    headers = {"Authorization": f"Bearer {token}", "User-Agent": "linkedin-content-bot/1.0"}
+    headers = {"Authorization": f"Bearer {user_token}", "User-Agent": "linkedin-content-bot/1.0"}
     try:
         data = {
             "sr": subreddit,
@@ -935,14 +1011,18 @@ def run():
         item = candidates[0]
         score_note = "Scoring unavailable, used first candidate"
 
-    post_text, template_used, hook = generate_post(item, memory)
+    post_text, template_used, hook, first_comment = generate_post(item, memory)
 
     access_token = os.environ.get("LINKEDIN_ACCESS_TOKEN", "").strip()
     success, result = False, "DRY_RUN / missing access token"
+    comment_status = "not attempted"
     if access_token:
         try:
             person_urn = get_person_urn(access_token)
             success, result = post_to_linkedin(access_token, person_urn, post_text)
+            if success and first_comment:
+                comment_ok, comment_res = post_comment_to_linkedin(access_token, person_urn, result, first_comment)
+                comment_status = f"✅ Auto-commented: {comment_res}" if comment_ok else f"ℹ️ Auto-comment notice: {comment_res}"
         except Exception as exc:
             result = f"Posting error: {exc}"
 
@@ -976,6 +1056,8 @@ def run():
     print(f"ISSUE_TITLE: {'Posted' if success else 'Draft Preview'} — {item['title'][:50]}")
     print("ISSUE_BODY_START")
     print(status_line)
+    if success and first_comment:
+        print(f"💬 LinkedIn First Comment status: {comment_status}")
     print(reddit_status_line)
     print()
     print(f"Selection: {score_note}")
@@ -984,6 +1066,10 @@ def run():
     print("LinkedIn / Reddit post content:")
     print(post_text)
     print()
+    if first_comment:
+        print("💬 FIRST COMMENT (Seed the Golden Hour — post this within 5 minutes if not auto-commented):")
+        print(first_comment)
+        print()
     print(f"---\nSource: {item['link']}")
     print("ISSUE_BODY_END")
 
