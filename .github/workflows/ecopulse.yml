@@ -74,6 +74,14 @@ jobs:
               labels: ["linkedin-draft"]
             });
 
+      - name: Upload Carousel PDF Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: linkedin-carousel-pdf
+          path: post_carousel.pdf
+          if-no-files-found: ignore
+
       - name: Commit updated memory file
         run: |
           git config user.name "github-actions[bot]"

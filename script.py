@@ -142,7 +142,9 @@ CRITICAL EDITORIAL GUIDELINES (VIRAL & PROFESSIONAL):
 4. **READABILITY & SCANNABILITY:** 1-2 sentence paragraphs maximum. Clean line breaks. No dense blocks of text.
 5. **LENGTH:** 140-230 words for the post body.
 6. **HASHTAGS:** Exactly 3 hyper-relevant hashtags (e.g., #Sustainability #BRSR #ClimateTech).
-7. **FIRST COMMENT GENERATION:** Generate a high-value "First Comment" (50-80 words) to be posted within the first 5 minutes. The comment should add a practical tip, cite an extra benchmark/stat, or pose a nuanced follow-up question to ignite peer discussion.
+7. **FIRST COMMENT GENERATION:** Generate a high-value "First Comment" (50-80 words) to be posted within the first 5 minutes to spark peer discussion.
+8. **CAROUSEL SLIDES (FOR 3X REACH):** Provide 4 structured slide breakdowns for an accompanying 5-slide PDF carousel deck.
+9. **GOLDEN HOUR COMMENT COPILOT:** Provide 3 pre-written discussion replies tailored to expected questions from peers.
 
 Output format — EXACTLY this, nothing else:
 TEMPLATE: <number 1-4 of the structure you used>
@@ -152,6 +154,17 @@ TEMPLATE: <number 1-4 of the structure you used>
 <3 hashtags, space-separated, each starting with #>
 ---
 <First Comment text for the Golden Hour discussion starter>
+---
+CAROUSEL:
+SLIDE 1 | Heading: <short title> | Highlight: <1-line key finding> | Body: <2-3 sentences explaining the core regulation or technical hurdle>
+SLIDE 2 | Heading: <short title> | Highlight: <1-line key finding> | Body: <2-3 sentences detailing the operational or engineering friction>
+SLIDE 3 | Heading: <short title> | Highlight: <1-line key finding> | Body: <2-3 sentences providing tactical implementation steps>
+SLIDE 4 | Heading: <short title> | Highlight: <1-line key finding> | Body: <2-3 sentences summarizing the strategic C-suite takeaway>
+---
+COPILOT:
+REPLY 1 | If asked about data accuracy or Scope 3: <ready-to-paste expert reply>
+REPLY 2 | If asked about regulatory compliance or deadlines: <ready-to-paste expert reply>
+REPLY 3 | If asked about engineering costs or CAPEX: <ready-to-paste expert reply>
 """
 
 SCORING_PROMPT_TEMPLATE = """
@@ -820,7 +833,35 @@ def generate_post(item, memory):
     post_body = parts[1].strip() if len(parts) > 1 else raw.strip()
     hashtags = parts[2].strip() if len(parts) > 2 else "#Sustainability #BRSR #ClimateTech"
     first_comment = parts[3].strip() if len(parts) > 3 else ""
-    
+    carousel_raw = parts[4].strip() if len(parts) > 4 else ""
+    copilot_raw = parts[5].strip() if len(parts) > 5 else ""
+
+    carousel_slides = []
+    if carousel_raw:
+        for line in carousel_raw.split("\n"):
+            line = line.strip()
+            if "Heading:" in line and "Body:" in line:
+                heading = "TACTICAL DEEP DIVE"
+                highlight = ""
+                body = ""
+                for seg in line.split("|"):
+                    seg = seg.strip()
+                    if seg.lower().startswith("heading:"):
+                        heading = seg[8:].strip()
+                    elif seg.lower().startswith("highlight:"):
+                        highlight = seg[10:].strip()
+                    elif seg.lower().startswith("body:"):
+                        body = seg[5:].strip()
+                if body:
+                    carousel_slides.append({"heading": heading, "highlight": highlight, "body": body})
+
+    copilot_replies = []
+    if copilot_raw:
+        for line in copilot_raw.split("\n"):
+            line = line.strip()
+            if line.startswith("REPLY"):
+                copilot_replies.append(line)
+
     # Enforce hashtag truncation just in case
     hash_list = re.findall(r"(#\w+)", hashtags)
     if len(hash_list) > MAX_HASHTAGS:
@@ -831,7 +872,7 @@ def generate_post(item, memory):
         post_text += f"\n\n{hashtags}"
 
     hook = post_body.split("\n")[0].strip()
-    return post_text, template_used, hook, first_comment
+    return post_text, template_used, hook, first_comment, carousel_slides, copilot_replies
 
 
 # ---------------------------------------------------------------------------
@@ -863,8 +904,57 @@ def get_person_urn(access_token):
     return f"urn:li:person:{resp.json()['sub']}"
 
 
-def post_to_linkedin(access_token, person_urn, text):
-    """Publish a pure text post to LinkedIn. No images."""
+def upload_document_to_linkedin(access_token, person_urn, file_path):
+    """
+    Upload a 5-slide PDF carousel document to LinkedIn for 3x dwell time.
+    Returns: document_urn (str) or None.
+    """
+    if not os.path.exists(file_path):
+        return None
+    try:
+        init_url = "https://api.linkedin.com/rest/documents?action=initializeUpload"
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json",
+            "LinkedIn-Version": LINKEDIN_VERSION,
+            "X-Restli-Protocol-Version": "2.0.0",
+        }
+        init_payload = {
+            "initializeUploadRequest": {
+                "owner": person_urn
+            }
+        }
+        resp = with_retry(requests.post, init_url, headers=headers, json=init_payload, timeout=15)
+        if resp.status_code != 200:
+            print(f"Document upload init failed: {resp.status_code} - {resp.text[:100]}")
+            return None
+
+        val = resp.json().get("value", {})
+        upload_url = val.get("uploadUrl")
+        document_urn = val.get("document")
+
+        if not upload_url or not document_urn:
+            return None
+
+        with open(file_path, "rb") as f:
+            pdf_bytes = f.read()
+
+        put_headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/pdf",
+        }
+        put_resp = with_retry(requests.put, upload_url, headers=put_headers, data=pdf_bytes, timeout=30)
+        if put_resp.status_code in (200, 201):
+            return document_urn
+        print(f"Document binary upload failed: {put_resp.status_code}")
+        return None
+    except Exception as e:
+        print(f"Document upload notice: {e}")
+        return None
+
+
+def post_to_linkedin(access_token, person_urn, text, document_urn=None, document_title="Executive Briefing"):
+    """Publish a post (with optional PDF carousel document attachment) to LinkedIn."""
     headers = {
         "Authorization": f"Bearer {access_token}",
         "Content-Type": "application/json",
@@ -883,6 +973,13 @@ def post_to_linkedin(access_token, person_urn, text):
         "lifecycleState": "PUBLISHED",
         "isReshareDisabledByAuthor": False,
     }
+    if document_urn:
+        payload["content"] = {
+            "media": {
+                "title": document_title[:100],
+                "id": document_urn
+            }
+        }
     resp = with_retry(
         requests.post,
         "https://api.linkedin.com/rest/posts",
@@ -892,6 +989,22 @@ def post_to_linkedin(access_token, person_urn, text):
     )
     if resp.status_code == 201:
         return True, resp.headers.get("x-restli-id", "unknown")
+
+    # If document upload is restricted by LinkedIn app scope, gracefully fallback to pure text post
+    if document_urn:
+        print(f"Document post returned {resp.status_code}, gracefully falling back to pure text post...")
+        payload.pop("content", None)
+        fallback_resp = with_retry(
+            requests.post,
+            "https://api.linkedin.com/rest/posts",
+            headers=headers,
+            json=payload,
+            timeout=15
+        )
+        if fallback_resp.status_code == 201:
+            return True, fallback_resp.headers.get("x-restli-id", "unknown")
+        return False, f"{fallback_resp.status_code}: {fallback_resp.text}"
+
     return False, f"{resp.status_code}: {resp.text}"
 
 
@@ -1011,15 +1124,32 @@ def run():
         item = candidates[0]
         score_note = "Scoring unavailable, used first candidate"
 
-    post_text, template_used, hook, first_comment = generate_post(item, memory)
+    post_text, template_used, hook, first_comment, carousel_slides, copilot_replies = generate_post(item, memory)
+
+    carousel_pdf_path = None
+    if carousel_slides:
+        try:
+            import carousel_generator
+            pdf_name = "post_carousel.pdf"
+            carousel_pdf_path = carousel_generator.generate_carousel_pdf(pdf_name, item["title"], hook, carousel_slides)
+            print(f"Generated 5-slide PDF carousel: {carousel_pdf_path}")
+        except Exception as e:
+            print(f"Carousel generation notice: {e}")
 
     access_token = os.environ.get("LINKEDIN_ACCESS_TOKEN", "").strip()
     success, result = False, "DRY_RUN / missing access token"
     comment_status = "not attempted"
+    doc_status = "none"
+
     if access_token:
         try:
             person_urn = get_person_urn(access_token)
-            success, result = post_to_linkedin(access_token, person_urn, post_text)
+            document_urn = None
+            if carousel_pdf_path and os.path.exists(carousel_pdf_path):
+                document_urn = upload_document_to_linkedin(access_token, person_urn, carousel_pdf_path)
+                doc_status = f"✅ Attached PDF ({document_urn})" if document_urn else "ℹ️ Text post fallback"
+
+            success, result = post_to_linkedin(access_token, person_urn, post_text, document_urn=document_urn, document_title=item["title"])
             if success and first_comment:
                 comment_ok, comment_res = post_comment_to_linkedin(access_token, person_urn, result, first_comment)
                 comment_status = f"✅ Auto-commented: {comment_res}" if comment_ok else f"ℹ️ Auto-comment notice: {comment_res}"
@@ -1058,6 +1188,8 @@ def run():
     print(status_line)
     if success and first_comment:
         print(f"💬 LinkedIn First Comment status: {comment_status}")
+    if doc_status != "none":
+        print(f"📄 LinkedIn PDF Carousel status: {doc_status}")
     print(reddit_status_line)
     print()
     print(f"Selection: {score_note}")
@@ -1069,6 +1201,15 @@ def run():
     if first_comment:
         print("💬 FIRST COMMENT (Seed the Golden Hour — post this within 5 minutes if not auto-commented):")
         print(first_comment)
+        print()
+    if copilot_replies:
+        print("⚡ GOLDEN HOUR COMMENT COPILOT (Instant replies to expected peer comments):")
+        for r in copilot_replies:
+            print(f"👉 {r}")
+            print()
+    if carousel_pdf_path and os.path.exists(carousel_pdf_path):
+        print("📄 5-SLIDE PDF CAROUSEL GENERATED:")
+        print(f"Saved as: {carousel_pdf_path} (4:5 swipable document carousel for 3x reach)")
         print()
     print(f"---\nSource: {item['link']}")
     print("ISSUE_BODY_END")
