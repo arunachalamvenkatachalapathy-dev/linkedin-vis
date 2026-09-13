@@ -275,46 +275,70 @@ def render_slide(slide_data: dict, bg_path: Path) -> Image.Image:
     return canvas.convert("RGB")
 
 
-def generate_carousel_pdf(slides: list, output_path: str = "post_carousel.pdf") -> str:
+
+def generate_carousel_pdf(*args, **kwargs) -> str:
     """
-    Converts structured slides into the 1080x1080 Minimalist UI Charcoal and Yellow PDF.
+    Flexible signature supporting both:
+      - generate_carousel_pdf(slides, output_path="post_carousel.pdf")
+      - generate_carousel_pdf(pdf_name, title, hook, slides)
     """
+    output_path = "post_carousel.pdf"
+    slides = []
+
+    if args:
+        if isinstance(args[0], list):
+            slides = args[0]
+            if len(args) > 1 and isinstance(args[1], str):
+                output_path = args[1]
+        elif isinstance(args[0], str):
+            output_path = args[0]
+            if isinstance(args[-1], list):
+                slides = args[-1]
+    
+    if "output_path" in kwargs:
+        output_path = kwargs["output_path"]
+    if "slides" in kwargs:
+        slides = kwargs["slides"]
+
     bg_files = sorted(list(BG_DIR.glob("*.*"))) if BG_DIR.exists() else []
     formatted = []
+    
     if slides:
-        c = slides[0]
+        c = slides[0] if isinstance(slides[0], dict) else {"title": str(slides[0])}
         formatted.append({
             "type": "cover",
             "badge": c.get("tag", "Let's discuss"),
             "title": c.get("title", "Climate Tech & Decarbonization")
         })
-    for s in slides[1:]:
-        bullets = s.get("bullets", [])
-        if bullets and len(bullets) >= 2:
-            formatted.append({
-                "type": "search_ui",
-                "title": s.get("title", "Key Strategic Actions"),
-                "search_label": "Operational priorities",
-                "items": bullets[:3]
-            })
-        elif s.get("is_quote") or "quote" in s.get("title", "").lower():
-            formatted.append({
-                "type": "quote",
-                "title": s.get("title", ""),
-                "attribution": s.get("attribution", "Industry Analysis"),
-                "body": s.get("body", "")
-            })
-        else:
-            body = s.get("body", "")
-            if bullets:
-                body = "\n\n".join(bullets)
-            formatted.append({
-                "type": "content",
-                "title": s.get("title", "Operational Context"),
-                "body": body
-            })
-            
-    # Always append author personal branding outro slide (NO LOGO, Arunachalam's real photo & signature)
+        
+        for s in slides[1:]:
+            if not isinstance(s, dict):
+                s = {"body": str(s)}
+            bullets = s.get("bullets", [])
+            if bullets and len(bullets) >= 2:
+                formatted.append({
+                    "type": "search_ui",
+                    "title": s.get("title", "Key Strategic Actions"),
+                    "search_label": "Operational priorities",
+                    "items": bullets[:3]
+                })
+            elif s.get("is_quote") or "quote" in s.get("title", "").lower():
+                formatted.append({
+                    "type": "quote",
+                    "title": s.get("title", ""),
+                    "attribution": s.get("attribution", "Industry Analysis"),
+                    "body": s.get("body", "")
+                })
+            else:
+                body = s.get("body", "")
+                if bullets:
+                    body = "\n\n".join(bullets)
+                formatted.append({
+                    "type": "content",
+                    "title": s.get("title", "Operational Context"),
+                    "body": body
+                })
+                
     formatted.append({"type": "outro"})
     
     images = []
