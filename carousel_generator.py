@@ -140,16 +140,37 @@ def render_slide(slide_data: dict, bg_path: Path | None) -> Image.Image:
         draw_arrow(draw, inner_right - 65, footer_y + 8, length=60, color=C_YELLOW, width=3)
 
     if slide_type == "cover":
+        prof_img_path = PROFILE_DIR / "profile.jpg"
+        if prof_img_path.exists():
+            pimg = Image.open(prof_img_path).convert("RGB")
+            p_size = 75
+            pimg_res = pimg.resize((p_size, p_size), Image.Resampling.LANCZOS)
+            
+            p_mask = Image.new("L", (p_size, p_size), 0)
+            p_draw = ImageDraw.Draw(p_mask)
+            p_draw.ellipse([(0, 0), (p_size, p_size)], fill=255)
+            
+            canvas.paste(pimg_res, (inner_left, CARD_Y + 55), p_mask)
+            
+            n_font = get_font(28, weight="bold")
+            d_font = get_font(20, weight="medium")
+            draw.text((inner_left + p_size + 15, CARD_Y + 65), "Arunachalam V.", font=n_font, fill=C_YELLOW)
+            draw.text((inner_left + p_size + 15, CARD_Y + 95), "ESG & Sustainability Professional", font=d_font, fill=C_BODY)
+            
+            cur_y = CARD_Y + 180
+        else:
+            cur_y = CARD_Y + 110
+            
         # Subtitle badge - bigger
         sub_font = get_font(34, weight="bold")
-        draw.text((inner_left, CARD_Y + 110), slide_data.get("badge", "Let's discuss"), font=sub_font, fill=C_YELLOW)
+        draw.text((inner_left, cur_y), slide_data.get("badge", "Let's discuss"), font=sub_font, fill=C_YELLOW)
         
         # Main Title - BIGGER League Spartan Bold
         title_font = get_font(78, weight="bold")
         title_text = slide_data.get("title", "")
         title_lines = wrap_text(title_text, title_font, max_content_w, draw)
         
-        cur_y = CARD_Y + 185
+        cur_y += 75
         for line in title_lines:
             draw.text((inner_left, cur_y), line, font=title_font, fill=C_YELLOW)
             cur_y += 92
@@ -181,6 +202,36 @@ def render_slide(slide_data: dict, bg_path: Path | None) -> Image.Image:
             cur_y += 20
             attr_font = get_font(28, weight="semibold")
             draw.text((inner_left, cur_y), f"— {slide_data['attribution']}", font=attr_font, fill=C_YELLOW_DIM)
+
+    elif slide_type == "call_to_action":
+        draw_window_dots(draw, inner_left + 8, CARD_Y + 55)
+        
+        t_font = get_font(68, weight="bold")
+        title_text = slide_data.get("title", "Strategic Takeaway")
+        title_lines = wrap_text(title_text, t_font, max_content_w, draw)
+        
+        cur_y = CARD_Y + 115
+        for line in title_lines:
+            draw.text((inner_left, cur_y), line, font=t_font, fill=C_YELLOW)
+            cur_y += 80
+            
+        box_y = cur_y + 40
+        box_w = max_content_w
+        box_r = 18
+        
+        b_font = get_font(34, weight="medium")
+        body_text = slide_data.get("body", "")
+        body_lines = wrap_text(body_text, b_font, box_w - 60, draw)
+        
+        box_h = len(body_lines) * 50 + 60
+        
+        # Draw CTA box
+        draw.rounded_rectangle([(inner_left, box_y), (inner_left + box_w, box_y + box_h)], radius=box_r, fill=C_YELLOW, outline=C_YELLOW, width=1)
+        
+        text_y = box_y + 35
+        for line in body_lines:
+            draw.text((inner_left + 30, text_y), line, font=b_font, fill=(26, 26, 28)) # Dark text on yellow box
+            text_y += 50
 
     elif slide_type == "search_ui":
         draw_window_dots(draw, inner_left + 8, CARD_Y + 55)
@@ -309,13 +360,23 @@ def generate_carousel_pdf(*args, **kwargs) -> str:
             "title": c.get("heading") or c.get("title", "Climate Tech & Decarbonization")
         })
         
-        for s in slides[1:]:
+        content_slides = slides[1:]
+        for idx, s in enumerate(content_slides):
+            is_last_content = (idx == len(content_slides) - 1)
+            
             if not isinstance(s, dict):
                 s = {"body": str(s)}
             
             title_text = s.get("heading") or s.get("title") or "Operational Context"
             bullets = s.get("bullets", [])
-            if bullets and len(bullets) >= 2:
+            
+            if is_last_content:
+                formatted.append({
+                    "type": "call_to_action",
+                    "title": title_text,
+                    "body": s.get("body", "")
+                })
+            elif bullets and len(bullets) >= 2:
                 formatted.append({
                     "type": "search_ui",
                     "title": title_text,
