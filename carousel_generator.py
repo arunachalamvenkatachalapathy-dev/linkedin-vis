@@ -215,19 +215,47 @@ def render_slide(slide_data: dict, bg_path: Path | None) -> Image.Image:
     elif slide_type == "outro":
         draw_window_dots(draw, inner_left + 8, CARD_Y + 55)
         
+        prof_img_path = PROFILE_DIR / "profile.jpg"
         sig_img_path = PROFILE_DIR / "signature.png"
         
         cur_y = CARD_Y + 115
         
-        n_font = get_font(42, weight="bold")
-        d_font = get_font(28, weight="semibold")
-        f_font = get_font(24, weight="regular")
-        
-        draw.text((inner_left, cur_y), "Arunachalam Venkatachalapathy", font=n_font, fill=C_YELLOW)
-        draw.text((inner_left, cur_y + 60), "ESG & Sustainability Professional", font=d_font, fill=C_BODY)
-        draw.text((inner_left, cur_y + 100), "BRSR Core • GHG • Climate Tech", font=f_font, fill=C_YELLOW_DIM)
-        
-        cur_y += 180
+        if prof_img_path.exists():
+            pimg = Image.open(prof_img_path).convert("RGB")
+            p_size = 180
+            pimg_res = pimg.resize((p_size, p_size), Image.Resampling.LANCZOS)
+            
+            p_mask = Image.new("L", (p_size, p_size), 0)
+            p_draw = ImageDraw.Draw(p_mask)
+            p_draw.ellipse([(0, 0), (p_size, p_size)], fill=255)
+            
+            ring = Image.new("RGBA", (p_size + 8, p_size + 8), (0, 0, 0, 0))
+            r_draw = ImageDraw.Draw(ring)
+            r_draw.ellipse([(0, 0), (p_size + 7, p_size + 7)], outline=C_YELLOW, width=3)
+            
+            canvas.paste(ring, (inner_left - 4, cur_y - 4), ring)
+            canvas.paste(pimg_res, (inner_left, cur_y), p_mask)
+            
+            name_x = inner_left + p_size + 30
+            n_font = get_font(38, weight="bold")
+            d_font = get_font(24, weight="semibold")
+            f_font = get_font(22, weight="regular")
+            
+            draw.text((name_x, cur_y + 20), "Arunachalam V.", font=n_font, fill=C_YELLOW)
+            draw.text((name_x, cur_y + 75), "ESG & Sustainability Professional", font=d_font, fill=C_BODY)
+            draw.text((name_x, cur_y + 115), "BRSR Core • GHG • Climate Tech", font=f_font, fill=C_YELLOW_DIM)
+            
+            cur_y += p_size + 35
+        else:
+            n_font = get_font(42, weight="bold")
+            d_font = get_font(28, weight="semibold")
+            f_font = get_font(24, weight="regular")
+            
+            draw.text((inner_left, cur_y), "Arunachalam Venkatachalapathy", font=n_font, fill=C_YELLOW)
+            draw.text((inner_left, cur_y + 60), "ESG & Sustainability Professional", font=d_font, fill=C_BODY)
+            draw.text((inner_left, cur_y + 100), "BRSR Core • GHG • Climate Tech", font=f_font, fill=C_YELLOW_DIM)
+            
+            cur_y += 180
             
         if sig_img_path.exists():
             sig = Image.open(sig_img_path).convert("RGBA")
