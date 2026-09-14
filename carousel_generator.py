@@ -6,7 +6,7 @@ import os
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
-BASE_DIR = Path(r"C:\Users\NALINI ARUN\.gemini\antigravity\scratch\linkedin vis")
+BASE_DIR = Path(__file__).resolve().parent
 ASSETS_DIR = BASE_DIR / "assets"
 BG_DIR = ASSETS_DIR / "backgrounds"
 FONT_DIR = ASSETS_DIR / "fonts"
@@ -103,16 +103,19 @@ def draw_window_dots(draw: ImageDraw.ImageDraw, start_x: int, y: int):
         dx = start_x + i * spacing
         draw.ellipse([(dx - dot_r, y - dot_r), (dx + dot_r, y + dot_r)], fill=C_YELLOW)
 
-def render_slide(slide_data: dict, bg_path: Path) -> Image.Image:
-    bg = Image.open(bg_path).convert("RGB")
-    w, h = bg.size
-    scale = max(CANVAS_SIZE / w, CANVAS_SIZE / h)
-    new_w = int(w * scale)
-    new_h = int(h * scale)
-    bg_resized = bg.resize((new_w, new_h), Image.Resampling.LANCZOS)
-    left = (new_w - CANVAS_SIZE) // 2
-    top = (new_h - CANVAS_SIZE) // 2
-    bg_cropped = bg_resized.crop((left, top, left + CANVAS_SIZE, top + CANVAS_SIZE))
+def render_slide(slide_data: dict, bg_path: Path | None) -> Image.Image:
+    if bg_path and bg_path.exists():
+        bg = Image.open(bg_path).convert("RGB")
+        w, h = bg.size
+        scale = max(CANVAS_SIZE / w, CANVAS_SIZE / h)
+        new_w = int(w * scale)
+        new_h = int(h * scale)
+        bg_resized = bg.resize((new_w, new_h), Image.Resampling.LANCZOS)
+        left = (new_w - CANVAS_SIZE) // 2
+        top = (new_h - CANVAS_SIZE) // 2
+        bg_cropped = bg_resized.crop((left, top, left + CANVAS_SIZE, top + CANVAS_SIZE))
+    else:
+        bg_cropped = Image.new("RGB", (CANVAS_SIZE, CANVAS_SIZE), (26, 26, 28))
     
     card = create_frosted_card(bg_cropped)
     canvas = bg_cropped.convert("RGBA")
