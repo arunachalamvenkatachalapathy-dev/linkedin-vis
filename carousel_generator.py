@@ -215,41 +215,19 @@ def render_slide(slide_data: dict, bg_path: Path | None) -> Image.Image:
     elif slide_type == "outro":
         draw_window_dots(draw, inner_left + 8, CARD_Y + 55)
         
-        prof_img_path = PROFILE_DIR / "profile.jpg"
         sig_img_path = PROFILE_DIR / "signature.png"
         
         cur_y = CARD_Y + 115
         
-        if prof_img_path.exists():
-            pimg = Image.open(prof_img_path).convert("RGB")
-            p_size = 180
-            pimg_res = pimg.resize((p_size, p_size), Image.Resampling.LANCZOS)
-            
-            p_mask = Image.new("L", (p_size, p_size), 0)
-            p_draw = ImageDraw.Draw(p_mask)
-            p_draw.ellipse([(0, 0), (p_size, p_size)], fill=255)
-            
-            ring = Image.new("RGBA", (p_size + 8, p_size + 8), (0, 0, 0, 0))
-            r_draw = ImageDraw.Draw(ring)
-            r_draw.ellipse([(0, 0), (p_size + 7, p_size + 7)], outline=C_YELLOW, width=3)
-            
-            canvas.paste(ring, (inner_left - 4, cur_y - 4), ring)
-            canvas.paste(pimg_res, (inner_left, cur_y), p_mask)
-            
-            name_x = inner_left + p_size + 30
-            n_font = get_font(38, weight="bold")
-            d_font = get_font(24, weight="semibold")
-            f_font = get_font(22, weight="regular")
-            
-            draw.text((name_x, cur_y + 20), "Arunachalam V.", font=n_font, fill=C_YELLOW)
-            draw.text((name_x, cur_y + 75), "ESG & Sustainability Lead", font=d_font, fill=C_BODY)
-            draw.text((name_x, cur_y + 115), "BRSR Core • GHG • Climate Tech", font=f_font, fill=C_YELLOW_DIM)
-            
-            cur_y += p_size + 35
-        else:
-            n_font = get_font(42, weight="bold")
-            draw.text((inner_left, cur_y), "Arunachalam Venkatachalapathy", font=n_font, fill=C_YELLOW)
-            cur_y += 65
+        n_font = get_font(42, weight="bold")
+        d_font = get_font(28, weight="semibold")
+        f_font = get_font(24, weight="regular")
+        
+        draw.text((inner_left, cur_y), "Arunachalam Venkatachalapathy", font=n_font, fill=C_YELLOW)
+        draw.text((inner_left, cur_y + 60), "ESG & Sustainability Professional", font=d_font, fill=C_BODY)
+        draw.text((inner_left, cur_y + 100), "BRSR Core • GHG • Climate Tech", font=f_font, fill=C_YELLOW_DIM)
+        
+        cur_y += 180
             
         if sig_img_path.exists():
             sig = Image.open(sig_img_path).convert("RGBA")
@@ -263,17 +241,6 @@ def render_slide(slide_data: dict, bg_path: Path | None) -> Image.Image:
             inv_mask_res = inv_mask.resize((sig_w, sig_h), Image.Resampling.LANCZOS)
             canvas.paste(yellow_sig_res, (inner_left, cur_y), inv_mask_res)
             cur_y += sig_h + 20
-            
-        bio_font = get_font(28, weight="medium")
-        bio = (
-            "Sharing engineering-first perspectives on industrial decarbonization, "
-            "SEBI BRSR Core assurance, and practical Scope 1-3 GHG accounting.\n\n"
-            "Follow for grounded analysis that cuts through corporate greenwash."
-        )
-        bio_lines = wrap_text(bio, bio_font, max_content_w, draw)
-        for line in bio_lines:
-            draw.text((inner_left, cur_y), line, font=bio_font, fill=C_BODY)
-            cur_y += 42
 
     return canvas.convert("RGB")
 
@@ -311,24 +278,26 @@ def generate_carousel_pdf(*args, **kwargs) -> str:
         formatted.append({
             "type": "cover",
             "badge": c.get("tag", "Let's discuss"),
-            "title": c.get("title", "Climate Tech & Decarbonization")
+            "title": c.get("heading") or c.get("title", "Climate Tech & Decarbonization")
         })
         
         for s in slides[1:]:
             if not isinstance(s, dict):
                 s = {"body": str(s)}
+            
+            title_text = s.get("heading") or s.get("title") or "Operational Context"
             bullets = s.get("bullets", [])
             if bullets and len(bullets) >= 2:
                 formatted.append({
                     "type": "search_ui",
-                    "title": s.get("title", "Key Strategic Actions"),
+                    "title": title_text,
                     "search_label": "Operational priorities",
                     "items": bullets[:3]
                 })
-            elif s.get("is_quote") or "quote" in s.get("title", "").lower():
+            elif s.get("is_quote") or "quote" in title_text.lower():
                 formatted.append({
                     "type": "quote",
-                    "title": s.get("title", ""),
+                    "title": title_text,
                     "attribution": s.get("attribution", "Industry Analysis"),
                     "body": s.get("body", "")
                 })
@@ -338,7 +307,7 @@ def generate_carousel_pdf(*args, **kwargs) -> str:
                     body = "\n\n".join(bullets)
                 formatted.append({
                     "type": "content",
-                    "title": s.get("title", "Operational Context"),
+                    "title": title_text,
                     "body": body
                 })
                 
