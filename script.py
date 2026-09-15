@@ -114,6 +114,8 @@ Source category: {category}
 Source summary: {summary}
 Source link: {link}
 
+Trending SEO Keywords to naturally include: {seo_keywords}
+
 Recently covered topics (avoid repeating these themes):
 {recent_topics}
 
@@ -752,6 +754,21 @@ def validate_post(post_body: str, hashtags: str) -> list[str]:
 
     return failures
 
+def fetch_seo_keywords(query):
+    try:
+        import urllib.parse
+        q = urllib.parse.quote(query)
+        url = f"http://suggestqueries.google.com/complete/search?client=chrome&q={q}"
+        resp = requests.get(url, timeout=5)
+        if resp.status_code == 200:
+            suggestions = resp.json()[1]
+            kws = [s for s in suggestions if s.lower() != query.lower()][:5]
+            if kws:
+                return ", ".join(kws)
+    except Exception as e:
+        print(f"SEO Keyword fetch error: {e}")
+    return "ESG, Carbon Accounting, Climate Tech, Sustainability Strategy"
+
 def generate_post(item, memory):
     client = gemini_client()
     templates_list = "\n".join(f"{k}. {v}" for k, v in TEMPLATES.items())
@@ -762,11 +779,17 @@ def generate_post(item, memory):
     if day_of_week == "Sunday":
         forced_template_instruction = "CRITICAL INSTRUCTION: Today is Sunday. You MUST strictly use TEMPLATE 4 (The Executive Sunday 5-Point Brief). Do NOT choose any other template. Ensure exactly 5 bullet points."
     
+    base_kw = item.get("category", "sustainability")
+    if base_kw.lower() == "general":
+        base_kw = "climate tech"
+    seo_kws = fetch_seo_keywords(base_kw)
+
     base_prompt = POST_PROMPT_TEMPLATE.format(
         title=item["title"],
         category=item.get("category", "general"),
         summary=item["summary"],
         link=item["link"],
+        seo_keywords=seo_kws,
         recent_topics=recent_topics_text(memory),
         recent_hooks=recent_hooks_text(memory),
         templates_list=templates_list,
