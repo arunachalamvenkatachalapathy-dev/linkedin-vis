@@ -83,28 +83,25 @@ MAX_CANDIDATES_TO_SCORE = 60
 # Storytelling Templates
 # ---------------------------------------------------------------------------
 TEMPLATES = {
-    1: """TEMPLATE 1: "The Contrarian Industry Shift"
-   - Hook: A startling contradiction in current ESG/business practices.
-   - Insight: Deep dive into the mechanics of why the old way is breaking down (e.g., Scope 3 calculation flaws, supply chain opacity).
-   - Data/Evidence: 1-2 hard numbers or regulatory citations proving the shift.
-   - So What / Next Step: What specific action an executive must take today.""",
+    1: """TEMPLATE 1: "The Regulatory & Supply Chain Impact Teardown"
+   - Head (The Urgent Signal): The first line must be a compelling, direct hook stating a specific regulatory or market mandate (BRSR Core, EU CBAM, CSRD, Scope 3 assurance, SEC, or ISO net-zero) and why non-compliance is suddenly expensive. (Max 18 words).
+   - Body (The Operational Breakdown): Break down 2-3 concrete operational realities. What must Tier-1 suppliers or corporate ESG teams actually change? Include hard numbers (deadlines, carbon border tariffs, assurance scopes).
+   - Tail (Actionable Takeaway): Provide 1 clear, strategic imperative for leadership. Conclude with a sharp, technical discussion question that invites experienced peers to share how they are solving it.""",
 
-    2: """TEMPLATE 2: "The Regulatory Cascade"
-   - Hook: A single, massive incoming regulatory wave (e.g., BRSR Core, CBAM, CSRD).
-   - Insight: The hidden secondary effect this regulation will have on operations or procurement.
-   - Data/Evidence: Exact deadlines, carbon border tariffs, or assurance scope numbers.
-   - So What / Next Step: The tactical engineering or compliance architecture needed to survive it.""",
+    2: """TEMPLATE 2: "The Carbon Accounting & Data Reality"
+   - Head (The Hard Metric): Start with an eye-opening number or metric (emissions intensity, Scope 3 audit failure rates, carbon credit discount, or energy conversion metric). Make the reader stop scrolling immediately.
+   - Body (The Calculation & Pitfalls): Explain the underlying methodology. Where are companies miscalculating? Contrast reported claims vs physical emissions math (grid factors, supplier estimates, emission factor errors).
+   - Tail (The Solution Architecture): Outline the right data architecture or mitigation step. End with a focused question on measurement standards.""",
 
-    3: """TEMPLATE 3: "The Engineering Reality Check"
-   - Hook: An authentic observation contrasting boardroom net-zero commitments with plant-floor industrial reality.
-   - Insight: The physical/engineering friction points (CAPEX, grid interconnection, sensor calibration).
-   - Data/Evidence: Grounded technical facts, avoiding pure management speak.
-   - So What / Next Step: The compromise or bridge solution that actually works.""",
+    3: """TEMPLATE 3: "The Engineering & Ground-Level Reality Check"
+   - Head (The Plant-Floor / Field Reality): An authentic observation contrasting boardroom net-zero commitments with ground-level industrial reality (water recycling, constructed wetlands, captive renewables, heat recovery).
+   - Body (The Engineering Dilemma): Share the practical friction points: CAPEX vs payback, grid interconnection delays, sensor calibration, or local biodiversity impacts. Ground it in technical facts.
+   - Tail (The Strategic Lesson): What works in practice versus what only looks good on a corporate slide deck. End with a technical peer question.""",
 
     4: """TEMPLATE 4: "The Executive Sunday 5-Point Brief"
-   - Hook: A macro synthesis of where ESG, carbon regulation, and climate tech are moving.
-   - Body: Exactly 5 distinct, emoji-bulleted points (📊 Policy, ⚡ Tech, 💰 Capital, 🏭 Industry, 🔍 Audit).
-   - So What / Next Step: One high-leverage question or focus area for the upcoming week."""
+   - Head (The Executive Horizon): A powerful 1-sentence macro synthesis of where ESG, carbon regulation, and climate tech are moving this upcoming week.
+   - Body (The 5 Strategic Developments): Exactly 5 distinct, emoji-bulleted points (📊 Policy, ⚡ Tech, 💰 Capital, 🏭 Industry, 🔍 Audit) covering key shifts with exact numbers and organizations.
+   - Tail (The Monday Morning Priority): One high-leverage question or focus area for CFOs, Sustainability Heads, and Operations Leaders."""
 }
 
 POST_PROMPT_TEMPLATE = """
@@ -671,32 +668,10 @@ def gemini_client():
 
 
 def generate_with_retry(client, model, contents, retries=3, base_delay=4):
-    import requests
-    import os
-    import time
-    openrouter_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
-    
-    headers = {
-        "Authorization": f"Bearer {openrouter_key}",
-        "Content-Type": "application/json"
-    }
-    data = {
-        "model": "anthropic/claude-3.5-sonnet",
-        "messages": [{"role": "user", "content": contents}]
-    }
-    
     last_error = None
     for attempt in range(1, retries + 1):
         try:
-            resp = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=data, timeout=30)
-            resp.raise_for_status()
-            
-            # Create a mock response object to match Gemini's return style
-            class MockResponse:
-                def __init__(self, text):
-                    self.text = text
-                    
-            return MockResponse(resp.json()["choices"][0]["message"]["content"])
+            return client.models.generate_content(model=model, contents=contents)
         except Exception as e:
             last_error = e
             time.sleep(base_delay * attempt)
@@ -707,8 +682,7 @@ def score_candidates(client, candidates):
     if not candidates:
         return []
     pool = candidates[:MAX_CANDIDATES_TO_SCORE]
-    openrouter_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
-    if not openrouter_key and not client:
+    if not client:
         return [{"id": 0, "score": 85, "reason": "first available candidate (local preview)", "candidate": pool[0]}]
 
     sizes = cluster_sizes(pool)
@@ -723,7 +697,7 @@ def score_candidates(client, candidates):
         for i, c in enumerate(pool)
     ]
     prompt = SCORING_PROMPT_TEMPLATE.format(candidates_json=json.dumps(slim, indent=2))
-    for m_name in ["anthropic/claude-3.5-sonnet"]:
+    for m_name in ["gemma-4-26b-a4b-it", "gemini-3.6-flash", "gemini-3.6-pro"]:
         try:
             response = generate_with_retry(client, m_name, prompt)
             if response and response.text:
@@ -796,7 +770,7 @@ def fetch_seo_keywords(query):
     return "ESG, Carbon Accounting, Climate Tech, Sustainability Strategy"
 
 def generate_post(item, memory):
-    client = gemini_client()  # Keep for embeddings if needed
+    client = gemini_client()
     templates_list = "\n".join(f"{k}. {v}" for k, v in TEMPLATES.items())
     
     from datetime import datetime
@@ -827,10 +801,10 @@ def generate_post(item, memory):
         base_prompt += f"\n\n{forced_template_instruction}"
     
     raw = None
-    if True:
+    if client:
         prompt = base_prompt
         for attempt in range(1, 4):  # Max 3 attempts
-            for m_name in ["anthropic/claude-3.5-sonnet"]:
+            for m_name in ["gemini-3.6-flash", "gemma-4-26b-a4b-it"]:
                 try:
                     response = generate_with_retry(client, m_name, prompt)
                     if response and response.text:
