@@ -818,12 +818,14 @@ def generate_post(item, memory):
                         post_body = parts[1].strip()
                         hashtags = parts[2].strip()
                         failures = validate_post(post_body, hashtags)
+                        if len(parts) < 6:
+                            failures.append(f"malformed output: missing sections (found {len(parts)} parts, expected 6 including CAROUSEL and COPILOT)")
                         
                         if not failures:
                             break  # Passed validation
                         
                         print(f"Validation failed on attempt {attempt}: {', '.join(failures)}")
-                        prompt = base_prompt + f"\n\nYOUR PREVIOUS ATTEMPT FAILED VALIDATION: {', '.join(failures)}. Please fix these errors and ensure exactly 3 hashtags, {MIN_WORDS}-{MAX_WORDS} words, and NO cliche phrases."
+                        prompt = base_prompt + f"\n\nYOUR PREVIOUS ATTEMPT FAILED VALIDATION: {', '.join(failures)}. Please fix these errors and ensure exactly 3 hashtags, {MIN_WORDS}-{MAX_WORDS} words, NO cliche phrases, and DO NOT skip the CAROUSEL or COPILOT sections."
                         raw = None
                         break  # Break inner loop to retry outer loop
                 except Exception as exc:
